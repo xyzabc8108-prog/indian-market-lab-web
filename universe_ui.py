@@ -12,6 +12,8 @@ from zoneinfo import ZoneInfo
 import pandas as pd
 import streamlit as st
 
+from nse_bundle import load_nse_bundle
+
 from market_universe import (
     EQUITY_URL, NSE_LIST_PAGE, NSE_INDICES_PAGE,
     load_equity_csv, fallback_equities, load_index_csv, indices_table,
@@ -62,16 +64,19 @@ def render_universe(tab,history,mode):
         if not st.toggle('Load directory and market tools', value=False, key='universe_activate'):
             st.caption('Activate this page to load an official stock directory (or upload CSV) and analyze selected prices. This avoids slow exchange requests elsewhere in the app.')
             return
-        st.info('Search the full official NSE equity list when available. This is a symbol DIRECTORY, not a real-time feed of every stock. Only your selected instrument fetches a research quote. Prices may be delayed or unavailable.')
+        st.info('Import the NSE securities ZIP directly, or load the latest equity directory. This is a searchable reference list, NOT live quotes. Price research is requested only for a selected instrument.')
         st.caption('No brokerage access, no orders, no authenticated exchange feed. All monetary values in INR; displayed bar times in IST.')
-        with st.expander('Directory source / upload official NSE stock or index CSV',expanded=False):
+        with st.expander('Directory source / upload NSE.zip, equity CSV or index CSV',expanded=True):
             st.link_button('NSE securities list (official)',NSE_LIST_PAGE)
             st.link_button('NSE index list (official)',NSE_INDICES_PAGE)
-            uploaded=st.file_uploader('Official NSE EQUITY_L.csv (optional if Cloud download is blocked)',type='csv',key='universe_equity_upload')
+            bundle=st.file_uploader('Your NSE.zip (mainboard, SME, ETFs and other securities — preferred)',type='zip',key='universe_zip_upload')
+            uploaded=st.file_uploader('Or upload official NSE EQUITY_L.csv',type='csv',key='universe_equity_upload')
             index_uploaded=st.file_uploader('Optional index directory CSV (Index, Group, Yahoo Ticker)',type='csv',key='universe_index_upload')
             if st.button('Retry official equity download',key='nse_download_retry'): download_nse_equities.clear()
         try:
-            if uploaded:
+            if bundle is not None:
+                universe=load_nse_bundle(bundle.getvalue());source='Your uploaded NSE ZIP — static securities directory, not current prices'
+            elif uploaded is not None:
                 universe=load_equity_csv(uploaded.getvalue());source='Uploaded NSE equity reference CSV (static)'
             else:
                 universe=download_nse_equities();source='Official NSE equity reference CSV (daily cached)'
@@ -86,21 +91,35 @@ def render_universe(tab,history,mode):
             st.warning('Index CSV error: '+str(exc));indices=indices_table();index_source='Built-in index directory'
         a,b=st.columns(2)
         a.metric('Equity entries loaded',f'{len(universe):,}')
-        b.metric('Index names loaded',f'{len(indices):,}')
+        b.metric('Index names loaded separately',f'{len(indices):,}')
+        if 'Asset type' in universe.columns:
+            st.caption('ZIP contents: '+', '.join(f'{category}: {number:,}' for category,number in universe['Asset type'].value_counts().items()))
+            st.warning('The NSE ZIP does not contain index quotes, historical OHLC candles, or a real-time price feed. Symbol mapping to Yahoo is a research attempt only.')
         st.caption('Equities: '+source+' · Indices: '+index_source)
-        kind=st.radio('Explore',('NSE equities','Indices'),horizontal=True,key='market_kind')
+        kind=st.radio('Explore',('NSE securities','Indices'),horizontal=True,key='market_kind')
+        if kind=='NSE securities' and 'Asset type' in universe.columns:
+            categories=sorted(universe['Asset type'].unique())
+            chosen_types=st.multiselect('Filter securities by type',categories,default=categories,key='nse_asset_types')
+            filtered=universe[universe['Asset type'].isin(chosen_types)]
+        else:
+            filtered=universe
         search=st.text_input('Search by name, symbol or index',placeholder='e.g. RELIANCE, SBI, NIFTY',key='universe_search')
-        table=filter_catalog(universe if kind=='NSE equities' else indices,search,limit=150)
+        table=filter_catalog(filtered if kind=='NSE securities' else indices,search,limit=150)
         st.dataframe(table,use_container_width=True,hide_index=True,height=285)
         st.caption('Showing up to 150 search results at once. Type to narrow; a complete downloaded directory can contain thousands of symbols.')
         if table.empty:
             st.info('No match in the loaded directory; try a different search or upload the official CSV.')
             return
-        if kind=='NSE equities':
-            symbols=table['Symbol'].astype(str).tolist()
-            selected=st.selectbox('Choose a listed stock',symbols,key='universe_selected_stock')
-            ticker=str(table.loc[table['Symbol']==selected,'Provider ticker'].iloc[0])
-            caption='NSE equity: '+selected
+        if kind=='NSE securities':
+            items=table.reset_index(drop=True)
+            choice=st.selectbox('Choose a listed security',range(len(items)),
+                format_func=lambda i: f"{items.iloc[i]['Symbol']} — {str(items.iloc[i]['Company'])[:55]} ({items.iloc[i].get('Asset type','Equity')})",
+                key='universe_selected_stock')
+            selected=str(items.iloc[choice]['Symbol'])
+            ticker=str(items.iloc[choice]['Provider ticker'])
+            caption='NSE security: '+selected
+            if items.iloc[choice].get('Asset type','Mainboard equity')!='Mainboard equity':
+                st.caption('This instrument may not be supported by the unofficial chart source, and its trading lot rules may differ. Verify directly with NSE.')
         else:
             names=table['Index'].astype(str).tolist()
             selected=st.selectbox('Choose an index',names,key='universe_selected_index')
