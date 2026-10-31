@@ -1,36 +1,52 @@
-# Deploy Indian Market Lab as one public website
+# Indian Market Lab — NSE Research Dashboard
 
-**No brokerage account or static IP needed.** The public website is for educational research, not trading. The Streamlit site needs access to the unofficial Yahoo chart endpoints to display research quotes; providers can rate-limit or block it.
+A browser dashboard for **Indian-market research and paper trading**, hosted using Streamlit. No brokerage account, reactivation, static IP or Oracle Cloud instance is required.
 
-## 1 — Preview on your computer
+**Project is read-only. It never places real orders.**
 
-Double-click `OPEN_DASHBOARD_DEMO.html`. This is a safe, fully offline view with **fabricated** stock prices. It cannot receive real market data.
+## Launch on Streamlit Community Cloud
 
-## 2 — Deploy the data-enabled version to your own website URL
+1. Open https://share.streamlit.io/ and sign in using GitHub.
+2. Create a new app from the repository `xyzabc8108-prog/indian-market-lab-web`.
+3. Set **branch** to `main` and **main file path** to `web_dashboard.py`.
+4. Choose a public app URL and click **Deploy**.
+5. Streamlit installs packages from `requirements.txt`.
 
-1. Create a new GitHub repository named `indian-market-lab-web` (do not use the Ashok Enterprise business repository).
-2. Upload the files from this package to the repository root.
-3. Keep the project repository free of access tokens, `.env` files, personal CSV files and credentials.
-4. Go to https://share.streamlit.io/ and sign in with GitHub.
-5. Select **Create app**, choose the repository and branch, and enter the main file path: `web_dashboard.py`.
-6. Click Deploy. Streamlit creates a shareable URL ending in `.streamlit.app` that you can bookmark or link to from your portfolio.
+This GitHub repository **does not itself host a running Streamlit server**; the Streamlit deployment step is required for a working public website.
 
-### Provider warnings
+## Run locally
 
-- If the free Streamlit service is sleeping/throttled, the website may take time to start or stop responding.
-- Free Yahoo Finance chart endpoints are unofficial and may decline requests from cloud networks; the UI displays errors instead of silently replacing quotes with synthetic data.
-- For predictable execution-quality or real-time updates you would need a properly licensed data service; no broker is integrated here.
-- This app has **no login or private database**. The paper journal is kept in the current viewer's Streamlit session only; exporting before closing is recommended.
+```bash
+python -m pip install -r requirements.txt
+python -m streamlit run web_dashboard.py
+```
 
-## 3 — Local data-enabled website
+Then open `http://localhost:8501` in your browser.
 
-On Windows double-click `START_WEBSITE.bat` in the **full project ZIP**. This automatically starts the server and opens http://localhost:8501 on your PC. If you want the single website accessible from other devices, deploy via Streamlit in step 2.
+## Features
 
-## Troubleshooting
+- NSE watchlist for up to eight stocks, INR prices and IST timestamps
+- Research charts and historical CSV exports
+- Simple moving-average screener and hypothetical SMA backtesting
+- Long-only risk/position-size planner
+- Session-only paper-trade journal, with CSV export
+- Offline synthetic demo mode (clearly labeled as fabricated)
+- Optional unofficial Yahoo Finance chart data (broker-free)
 
-- Python not found: Install Python 3.11+ from https://www.python.org/downloads/ and enable Add Python to PATH.
-- Streamlit installation failed: Check your internet access and run `python -m pip install -r requirements.txt` manually.
-- HTTP 429 / HTTP 403: Yahoo has refused the data request. Wait, reduce stock count, or use a licensed feed; don't use it for real-time order decisions.
-- Demo chart looks different from NSE: Expected. Demo data is **synthetic**.
+## Important data limitations
 
-Official Streamlit hosting instructions: https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/deploy
+- The dashboard defaults to **synthetic demonstration mode**, not live trading data.
+- Yahoo Finance chart requests use an **unofficial** public endpoint. Quotes can be delayed, unavailable, throttled or blocked on cloud servers and are **not exchange-verified real time**.
+- If the provider fails, the app shows an error rather than silently substituting demo data.
+- Paper results are hypothetical and omit slippage, taxes, full fee schedules and corporate-action adjustments. They are not predictions of future returns.
+- There is no broker order or credentials integration.
+- Journal data lives in the current viewer's Streamlit session; use CSV export to save it.
+- Do not upload API secrets or sensitive personal trade data to this public repository.
+
+## Offline UI preview
+
+Open [OPEN_DASHBOARD_DEMO.html](OPEN_DASHBOARD_DEMO.html) locally to see a static browser preview. It uses fabricated data and is not the live Streamlit website.
+
+## Status
+
+Source is committed to GitHub. Hosting must be activated separately on Streamlit Community Cloud.
