@@ -80,7 +80,7 @@ st.caption("NSE watchlists, charts, research screens, hypothetical backtests, ri
 if demo:st.warning("DEMO: All displayed prices are fabricated for testing, not NSE prices.")
 else:st.info("Public unofficial research data may be stale, delayed, unavailable or rate-limited. Not verified real-time.")
 st.caption("Dashboard time: "+datetime.now(IST).strftime("%d %b %Y · %I:%M %p IST"))
-stock_tab,scenario_tab,budget_tab,fo_tab,news_tab,watch,charts,screen,backtest,risk,journal,guide=st.tabs(["Stock Decision Lab","Scenario Engine","Budget Desk","F&O Risk","News Radar","Watchlist","Charts & CSV","Screener","Backtest","Risk planner","Paper journal","Guide"])
+stock_tab,scenario_tab,budget_tab,fo_tab,news_tab,watch,charts,screen,backtest,risk,journal,guide,universe_tab=st.tabs(["Stock Decision Lab","Scenario Engine","Budget Desk","F&O Risk","News Radar","Watchlist","Charts & CSV","Screener","Backtest","Risk planner","Paper journal","Guide","All Stocks & Indices"])
 
 with watch:
     st.subheader("NSE watchlist")
@@ -206,3 +206,7 @@ with guide:
 # Advanced research views; all outputs are educational and non-executable.
 from advanced_ui import render_features
 render_features(stock_tab,scenario_tab,budget_tab,fo_tab,news_tab,history,mode,symbols)
+
+# Search all listed NSE stocks; optional on-demand selected-price refresh/replay.
+from universe_ui import render_universe
+render_universe(universe_tab,history,mode)
