@@ -55,3 +55,15 @@ python -m unittest -v test_research_engine.py
 - [NSE contract specifications](https://www.nseindia.com/static/products-services/equity-derivatives-contract-specifications)
 - [NSE announcements RSS](https://www.nseindia.com/static/rss-feed)
 - [SEBI FY25–FY26 individual derivatives trader study](https://www.sebi.gov.in/reports-and-statistics/research/aug-2026/study-profitability-of-individual-traders-in-the-equity-derivatives-segment-fy25-fy26-_103835.html)
+## NSE stock directory, indices and historical market replay
+
+Open the **All Stocks & Indices** tab and select **Load directory and market tools**.
+- The site attempts to load NSE's official listed-equities CSV (daily-cached). If the exchange blocks Streamlit Cloud, download it from https://www.nseindia.com/static/market-data/securities-available-for-trading and upload the CSV in the app. The built-in emergency sample is **not** all listed stocks.
+- Browse a representative index-name directory and optionally import a larger one. Only some indices have mapped Yahoo provider tickers; unverified mappings do not create prices.
+- For **one selected instrument**, optionally recheck unofficial Yahoo 5-minute historical research bars every 5 minutes **while that browser session is active**, showing the bar's timestamp, age, and source. This is **not guaranteed exchange-real-time**.
+- Paper-trade replay reveals historical candles up to a selected cursor, applies a fixed capital risk budget, and reports stop/target outcomes. It never places orders.
+- Import an **NSE EOD CSV** to screen a whole-market end-of-day snapshot without thousands of quote calls. This is not a live full-market screener.
+- Run pure-module tests with `python -m unittest test_market_universe.py` (where test file is present).
+
+**Data licensing:** Public real-time streaming or widespread redistribution of NSE quotes normally requires an authorized market-data arrangement. The site does not have one. Official policy: https://www.nseindia.com/static/market-data/nse-data-policy
+
