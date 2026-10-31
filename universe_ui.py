@@ -59,6 +59,9 @@ def render_universe(tab,history,mode):
     """Shows searchable reference universe, one-instrument quotes and paper replay."""
     with tab:
         st.subheader('NSE stock & index directory · quote replay')
+        if not st.toggle('Load directory and market tools', value=False, key='universe_activate'):
+            st.caption('Activate this page to load an official stock directory (or upload CSV) and analyze selected prices. This avoids slow exchange requests elsewhere in the app.')
+            return
         st.info('Search the full official NSE equity list when available. This is a symbol DIRECTORY, not a real-time feed of every stock. Only your selected instrument fetches a research quote. Prices may be delayed or unavailable.')
         st.caption('No brokerage access, no orders, no authenticated exchange feed. All monetary values in INR; displayed bar times in IST.')
         with st.expander('Directory source / upload official NSE stock or index CSV',expanded=False):
