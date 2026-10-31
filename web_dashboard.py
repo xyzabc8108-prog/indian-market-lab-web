@@ -80,7 +80,7 @@ st.caption("NSE watchlists, charts, research screens, hypothetical backtests, ri
 if demo:st.warning("DEMO: All displayed prices are fabricated for testing, not NSE prices.")
 else:st.info("Public unofficial research data may be stale, delayed, unavailable or rate-limited. Not verified real-time.")
 st.caption("Dashboard time: "+datetime.now(IST).strftime("%d %b %Y · %I:%M %p IST"))
-watch,charts,screen,backtest,risk,journal,guide=st.tabs(["Watchlist","Charts & CSV","Screener","Backtest","Risk planner","Paper journal","Guide"])
+stock_tab,scenario_tab,budget_tab,fo_tab,news_tab,watch,charts,screen,backtest,risk,journal,guide=st.tabs(["Stock Decision Lab","Scenario Engine","Budget Desk","F&O Risk","News Radar","Watchlist","Charts & CSV","Screener","Backtest","Risk planner","Paper journal","Guide"])
 
 with watch:
     st.subheader("NSE watchlist")
@@ -201,3 +201,8 @@ with guide:
     st.subheader("Limitations and research guidance")
     st.write("Synthetic demo prices are **fabricated**. Yahoo research prices use an unofficial public chart endpoint and can be delayed, stale or blocked, especially from cloud hosting. No exchange-verified real-time feed is connected.")
     st.write("Backtests are hypothetical, use simplified costs, and cannot predict future results. Verify research data against NSE publications. This website never logs into a brokerage account or executes trades.")
+
+
+# Advanced research views; all outputs are educational and non-executable.
+from advanced_ui import render_features
+render_features(stock_tab,scenario_tab,budget_tab,fo_tab,news_tab,history,mode,symbols)
