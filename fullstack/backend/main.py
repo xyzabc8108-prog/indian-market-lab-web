@@ -186,6 +186,24 @@ def terminal_config():
     }
 
 
+@app.get('/api/terminal/universe')
+def trader_universe(q: str = Query('', max_length=80),
+                    limit: int = Query(60, ge=1, le=100),
+                    offset: int = Query(0, ge=0, le=20000)):
+    directory, origin = symbol_directory()
+    q=q.strip()
+    if q:
+        matched=directory[
+            directory['Symbol'].str.contains(q,case=False,regex=False,na=False)
+            | directory['Company'].str.contains(q,case=False,regex=False,na=False)
+        ]
+    else:
+        matched=directory
+    records=matched.iloc[offset:offset+limit][['Symbol','Company','Series']].fillna('').to_dict(orient='records')
+    return {'items':records,'total':len(matched),'loaded_count':len(directory),
+            'offset':offset,'has_more':offset+limit<len(matched),'source':origin}
+
+
 @app.get('/api/terminal/{ticker}')
 def trader_terminal(ticker: str, interval: str = Query('1d'),
                     lookback: str = Query('6mo'), horizon: int = Query(10, ge=1, le=40)):
