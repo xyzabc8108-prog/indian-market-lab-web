@@ -67,3 +67,14 @@ Open the **All Stocks & Indices** tab and select **Load directory and market too
 
 **Data licensing:** Public real-time streaming or widespread redistribution of NSE quotes normally requires an authorized market-data arrangement. The site does not have one. Official policy: https://www.nseindia.com/static/market-data/nse-data-policy
 
+
+## Phase 1 — Full-Market Scanner
+
+Open the **Full-Market Scanner** tab on https://indian-market-lab-rohan.streamlit.app/ to import NSE EQ cash-market daily histories and rank stocks with a transparent six-component 0–100 descriptive indicator score. The defaults are ₹50,000 paper capital, 1% (₹500) risk per idea and a 25% (₹12,500) single-stock cash allocation cap.
+
+- Upload `NSE.zip` as the reference equity universe, plus **at least 60 real EOD sessions per stock** in CSV or CM-UDiFF ZIP archives; universe symbols alone cannot produce technical signals.
+- Validate OHLCV, date freshness, duplicates and history coverage before interpreting rankings.
+- Inspect reason codes and idealized 2×ATR stops / 2R targets; these are not order prices, probabilities, or buy recommendations.
+- See [full instructions](README_FULL_MARKET_SCANNER.md), [offline tests](test_full_market_scanner.py) and the GitHub Actions scanner-test workflow.
+
+The full-market feature is historical EOD, not licensed exchange real-time. Actual coverage depends on imported price data and may be incomplete. The public app does not execute orders.
