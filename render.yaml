@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: indian-market-lab-fullstack
+    runtime: python
+    plan: free
+    buildCommand: pip install -r fullstack/backend/requirements.txt
+    startCommand: uvicorn fullstack.backend.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
