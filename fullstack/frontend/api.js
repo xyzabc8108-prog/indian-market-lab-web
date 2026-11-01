@@ -24,6 +24,8 @@ export function spark(series){
 export function formatDateTime(value, dateOnly=false){
  if(value===null||value===undefined||value==='')return 'Time unavailable';
  const text=String(value).trim();
+ const oldLocal=/^(\d{1,2})\/(\d{1,2})\/(\d{4}),?\s+(\d{1,2}):(\d{2})(?::\d{2})?/.exec(text);
+ if(oldLocal)return oldLocal[1].padStart(2,'0')+'/'+oldLocal[2].padStart(2,'0')+'/'+oldLocal[3]+(dateOnly?'':' '+oldLocal[4].padStart(2,'0')+':'+oldLocal[5]);
  const dateMatch=/^(\d{4})-(\d{2})-(\d{2})$/.exec(text);
  if(dateMatch)return dateMatch[3]+'/'+dateMatch[2]+'/'+dateMatch[1];
  const valueDate=new Date(text);
