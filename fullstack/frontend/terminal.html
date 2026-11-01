@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#070d15">
+<meta name="theme-color" content="#030303">
 <meta name="description" content="Indian Market Lab Trader Mode — explore NSE candles, patterns, and historical scenario analysis. Paper trading only.">
 <title>Trader Mode | Indian Market Lab</title>
-<link rel="stylesheet" href="/terminal.css?v=1">
+<link rel="stylesheet" href="/terminal.css?v=2">
 </head>
 <body class="terminal-page">
 <div class="terminal-app">
   <header class="terminal-header">
-    <div class="terminal-brand"><span class="terminal-brand-mark">⌁</span><div><strong>INDIAN MARKET LAB</strong><small>TRADER TERMINAL</small></div></div>
-    <div class="terminal-mode" aria-label="Trader Mode is enabled"><span class="terminal-led"></span> TRADER MODE <span class="terminal-on">ON</span></div>
+    <div class="terminal-brand"><span class="terminal-brand-mark" aria-hidden="true"><span>🐂</span><span>🐻</span></span><div><strong>INDIAN MARKET LAB</strong><small>TRADER TERMINAL</small></div></div>
+    <div class="terminal-mode" aria-label="Trader Mode is enabled"><span class="terminal-led"></span> 🐂 TRADER MODE 🐻 <span class="terminal-on">ON</span></div>
     <div class="terminal-header-end"><span id="ist-clock" aria-label="Indian Standard Time">IST</span><a class="terminal-exit" href="/#/home" title="Return to normal research mode"><span class="mode-slider" aria-hidden="true"></span> Exit Trader Mode</a></div>
   </header>
   <div class="terminal-layout">
@@ -42,7 +42,7 @@
       <div class="terminal-chart-panel">
         <div class="chart-header"><div><strong>PRICE ACTION</strong><small id="chart-timeframe">Candlestick chart</small></div><div class="overlay-options"><label><input type="checkbox" id="show-sma20" checked> SMA 20</label><label><input type="checkbox" id="show-sma50" checked> SMA 50</label><label><input type="checkbox" id="show-ema20"> EMA 20</label><span class="live-flag">● HISTORICAL DATA</span></div></div>
         <div id="candle-chart" role="img" aria-label="Historical NSE candlestick chart with volume" class="candle-stage"><div class="chart-placeholder">Loading candlestick chart…</div></div>
-        <div class="chart-bottom"><span id="chart-candles">— candles</span><span>🟢 Bullish candle &nbsp; 🔴 Bearish candle &nbsp; · &nbsp; Wheel to zoom, drag to explore</span></div>
+        <div class="chart-bottom"><span id="chart-candles">— candles</span><span>🐂 Green = Bullish candle &nbsp; 🐻 Red = Bearish candle &nbsp; · &nbsp; Wheel to zoom, drag to explore</span></div>
       </div>
       <section class="terminal-forecast panel-terminal">
         <div class="block-heading"><div><span class="terminal-eyebrow">WHAT COULD HAPPEN NEXT?</span><h2>Future price scenarios <span class="scenario-chip">SIMULATION</span></h2><p>Illustrative paths based on historical price changes — not guaranteed predictions.</p></div><span id="scenario-window">Next 10 candles</span></div>
@@ -69,5 +69,5 @@
   </div>
 </div>
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js" defer></script>
-<script type="module" src="/terminal.js?v=1"></script>
+<script type="module" src="/terminal.js?v=2"></script>
 </body></html>
