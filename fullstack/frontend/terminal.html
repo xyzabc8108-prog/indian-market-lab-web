@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#070d15">
+<meta name="description" content="Indian Market Lab Trader Mode — explore NSE candles, patterns, and historical scenario analysis. Paper trading only.">
+<title>Trader Mode | Indian Market Lab</title>
+<link rel="stylesheet" href="/terminal.css?v=1">
+</head>
+<body class="terminal-page">
+<div class="terminal-app">
+  <header class="terminal-header">
+    <div class="terminal-brand"><span class="terminal-brand-mark">⌁</span><div><strong>INDIAN MARKET LAB</strong><small>TRADER TERMINAL</small></div></div>
+    <div class="terminal-mode" aria-label="Trader Mode is enabled"><span class="terminal-led"></span> TRADER MODE <span class="terminal-on">ON</span></div>
+    <div class="terminal-header-end"><span id="ist-clock" aria-label="Indian Standard Time">IST</span><a class="terminal-exit" href="/#/home" title="Return to normal research mode"><span class="mode-slider" aria-hidden="true"></span> Exit Trader Mode</a></div>
+  </header>
+  <div class="terminal-layout">
+    <aside class="terminal-watch">
+      <div class="terminal-side-title"><h2>MARKET WATCH</h2><span>🇮🇳 NSE</span></div>
+      <label class="sr-only" for="terminal-symbol">Search NSE stock</label>
+      <input id="terminal-symbol" autocomplete="off" spellcheck="false" placeholder="Search company / symbol..." value="RELIANCE">
+      <div id="universe-source" class="mini-muted">Loading stocks...</div>
+      <div class="watch-actions"><button id="watch-all" class="selected" type="button">All equities</button><button id="watch-favorites" type="button">Popular</button></div>
+      <div id="terminal-watch-items" class="watch-items"><div class="terminal-skeleton">Loading stocks…</div></div>
+      <button id="watch-more" class="watch-more" type="button" hidden>Load more stocks ↓</button>
+      <div class="watch-caption">Choose a stock to see its chart and scenarios. Symbols depend on the available NSE directory.</div>
+    </aside>
+    <main class="terminal-main">
+      <div class="terminal-symbol-head">
+        <div><div class="terminal-eyebrow">MARKET CHARTS <span class="subtle-divider">/</span> HISTORICAL ANALYSIS</div><div class="symbol-title"><h1 id="instrument-name">RELIANCE</h1><span id="terminal-direction" class="trend-tag">ANALYZING</span></div><p id="last-update">Fetching available market candles…</p></div>
+        <div class="quote-stack"><div class="quote-value" id="last-price">—</div><span id="last-change">Historical close</span></div>
+      </div>
+      <div class="terminal-control panel-terminal">
+        <div class="controls-group">
+          <label for="candle-interval">CANDLE TIME</label><select id="candle-interval"><option value="1m">1 min</option><option value="5m">5 min</option><option value="15m">15 min</option><option value="1h">1 hour</option><option selected value="1d">1 day</option><option value="1wk">1 week</option></select>
+        </div>
+        <div class="controls-group"><label for="chart-lookback">CHART HISTORY</label><select id="chart-lookback"><option value="6mo">Last 6 months</option></select></div>
+        <div class="controls-group"><label for="future-horizon">LOOK AHEAD</label><select id="future-horizon"><option value="5">5 candles</option><option selected value="10">10 candles</option><option value="20">20 candles</option><option value="40">40 candles</option></select></div>
+        <button class="terminal-refresh" id="reload-terminal" type="button">⟳ Refresh analysis</button>
+      </div>
+      <div class="terminal-chart-panel">
+        <div class="chart-header"><div><strong>PRICE ACTION</strong><small id="chart-timeframe">Candlestick chart</small></div><div class="overlay-options"><label><input type="checkbox" id="show-sma20" checked> SMA 20</label><label><input type="checkbox" id="show-sma50" checked> SMA 50</label><label><input type="checkbox" id="show-ema20"> EMA 20</label><span class="live-flag">● HISTORICAL DATA</span></div></div>
+        <div id="candle-chart" role="img" aria-label="Historical NSE candlestick chart with volume" class="candle-stage"><div class="chart-placeholder">Loading candlestick chart…</div></div>
+        <div class="chart-bottom"><span id="chart-candles">— candles</span><span>🟢 Bullish candle &nbsp; 🔴 Bearish candle &nbsp; · &nbsp; Wheel to zoom, drag to explore</span></div>
+      </div>
+      <section class="terminal-forecast panel-terminal">
+        <div class="block-heading"><div><span class="terminal-eyebrow">WHAT COULD HAPPEN NEXT?</span><h2>Future price scenarios <span class="scenario-chip">SIMULATION</span></h2><p>Illustrative paths based on historical price changes — not guaranteed predictions.</p></div><span id="scenario-window">Next 10 candles</span></div>
+        <div class="scenario-metrics" id="scenario-metrics"><div>Preparing scenario ranges…</div></div>
+        <div class="forecast-chart" id="forecast-chart"></div>
+        <p class="small-disclaimer">Bands show the middle 80% of 2,500 model paths. The share of simulated paths rising is not a real probability of a stock going up.</p>
+      </section>
+      <section class="pattern-panel panel-terminal">
+        <div class="block-heading"><div><span class="terminal-eyebrow">PATTERN RADAR</span><h2>Chart & candlestick patterns</h2><p>Possible formations from recent candles. A shape alone is not confirmation.</p></div><span class="radar-count" id="pattern-total">—</span></div>
+        <div id="pattern-results" class="pattern-results"><div class="empty-radar">Checking common patterns…</div></div>
+        <details class="pattern-library"><summary>Explore all supported patterns <span id="pattern-library-count"></span></summary><div id="pattern-library" class="pattern-library-grid"></div></details>
+      </section>
+      <footer class="terminal-footer"><span>Indian Market Lab · Paper research only · No trades placed · Price data may be delayed</span><span>Charts powered by <a href="https://www.tradingview.com/" target="_blank" rel="noopener noreferrer">TradingView Lightweight Charts™</a></span></footer>
+    </main>
+    <aside class="terminal-desk">
+      <div class="desk-title"><h2>THE TRADER'S DESK</h2><span>🐂 / 🐻</span></div>
+      <div class="market-mood"><div class="mood-icon">🐂</div><div class="mood-content"><span>BULL SCENARIO</span><strong id="bull-price">—</strong><small>Upper illustrative range</small></div></div>
+      <div class="market-mood bear"><div class="mood-icon">🐻</div><div class="mood-content"><span>BEAR SCENARIO</span><strong id="bear-price">—</strong><small>Lower illustrative range</small></div></div>
+      <div class="desk-card"><div class="desk-label">RECENT PRICE TREND</div><strong id="desk-trend">—</strong><p id="desk-pattern">Waiting for historical data…</p></div>
+      <div class="desk-card"><div class="desk-label">POSSIBLE PATHS ABOVE LAST CLOSE</div><strong id="model-share">—</strong><p>Share within the historical simulation, not forecast accuracy.</p></div>
+      <div class="desk-card risk-limit"><div class="desk-label">PAPER RISK LIMIT</div><strong>₹500 <small>/ idea</small></strong><p>Based on ₹50,000 paper capital and 1% planned risk. Stops cannot guarantee a maximum loss.</p></div>
+      <div class="desk-warning">⚠ Scenarios can be wrong. No real-time exchange feed, order entry or brokerage connection.</div>
+    </aside>
+  </div>
+</div>
+<script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js" defer></script>
+<script type="module" src="/terminal.js?v=1"></script>
+</body></html>
