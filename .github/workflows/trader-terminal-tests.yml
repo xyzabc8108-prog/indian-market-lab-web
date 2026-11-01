@@ -1,0 +1,31 @@
+name: Trader Terminal checks
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'fullstack/backend/terminal_engine.py'
+      - 'fullstack/backend/main.py'
+      - 'fullstack/backend/tests/test_terminal.py'
+      - 'fullstack/frontend/terminal.js'
+      - 'fullstack/frontend/terminal.html'
+      - 'fullstack/frontend/terminal.css'
+      - '.github/workflows/trader-terminal-tests.yml'
+  workflow_dispatch:
+
+jobs:
+  research-terminal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python -m pip install -r fullstack/backend/requirements.txt pytest httpx
+      - run: python -m compileall -q fullstack/backend
+      - run: python -m pytest -q fullstack/backend/tests/test_terminal.py
+      - run: node --input-type=module --check < fullstack/frontend/terminal.js
