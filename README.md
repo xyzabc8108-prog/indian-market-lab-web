@@ -1,5 +1,15 @@
 # Indian Market Lab — Research Intelligence Edition
 
+## New: Auto Stock Assistant — simplest way to use this website
+
+1. Open https://indian-market-lab-rohan.streamlit.app/ and select **🔎 Auto Stock Assistant** (first tab).
+2. Start typing the name of a company (for example, Infosys) and select a suggested entry, or type its exact NSE ticker (such as `INFY`) and press Enter.
+3. Available daily historical data is requested automatically. When the provider responds, the page shows indicators, historical trend evidence, reasons for and against a potential setup, and an illustrative cash-only paper entry/stop/target plan.
+4. The standard assumptions are **₹50,000 capital, 1% planned risk (₹500 maximum) and a 25% (₹12,500) allocation cap**. Change these only inside the optional budget expander.
+5. If prices are missing, invalid or stale, the page tells you; it does **not** substitute invented quotes. The `WAIT / NO-TRADE` state is a normal valid outcome.
+
+This assistant uses a cached NSE symbol directory when the exchange download works, with a clearly labeled partial fallback and manual ticker entry when blocked. It uses the existing unofficial Yahoo historical chart source, **not** exchange-authorized real-time prices. Its 2,000 historical-resampling paths are model scenarios, not calibrated future event probabilities. Positions are cash-long examples only; no futures/options orders or real trades are placed.
+
 Browser-hosted Indian market research toolkit for **education and paper trading only**. No brokerage account, credentials, order-placement API, or paid/static-IP infrastructure required.
 
 **Website:** https://indian-market-lab-rohan.streamlit.app/  
