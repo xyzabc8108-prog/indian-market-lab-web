@@ -9,7 +9,7 @@ export async function mount(root){
  input.addEventListener('input',()=>{
    clearTimeout(searchTimer);clearTimeout(analysisTimer);
    const q=input.value.trim();
-   if(!q){hint.textContent='Enter an NSE ticker or select a company from the list.';return;}
+   if(!q){++runId;lastKey='';out.removeAttribute('aria-busy');out.innerHTML='<div class="empty-state">Type an NSE symbol or choose a company to begin research.</div>';hint.textContent='Enter an NSE ticker or select a company from the list.';return;}
    const id=++searchId;
    searchTimer=setTimeout(async()=>{
      try{
@@ -17,6 +17,11 @@ export async function mount(root){
        if(id!==searchId || q!==input.value.trim())return;
        datalist.innerHTML=data.items.map(x=>`<option value="${h(x.Symbol)}" label="${h(x.Company)}">${h(x.Company)}</option>`).join('');
        hint.textContent=(data.items.length?'Matching NSE symbols available in the suggestion list. ':'No matching symbol found in the directory. ')+data.source;
+       // Accept a full, exact company name as well as its NSE ticker.
+       const company=data.items.find(x=>String(x.Company||'').trim().toLowerCase()===q.toLowerCase());
+       if(company && String(company.Symbol).toUpperCase()!==q.toUpperCase()){
+         input.value=company.Symbol;clearTimeout(analysisTimer);run();
+       }
      }catch{if(id===searchId)hint.textContent='Directory search unavailable; you can still enter an exact NSE ticker.';}
    },300);
    // A ticker typed or selected by the user is enough. No mandatory Analyze click.
