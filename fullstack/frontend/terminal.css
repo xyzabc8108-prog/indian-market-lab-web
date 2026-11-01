@@ -63,3 +63,19 @@ input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px #00e6762
 .terminal-footer{border-top:1px solid #222;color:#888}.terminal-footer a{color:#00e676}
 .terminal-brand strong{letter-spacing:.11em}
 @media(max-width:780px){.terminal-brand{min-width:0}.terminal-brand-mark{width:46px;height:38px}.terminal-brand-mark span{font-size:19px}}
+
+/* Neon bull and bear marks: recolor emoji silhouettes to the terminal palette. */
+.terminal-brand-mark span:first-child{
+ filter:brightness(0) saturate(100%) invert(61%) sepia(85%) saturate(1200%) hue-rotate(90deg) brightness(107%) contrast(104%) drop-shadow(0 0 6px #00e676);
+}
+.terminal-brand-mark span:last-child{
+ filter:brightness(0) saturate(100%) invert(36%) sepia(98%) saturate(3800%) hue-rotate(326deg) brightness(110%) contrast(105%) drop-shadow(0 0 6px #ff3158);
+}
+.market-mood .mood-icon{
+ filter:brightness(0) saturate(100%) invert(61%) sepia(85%) saturate(1200%) hue-rotate(90deg) brightness(107%) contrast(104%) drop-shadow(0 0 9px #00e676);
+}
+.market-mood.bear .mood-icon{
+ filter:brightness(0) saturate(100%) invert(36%) sepia(98%) saturate(3800%) hue-rotate(326deg) brightness(110%) contrast(105%) drop-shadow(0 0 9px #ff3158);
+}
+.pattern-item.bull .symbol{filter:brightness(0) saturate(100%) invert(61%) sepia(85%) saturate(1200%) hue-rotate(90deg)}
+.pattern-item.bear .symbol{filter:brightness(0) saturate(100%) invert(36%) sepia(98%) saturate(3800%) hue-rotate(326deg)}
