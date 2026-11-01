@@ -1,3 +1,13 @@
+# New: Indian Market Lab — Modular Full-Stack Website
+
+A separate division-based site is now available in [`fullstack/`](fullstack/). It has individual pages for Home, Stock Research, Market Scanner, Indices, F&O Planner, News Intelligence, Paper Portfolio, and Data & Settings. Frontend: modular HTML/CSS/JavaScript; backend: FastAPI. No real orders.
+
+**[Full-stack deployment instructions](FULLSTACK_DEPLOY.md)** · [Backend code](fullstack/backend/main.py) · [Frontend code](fullstack/frontend/app.js) · [Automated tests](fullstack/backend/tests/test_api.py)
+
+**Hosting status:** The full-stack source is committed, but the separate Render web service is not deployed yet. The existing [Streamlit prototype](https://indian-market-lab-rohan.streamlit.app/) remains unchanged. To publish the new site, deploy the root `render.yaml` Blueprint in your own Render account.
+
+---
+
 # Indian Market Lab — Research Intelligence Edition
 
 ## New: Auto Stock Assistant — simplest way to use this website
