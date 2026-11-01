@@ -20,4 +20,19 @@ export function spark(series){
  const up=values.at(-1)>=values[0],color=up?'#3bdfb6':'#f59b85';
  return `<svg class="chart-svg" viewBox="0 0 960 245" role="img" aria-label="Historical closing prices"><line x1="0" y1="223" x2="960" y2="223" stroke="#315065"/><polyline fill="none" stroke="${color}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="${points}"/></svg><div class="chart-foot"><span>Earliest: ${money(values[0])}</span><span>Latest: ${money(values.at(-1))}</span></div>`;
 }
-export const infoSource='External Yahoo Finance chart endpoints are unofficial and may be delayed or blocked. Nothing here is a guaranteed real-time quote or a trade recommendation.';
+// Display Indian local date/time, without exposing raw ISO timestamps or offsets.
+export function formatDateTime(value, dateOnly=false){
+ if(value===null||value===undefined||value==='')return 'Time unavailable';
+ const text=String(value).trim();
+ const dateMatch=/^(\d{4})-(\d{2})-(\d{2})$/.exec(text);
+ if(dateMatch)return dateMatch[3]+'/'+dateMatch[2]+'/'+dateMatch[1];
+ const valueDate=new Date(text);
+ if(!Number.isFinite(valueDate.getTime()))return 'Time unavailable';
+ const format=new Intl.DateTimeFormat('en-GB',{
+   timeZone:'Asia/Kolkata',day:'2-digit',month:'2-digit',year:'numeric',
+   ...(dateOnly?{}:{hour:'2-digit',minute:'2-digit',hourCycle:'h23'})
+ });
+ const parts=Object.fromEntries(format.formatToParts(valueDate).filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));
+ return parts.day+'/'+parts.month+'/'+parts.year+(dateOnly?'':' '+parts.hour+':'+parts.minute);
+}
+export const infoSource='Prices may be delayed or unavailable. These figures are for learning and paper trading, not real-time orders or investment advice.';
