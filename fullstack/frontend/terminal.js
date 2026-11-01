@@ -125,13 +125,13 @@ function fallbackCandles(rows){
  const y=value=>Math.round(30+(high-value)/span*330);
  const shapes=subset.map((r,i)=>{
    const x=(margin+i*step+step/2).toFixed(1);
-   const color=r.close>=r.open?'#35dbac':'#ff7177';
+   const color=r.close>=r.open?'#00e676':'#ff3158';
    const top=y(Math.max(r.open,r.close)),bottom=y(Math.min(r.open,r.close));
    return '<line x1="'+x+'" x2="'+x+'" y1="'+y(r.high)+'" y2="'+y(r.low)+'" stroke="'+color+'" stroke-width="1.1"/>'+
           '<rect x="'+(Number(x)-Math.max(1,step*.28)).toFixed(1)+'" y="'+top+'" width="'+Math.max(2,step*.55).toFixed(1)+'" height="'+Math.max(1,bottom-top)+'" fill="'+color+'"/>';
  }).join('');
  return '<svg class="fallback-chart" role="img" aria-label="Candlestick prices" viewBox="0 0 960 410" preserveAspectRatio="none">'+
-  '<g stroke="#294052" stroke-width="1"><line x1="0" x2="960" y1="110" y2="110"/><line x1="0" x2="960" y1="210" y2="210"/><line x1="0" x2="960" y1="310" y2="310"/></g>'+shapes+'</svg>';
+  '<g stroke="#262626" stroke-width="1"><line x1="0" x2="960" y1="110" y2="110"/><line x1="0" x2="960" y1="210" y2="210"/><line x1="0" x2="960" y1="310" y2="310"/></g>'+shapes+'</svg>';
 }
 function drawCandles(rows){
  cleanupChart();
@@ -146,19 +146,19 @@ function drawCandles(rows){
    const width=Math.max(300,host.clientWidth);
    const chart=lib.createChart(host,{
      width,height:host.clientHeight||480,
-     layout:{background:{type:'solid',color:'#0b1927'},textColor:'#9bb0c0',
+     layout:{background:{type:'solid',color:'#070707'},textColor:'#c2c2c2',
              fontFamily:'DM Sans, sans-serif',attributionLogo:true},
-     grid:{vertLines:{color:'#1c2c3b'},horzLines:{color:'#1c2c3b'}},
+     grid:{vertLines:{color:'#1f1f1f'},horzLines:{color:'#1f1f1f'}},
      crosshair:{mode:lib.CrosshairMode?.Normal??0},
-     rightPriceScale:{borderColor:'#34485a'},
-     timeScale:{borderColor:'#34485a',timeVisible:true,secondsVisible:false,rightOffset:4},
+     rightPriceScale:{borderColor:'#3a3a3a'},
+     timeScale:{borderColor:'#3a3a3a',timeVisible:true,secondsVisible:false,rightOffset:4},
      localization:{timeFormatter:time=>new Date(Number(time)*1000).toLocaleString('en-GB',
        {timeZone:'Asia/Kolkata',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hourCycle:'h23'})},
    });
    state.chart=chart;
    const candles=chart.addSeries(lib.CandlestickSeries,{
-     upColor:'#35dbac',downColor:'#ff7177',borderVisible:false,
-     wickUpColor:'#35dbac',wickDownColor:'#ff7177',
+     upColor:'#00e676',downColor:'#ff3158',borderVisible:false,
+     wickUpColor:'#00e676',wickDownColor:'#ff3158',
      priceLineVisible:true,
    });
    candles.setData(rows.map(r=>({time:r.time,open:r.open,high:r.high,low:r.low,close:r.close})));
@@ -168,10 +168,10 @@ function drawCandles(rows){
    });
    histogram.priceScale().applyOptions({scaleMargins:{top:.78,bottom:0}});
    histogram.setData(rows.map(r=>({time:r.time,value:r.volume,
-     color:r.close>=r.open?'#25725d88':'#853b4888'})));
-   for(const [id,key,color] of [['show-sma20','sma20','#eed082'],
-                                ['show-sma50','sma50','#85a7f5'],
-                                ['show-ema20','ema20','#a77ef8']]){
+     color:r.close>=r.open?'#00c85366':'#ff315866'})));
+   for(const [id,key,color] of [['show-sma20','sma20','#00e676'],
+                                ['show-sma50','sma50','#c5c5c5'],
+                                ['show-ema20','ema20','#ff3158']]){
      if(!$(id).checked)continue;
      const dataset=rows.filter(r=>r[key]!==null&&Number.isFinite(r[key]))
        .map(r=>({time:r.time,value:r[key]}));
@@ -206,15 +206,15 @@ function scenarioChart(scenario){
              ' '+bands.slice().reverse().map((b,k)=>x(bands.length-k-1).toFixed(2)+','+y(b.low).toFixed(2)).join(' ');
  const ticks=[0,.5,1].map(t=>{
    const yy=top+t*(height-top-bottom);
-   return '<line x1="'+left+'" y1="'+yy+'" x2="'+(w-right)+'" y2="'+yy+'" stroke="#244053" stroke-dasharray="3 5"/>'+
-          '<text x="4" y="'+(yy+3)+'" font-size="11" fill="#8fa6b5">'+h(fmt(maximum-t*span))+'</text>';
+   return '<line x1="'+left+'" y1="'+yy+'" x2="'+(w-right)+'" y2="'+yy+'" stroke="#242424" stroke-dasharray="3 5"/>'+
+          '<text x="4" y="'+(yy+3)+'" font-size="11" fill="#a0a0a0">'+h(fmt(maximum-t*span))+'</text>';
  }).join('');
- const caption='<text x="'+left+'" y="'+(height-8)+'" fill="#8fa6b5" font-size="11">Next candle 1</text>'+
-  '<text x="'+(w-right)+'" y="'+(height-8)+'" fill="#8fa6b5" font-size="11" text-anchor="end">Next candle '+scenario.horizon+'</text>';
+ const caption='<text x="'+left+'" y="'+(height-8)+'" fill="#a0a0a0" font-size="11">Next candle 1</text>'+
+  '<text x="'+(w-right)+'" y="'+(height-8)+'" fill="#a0a0a0" font-size="11" text-anchor="end">Next candle '+scenario.horizon+'</text>';
  const dots=bands.map((b,i)=>'<circle cx="'+x(i)+'" cy="'+y(b.mid)+'" r="8" fill="transparent"><title>Candle '+(i+1)+' | Lower '+fmt(b.low)+' | Mid '+fmt(b.mid)+' | Upper '+fmt(b.high)+'</title></circle>').join('');
  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+w+' '+height+'" role="img" aria-label="Illustrative scenario range for future candles">'+ticks+
-  '<polygon points="'+shade+'" fill="#35dbac" fill-opacity=".13"/>'+
-  line('low','#ff8386')+line('high','#49ddaf')+line('mid','#e6f5f3')+
+  '<polygon points="'+shade+'" fill="#00e676" fill-opacity=".13"/>'+
+  line('low','#ff3158')+line('high','#00e676')+line('mid','#e8e8e8')+
   dots+caption+'</svg>';
 }
 function renderPatterns(patterns,library){
@@ -223,7 +223,8 @@ function renderPatterns(patterns,library){
   ?patterns.map(p=>{
     const icon=/bullish|upward|bottom|hammer|morning|soldiers|piercing/i.test(p.tendency+' '+p.name)?'🐂':
                /bearish|downward|top|star|crows/i.test(p.tendency+' '+p.name)?'🐻':'◆';
-    return '<div class="pattern-item"><span class="symbol">'+icon+'</span><div><strong>'+h(p.name)+'</strong><small>'+h(p.category)+' · '+h(p.tendency)+' · '+h(formatDateTime(p.time))+'</small><p>'+h(p.reason)+'</p></div></div>';
+    const tone=icon==='🐂'?' bull':icon==='🐻'?' bear':'';
+    return '<div class="pattern-item'+tone+'"><span class="symbol">'+icon+'</span><div><strong>'+h(p.name)+'</strong><small>'+h(p.category)+' · '+h(p.tendency)+' · '+h(formatDateTime(p.time))+'</small><p>'+h(p.reason)+'</p></div></div>';
    }).join('')
   :'<div class="empty-radar">No supported pattern candidates spotted in the recent candles. That is a valid outcome.</div>';
  $('pattern-library-count').textContent='('+library.length+')';
@@ -236,7 +237,7 @@ function display(data){
  $('last-change').textContent=(data.change_pct>0?'+':'')+pct(data.change_pct)+' · previous candle';
  $('last-change').className=data.change_pct>=0?'positive':'negative';
  $('last-update').textContent='Last candle: '+formatDateTime(data.latest_time)+' IST · Historical data may be delayed';
- const mood=$('terminal-direction');mood.textContent=data.trend.toUpperCase();
+ const mood=$('terminal-direction');mood.textContent=(data.trend==='Bullish'?'🐂 BULLISH':data.trend==='Bearish'?'🐻 BEARISH':'↔ SIDEWAYS');
  mood.className='trend-tag '+data.trend.toLowerCase();
  $('chart-candles').textContent=data.bars.length.toLocaleString('en-IN')+' historical candles · '+data.interval;
  $('chart-timeframe').textContent='NSE · '+data.interval+' interval · '+RANGE_LABELS[data.lookback];
