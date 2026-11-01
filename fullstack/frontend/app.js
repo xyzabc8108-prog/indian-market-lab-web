@@ -1,4 +1,4 @@
-import {h,api} from './api.js';
+import {h} from './api.js';
 const routes=[
  ['home','Home','house','./pages/home.js'],
  ['stocks','Stock Research','chart','./pages/stocks.js'],
@@ -7,11 +7,11 @@ const routes=[
  ['derivatives','F&O Planner','layers','./pages/derivatives.js'],
  ['news','News Intelligence','rss','./pages/news.js'],
  ['paper','Paper Portfolio','wallet','./pages/paper.js'],
- ['about','Data & Settings','shield','./pages/about.js']
+ ['about','Help & Information','shield','./pages/about.js']
 ];
 const icons={house:'⌂',chart:'↗',scan:'◎',grid:'▦',layers:'≋',rss:'◷',wallet:'▤',shield:'◇'};
 const app=document.getElementById('app');
-app.innerHTML=`<div class="shell"><aside class="sidebar"><div class="brand"><div class="logo">⌁</div><div><strong>INDIAN MARKET LAB</strong><small>RESEARCH INTELLIGENCE</small></div></div><div class="nav-caption">WORKSPACE</div><nav id="side-nav">${routes.map(([id,title,ico])=>`<a href="#/${id}" data-route="${id}"><span class="nav-icon">${icons[ico]}</span>${h(title)}</a>`).join('')}</nav><div class="sidebar-foot"><span class="pill-dot"></span> READ-ONLY RESEARCH<div>₹50,000 paper capital · 1% risk</div><small>No real orders. No broker access.</small></div></aside><div class="workspace"><header class="topbar"><div class="breadcrumb">INDIAN MARKET LAB <span>/</span> <b id="crumb">HOME</b></div><div class="top-actions"><span id="api-status" class="server-pill">Checking API…</span><a class="ghost-link" target="_blank" rel="noopener noreferrer" href="https://github.com/xyzabc8108-prog/indian-market-lab-web">GitHub ↗</a></div></header><main id="page" tabindex="-1"></main><footer class="footer">Indian Market Lab · Independent educational market research · Data can be delayed, stale or unavailable · No real trades</footer></div></div>`;
+app.innerHTML=`<div class="shell"><aside class="sidebar"><div class="brand"><div class="logo">⌁</div><div><strong>INDIAN MARKET LAB</strong><small>RESEARCH INTELLIGENCE</small></div></div><div class="nav-caption">WORKSPACE</div><nav id="side-nav">${routes.map(([id,title,ico])=>`<a href="#/${id}" data-route="${id}"><span class="nav-icon">${icons[ico]}</span>${h(title)}</a>`).join('')}</nav><div class="sidebar-foot"><span class="pill-dot"></span> Your paper budget<div>₹50,000 · Max planned loss ₹500 per idea</div><small>Practice only — no real trades</small></div></aside><div class="workspace"><header class="topbar"><div class="breadcrumb">INDIAN MARKET LAB <span>/</span> <b id="crumb">HOME</b></div><div class="top-actions"><span class="top-label">Stock research · Paper trading</span></div></header><main id="page" tabindex="-1"></main><footer class="footer">Indian Market Lab · Prices may be delayed · For learning and paper trading only</footer></div></div>`;
 const page=document.getElementById('page');
 let seq=0;
 async function navigate(){
@@ -25,4 +25,4 @@ async function navigate(){
 }
 window.addEventListener('hashchange',navigate);
 navigate();
-api('/api/health').then(x=>{const el=document.getElementById('api-status');el.textContent=x.ok?'API connected':'API unavailable';el.classList.toggle('connected',x.ok);}).catch(()=>document.getElementById('api-status').textContent='API unavailable');
+
