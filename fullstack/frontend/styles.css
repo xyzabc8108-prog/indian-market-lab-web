@@ -9,3 +9,11 @@
 #stock-output[aria-busy="true"]{min-height:110px}
 @media(max-width:1200px){.stock-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.stock-metrics{grid-template-columns:1fr}}
+
+/* Switch into the dedicated full-screen Trader Terminal. */
+.trader-toggle{display:inline-flex;align-items:center;gap:10px;border:1px solid #2e6f63;border-radius:25px;background:#103a31;padding:8px 12px;color:#a0f8df;font-size:12px;font-weight:800;white-space:nowrap;transition:background .15s}
+.trader-toggle:hover{background:#195248}
+.trader-mode-icon{font-size:18px}
+.toggle-track{display:inline-flex;align-items:center;width:30px;height:18px;border-radius:20px;background:#275447;padding:2px;border:1px solid #3e9a7d}
+.toggle-track>span{height:12px;width:12px;border-radius:50%;background:#d7faf0}
+@media(max-width:510px){.trader-toggle{gap:6px;padding:8px}.trader-mode-icon{display:none}}
