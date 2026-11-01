@@ -1,3 +1,30 @@
+## Trader Mode — full-screen chart workspace
+
+Open **https://indian-market-lab-fullstack.onrender.com/terminal** or use the
+**Trader Mode** switch in the full-stack site header. The exit switch returns
+to the normal research pages.
+
+- Search the available NSE equity directory by symbol/company; paginate the
+  public directory when available. A limited fallback is clearly labelled
+  if NSE blocks server-side directory requests.
+- Choose 1-minute, 5-minute, 15-minute, hourly, daily or weekly candles with
+  compatible historical ranges. Unavailable combinations produce an error.
+- Interactive candles, volume, and optional SMA20, SMA50 and EMA20 overlays.
+- A reference library of 27 common candlestick and chart patterns, plus
+  transparent heuristic *candidates* detected in recent candles. This is not
+  every chart pattern worldwide, and no candidate implies a validated signal.
+- Illustrative lower/middle/upper outcomes from 2,500 resampled historical
+  paths for a user-selected 5, 10, 20 or 40 future candles.
+- Clearly separated past candles and future scenarios. **No calibrated future
+  prediction, live exchange feed, broker login or real orders.**
+- Prices are requested from unofficial Yahoo Finance historical chart endpoints
+  and may be delayed, unavailable or subject to provider rate limits.
+- Chart engine: TradingView Lightweight Charts™ (Apache 2.0); attribution and
+  link are displayed in the terminal footer.
+
+Offline terminal tests: `python -m pytest -q fullstack/backend/tests/test_terminal.py`.
+GitHub Actions workflow: `.github/workflows/trader-terminal-tests.yml`.
+
 # New: Indian Market Lab — Modular Full-Stack Website
 
 A separate division-based site is now available in [`fullstack/`](fullstack/). It has individual pages for Home, Stock Research, Market Scanner, Indices, F&O Planner, News Intelligence, Paper Portfolio, and Data & Settings. Frontend: modular HTML/CSS/JavaScript; backend: FastAPI. No real orders.
