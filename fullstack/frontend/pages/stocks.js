@@ -61,7 +61,7 @@ export async function mount(root){
  }catch(e){
    if(current===runId){
      out.removeAttribute('aria-busy');
-     out.innerHTML=error(e.message)+'<div class="notice">Price information isn't available right now. Please try again later.</div>';
+     out.innerHTML=error(e.message)+`<div class="notice">Price information isn't available right now. Please try again later.</div>`;
      lastKey='';
    }
  }}
