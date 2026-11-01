@@ -67,7 +67,7 @@ def indicators(df):
 
 with st.sidebar:
     st.title("📈 Indian Market Lab")
-    mode=st.radio("Data source",["Synthetic demo","Yahoo research data"],index=0)
+    mode=st.radio("Data source for advanced tools",["Synthetic demo","Yahoo research data"],index=1)
     demo=mode=="Synthetic demo"
     raw=st.text_area("NSE watchlist","RELIANCE, TCS, INFY, HDFCBANK, ICICIBANK",height=100)
     try:symbols=symbols_from(raw)
@@ -77,10 +77,10 @@ with st.sidebar:
 
 st.title("Indian Market Lab")
 st.caption("NSE watchlists, charts, research screens, hypothetical backtests, risk planning and paper notes.")
-if demo:st.warning("DEMO: All displayed prices are fabricated for testing, not NSE prices.")
+if demo:st.warning("Advanced tools are in DEMO mode: their prices are fabricated. Auto Stock Assistant independently requests research data, never demo quotes.")
 else:st.info("Public unofficial research data may be stale, delayed, unavailable or rate-limited. Not verified real-time.")
 st.caption("Dashboard time: "+datetime.now(IST).strftime("%d %b %Y · %I:%M %p IST"))
-stock_tab,scenario_tab,budget_tab,fo_tab,news_tab,watch,charts,screen,backtest,risk,journal,guide,universe_tab,scanner_tab=st.tabs(["Stock Decision Lab","Scenario Engine","Budget Desk","F&O Risk","News Radar","Watchlist","Charts & CSV","Screener","Backtest","Risk planner","Paper journal","Guide","All Stocks & Indices","Full-Market Scanner"])
+auto_tab,stock_tab,scenario_tab,budget_tab,fo_tab,news_tab,watch,charts,screen,backtest,risk,journal,guide,universe_tab,scanner_tab=st.tabs(["🔎 Auto Stock Assistant","Stock Decision Lab","Scenario Engine","Budget Desk","F&O Risk","News Radar","Watchlist","Charts & CSV","Screener","Backtest","Risk planner","Paper journal","Guide","All Stocks & Indices","Full-Market Scanner"])
 
 with watch:
     st.subheader("NSE watchlist")
@@ -215,3 +215,8 @@ render_universe(universe_tab,history,mode)
 # Phase 1 NSE market-wide EOD ranking (read-only, strict data validation).
 from scanner_ui import render_full_market_scanner
 render_full_market_scanner(scanner_tab)
+
+
+# One-selection first-tab research. This never substitutes fabricated quotes.
+from quick_stock_ui import render_auto_stock
+render_auto_stock(auto_tab, history)
