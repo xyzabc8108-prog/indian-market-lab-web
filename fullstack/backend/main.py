@@ -32,6 +32,7 @@ from market_universe import fallback_equities, indices_table, load_equity_csv, E
 from full_market_scanner import parse_price_uploads, scan_market
 from research_engine import technical_snapshot, planning_levels, position_budget, validate_ohlcv, option_long_budget, future_budget
 from news_radar import read_public_headlines, OFFICIAL_LINKS
+from fullstack.backend.terminal_engine import terminal_report, CANDLE_RANGES
 
 FRONTEND = Path(__file__).resolve().parents[1] / 'frontend'
 IST = ZoneInfo('Asia/Kolkata')
@@ -175,6 +176,28 @@ class DerivativeRequest(BaseModel):
     stop_points: float = Field(default=100, ge=0)
 
 
+@app.get('/api/terminal/config')
+def terminal_config():
+    return {
+        'intervals': {key: list(ranges) for key, ranges in CANDLE_RANGES.items()},
+        'future_horizons': [5, 10, 20, 40],
+        'paper_only': True,
+        'data_note': 'Historical research data, not exchange-verified streaming.'
+    }
+
+
+@app.get('/api/terminal/{ticker}')
+def trader_terminal(ticker: str, interval: str = Query('1d'),
+                    lookback: str = Query('6mo'), horizon: int = Query(10, ge=1, le=40)):
+    try:
+        return terminal_report(ticker, interval, lookback, horizon)
+    except ValueError as exc:
+        problem=str(exc)
+        is_bad_input=('symbol' in problem.lower() or 'not supported' in problem.lower()
+                      or 'horizon' in problem.lower())
+        raise HTTPException(422 if is_bad_input else 503, problem) from exc
+
+
 @app.get('/api/health')
 def health():
     return {'ok': True, 'mode': 'paper-research', 'real_orders': False, 'asof': datetime.now(IST).isoformat()}
@@ -286,6 +309,11 @@ async def scanner(files: list[UploadFile] = File(...), capital: float = Query(50
     return {'top': ranked.head(100).to_dict(orient='records'), 'eligible_count': len(ranked),
             'quality': quality, 'summary': summary,
             'disclaimer': 'Only symbols with sufficient uploaded history are scanned. No live data or orders.'}
+
+
+@app.get('/terminal')
+def terminal_page():
+    return FileResponse(FRONTEND / 'terminal.html')
 
 
 @app.get('/')
