@@ -121,7 +121,7 @@ def _remote(table: str, payload: dict | None = None) -> int:
 
 
 def _accept(request: Request, kind: str) -> None:
-    # No cookies, credentials, analytics identifiers or stored IP addresses.
+    # No cookies or analytics. Per-IP rate counters stay in memory, not a database.
     origin = request.headers.get("origin")
     if origin:
         parsed = urlparse(origin)
