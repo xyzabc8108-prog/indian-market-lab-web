@@ -150,3 +150,36 @@ def test_terminal_modals_banners_and_initial_ranges_match():
     script=client.get('/terminal.js').text
     assert "resetHistory();loadTerminal();" in script
     assert "const select=$('chart-lookback'),ranges=RANGES[state.interval];" in script
+
+
+def test_feedback_widget_exists_on_both_market_workspaces():
+    homepage=client.get('/').text
+    terminal=client.get('/terminal').text
+    widget=client.get('/feedback-widget.js')
+    stylesheet=client.get('/feedback-widget.css')
+    assert widget.status_code == stylesheet.status_code == 200
+    assert '/feedback-widget.js?v=1' in homepage
+    assert '/feedback-widget.js?v=1' in terminal
+    assert '/feedback-widget.css?v=1' in homepage
+    assert '/feedback-widget.css?v=1' in terminal
+    assert '/api/beta/status' in widget.text
+    assert '/api/beta/feedback' in widget.text
+    assert 'data.feedback_open===true' in widget.text
+    assert "send.disabled=!canSend" in widget.text
+    assert 'In-site feedback is not accepting submissions yet' in widget.text
+    assert 'rohanchhaya108@gmail.com' in widget.text
+
+
+def test_research_note_is_downloaded_locally_without_exposing_private_data():
+    terminal=client.get('/terminal').text
+    script=client.get('/terminal.js').text
+    assert 'id="export-research-note"' in terminal
+    assert 'id="export-result"' in terminal
+    assert 'function buildStudyNote()' in script
+    assert 'function saveStudyNote()' in script
+    assert 'new Blob([note]' in script
+    assert 'URL.createObjectURL(blob)' in script
+    assert "state.cachedSnapshot=true" in script
+    assert 'Lower volatility range (10th percentile)' in script
+    assert 'Upper volatility range (90th percentile)' in script
+    assert "'export-research-note').disabled=true" in script
