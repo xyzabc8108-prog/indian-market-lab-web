@@ -29,6 +29,29 @@ def test_backend_serves_frontend_and_health():
     assert r.status_code == 200 and r.json()['real_orders'] is False
 
 
+
+@pytest.mark.parametrize('path', [
+    '/', '/terminal', '/beta', '/privacy', '/terms', '/api/health'
+])
+def test_public_routes_have_security_headers(path):
+    response = client.get(path)
+    assert response.status_code == 200
+    headers = response.headers
+    assert headers['strict-transport-security'] == 'max-age=31536000'
+    assert "default-src 'self'" in headers['content-security-policy']
+    assert "frame-ancestors 'none'" in headers['content-security-policy']
+    assert headers['x-content-type-options'] == 'nosniff'
+    assert headers['x-frame-options'] == 'DENY'
+    assert headers['referrer-policy'] == 'strict-origin-when-cross-origin'
+    assert 'geolocation=()' in headers['permissions-policy']
+
+
+def test_trader_csp_permits_chart_vendor_but_disallows_inline_scripts():
+    policy = client.get('/terminal').headers['content-security-policy']
+    assert "script-src 'self' https://unpkg.com" in policy
+    assert "'unsafe-inline'" not in policy.split('script-src ')[1].split(';')[0]
+
+
 def test_universe_and_index_structure(monkeypatch):
     monkeypatch.setattr(main, 'symbol_directory', lambda: (main.fallback_symbols(), 'offline test'))
     r = client.get('/api/universe', params={'q':'reli', 'limit':10})

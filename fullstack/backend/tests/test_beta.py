@@ -13,9 +13,11 @@ def test_beta_page_and_assets():
     page = client.get("/beta")
     assert page.status_code == 200
     assert "PUBLIC BETA" in page.text
-    assert "beta-bull" in page.text and "beta-bear" in page.text
+    # Updated brand uses SVG images instead of legacy emoji/text-only marks.
+    assert 'src="/icons/bull.svg"' in page.text
+    assert 'src="/icons/bear.svg"' in page.text
     assert "bull-bear-icon" in page.text
-    assert "▲ BULL" in page.text and "▼ BEAR" in page.text
+    assert "BULL" in page.text and "BEAR" in page.text
     assert "🐂" not in page.text and "🐻" not in page.text
     assert "No real orders" in page.text
     assert client.get("/beta.js").status_code == 200
