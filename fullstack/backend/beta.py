@@ -71,8 +71,8 @@ class Feedback(BaseModel):
 
 
 def public_contact_email() -> str | None:
-    """Return the configured public grievance/support address, never a placeholder."""
-    contact = os.environ.get("IML_PUBLIC_CONTACT_EMAIL", "").strip().lower()
+    """Return the user-designated public contact, optionally overridden in deployment."""
+    contact = os.environ.get("IML_PUBLIC_CONTACT_EMAIL", "rohanchhaya108@gmail.com").strip().lower()
     if not _EMAIL.fullmatch(contact) or ".." in contact:
         return None
     return contact
