@@ -93,13 +93,14 @@ def test_verified_manual_withdrawal_removes_only_waitlist(monkeypatch):
     r=client.post("/api/admin/withdrawals/"+uid+"/complete",headers=HEADERS,
                   json={"verification_method":"reply-from-subscribed-email",
                         "confirmed_by_operator":True})
-    assert r.status_code==200 and r.json()=={"completed":True}
+    assert r.status_code==200 and r.json()=={
+        "completed":True,"email_removed_from_queue":True}
     assert [x[0] for x in calls]==[
         "beta_withdrawal_requests","beta_waitlist","beta_withdrawal_requests"]
     assert calls[1][1]["method"]=="DELETE"
     assert calls[1][1]["filters"]=={"email":"test@example.invalid"}
-    assert calls[2][1]["method"]=="PATCH"
-    assert calls[2][1]["payload"]["status"]=="completed"
+    assert calls[2][1]["method"]=="DELETE"
+    assert calls[2][1]["filters"]=={"id":uid}
     assert r.headers["cache-control"]=="no-store"
 
 
