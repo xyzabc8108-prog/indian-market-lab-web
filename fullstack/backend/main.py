@@ -335,6 +335,16 @@ async def scanner(files: list[UploadFile] = File(...), capital: float = Query(50
             'disclaimer': 'Only symbols with sufficient uploaded history are scanned. No live data or orders.'}
 
 
+@app.get('/terms')
+def terms_page():
+    return FileResponse(FRONTEND / 'terms.html')
+
+
+@app.get('/privacy')
+def privacy_page():
+    return FileResponse(FRONTEND / 'privacy.html')
+
+
 @app.get('/beta')
 def beta_page():
     return FileResponse(FRONTEND / 'beta.html')
