@@ -71,8 +71,8 @@ class Feedback(BaseModel):
 
 
 def public_contact_email() -> str | None:
-    """Return the user-designated public contact, optionally overridden in deployment."""
-    contact = os.environ.get("IML_PUBLIC_CONTACT_EMAIL", "rohanchhaya108@gmail.com").strip().lower()
+    """Return the operator-designated public address published in the Privacy Notice."""
+    contact = "rohanchhaya108@gmail.com"
     if not _EMAIL.fullmatch(contact) or ".." in contact:
         return None
     return contact
@@ -83,7 +83,7 @@ def beta_config() -> tuple[str, str] | None:
     # Database credentials alone must never silently start collecting public emails.
     if os.environ.get("BETA_PRIVACY_READY", "").strip().lower() != "true":
         return None
-    # Collecting contact details is disabled without a working published contact.
+    # A public contact is necessary but never sufficient to open registration.
     if public_contact_email() is None:
         return None
     url = os.environ.get("BETA_SUPABASE_URL", "").strip().rstrip("/")
