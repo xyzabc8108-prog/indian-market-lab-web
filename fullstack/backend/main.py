@@ -209,6 +209,10 @@ def trader_universe(q: str = Query('', max_length=80),
 @app.get('/api/terminal/{ticker}')
 def trader_terminal(ticker: str, interval: str = Query('1d'),
                     lookback: str = Query('6mo'), horizon: int = Query(10, ge=1, le=40)):
+    # Reject impossible interval/history pairs at the public API boundary.
+    # Provider calls may be mocked, cached or replaced; input validation must not rely on them.
+    if interval not in CANDLE_RANGES or lookback not in CANDLE_RANGES[interval]:
+        raise HTTPException(422, 'This candle interval and history range are not supported together.')
     try:
         return terminal_report(ticker, interval, lookback, horizon)
     except ValueError as exc:
