@@ -6,10 +6,26 @@ export function loading(message='Loading research…'){return `<div class="loade
 export function error(message){return `<div class="notice bad"><strong>Data unavailable</strong><p>${h(message)}</p></div>`;}
 export function note(message){return `<div class="notice">${h(message)}</div>`;}
 export async function api(path, options={}){
-  const response=await fetch(path,{...options,headers:{...(options.body instanceof FormData?{}:{'Content-Type':'application/json'}),...(options.headers||{})}});
-  let data;try{data=await response.json();}catch{throw new Error('Server returned an unreadable response');}
-  if(!response.ok)throw new Error(typeof data.detail==='string'?data.detail:`Request failed (${response.status})`);
-  return data;
+  const {timeoutMs=0, ...requestOptions}=options;
+  const controller=timeoutMs>0?new AbortController():null;
+  let timeout=null;
+  if(controller && requestOptions.signal){
+    if(requestOptions.signal.aborted)controller.abort();
+    else requestOptions.signal.addEventListener('abort',()=>controller.abort(),{once:true});
+  }
+  try {
+    if(controller)timeout=setTimeout(()=>controller.abort(),timeoutMs);
+    const response=await fetch(path,{
+      ...requestOptions, ...(controller?{signal:controller.signal}:{}),
+      headers:{...(requestOptions.body instanceof FormData?{}:{'Content-Type':'application/json'}),...(requestOptions.headers||{})}
+    });
+    let data;try{data=await response.json();}catch{throw new Error('Server returned an unreadable response');}
+    if(!response.ok)throw new Error(typeof data.detail==='string'?data.detail:`Request failed (${response.status})`);
+    return data;
+  }catch(e){
+    if(e.name==='AbortError')throw new Error('The request took too long. Please retry.');
+    throw e;
+  }finally{if(timeout!==null)clearTimeout(timeout);}
 }
 export function metric(label,value,meta=''){return `<div class="metric"><span>${h(label)}</span><strong>${h(value)}</strong><small>${h(meta)}</small></div>`;}
 export function spark(series){
