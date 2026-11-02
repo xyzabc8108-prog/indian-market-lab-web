@@ -9,30 +9,16 @@
 <meta property="og:description" content="Research Indian stocks. Explore charts. Practice without placing real orders.">
 <meta property="og:type" content="website">
 <title>Indian Market Lab — Beta</title>
-<link rel="stylesheet" href="/beta.css?v=2">
-</head>
+<link rel="stylesheet" href="/beta.css?v=iml-icons1">
+<link rel="icon" type="image/svg+xml" href="/icons/bull-bear.svg"></head>
 <body>
-<!-- SVG animal silhouettes use stable colors and sizing on mobile, unlike emoji. -->
-<svg class="beta-symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-  <symbol id="beta-bull" viewBox="0 0 32 32">
-    <path d="M9 11C5 11 3 8 3 4.5c3.1 2.8 5.7 2.7 8.2 3.1M23 11c4 0 6-3 6-6.5-3.1 2.8-5.7 2.7-8.2 3.1"/>
-    <path d="M9 12c0-4.2 2.5-6 7-6s7 1.8 7 6v7c0 5.3-2.8 8.5-7 8.5S9 24.3 9 19z"/>
-    <path d="M12.5 17.8h.01M19.5 17.8h.01M13.5 23c1.7 1.2 3.3 1.2 5 0"/>
-  </symbol>
-  <symbol id="beta-bear" viewBox="0 0 32 32">
-    <circle cx="8.3" cy="9.3" r="3.9"/><circle cx="23.7" cy="9.3" r="3.9"/>
-    <path d="M6.6 15.5c0-6.3 3.7-10 9.4-10s9.4 3.7 9.4 10v3.2c0 5.8-3.7 9.1-9.4 9.1s-9.4-3.3-9.4-9.1z"/>
-    <path d="M12.2 18h.01M19.8 18h.01M13.5 23.3c1.8 1.2 3.2 1.2 5 0"/>
-  </symbol>
-</svg>
-
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
-  <a class="brand" href="/beta" aria-label="Indian Market Lab beta home"><span class="brand-symbol">↗</span><span><strong>INDIAN MARKET LAB</strong><small>PUBLIC BETA</small></span></a>
+  <a class="brand" href="/beta" aria-label="Indian Market Lab beta home"><span class="brand-symbol iml-small-pair"><img class="animal-icon bull-mark" src="/icons/bull.svg" alt="" aria-hidden="true" decoding="async"><img class="animal-icon bear-mark" src="/icons/bear.svg" alt="" aria-hidden="true" decoding="async"></span><span><strong>INDIAN MARKET LAB</strong><small>PUBLIC BETA</small></span></a>
   <nav class="navigation" aria-label="Main navigation">
     <a href="#features">Features</a><a href="#how-it-works">How it works</a><a href="#feedback">Feedback</a>
   </nav>
-  <a class="header-action" href="/terminal"><span class="header-market-marks" aria-hidden="true"><svg class="market-animal bull-animal" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="#beta-bull"></use></svg><svg class="market-animal bear-animal" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="#beta-bear"></use></svg></span> Trader Mode <span aria-hidden="true">↗</span></a>
+  <a class="header-action" href="/terminal"><span class="header-market-marks" aria-hidden="true"><img class="market-animal bull-animal" src="/icons/bull.svg" alt="" aria-hidden="true" decoding="async"><img class="market-animal bear-animal" src="/icons/bear.svg" alt="" aria-hidden="true" decoding="async"></span> Trader Mode <span aria-hidden="true">↗</span></a>
 </header>
 
 <main id="main">
@@ -46,7 +32,7 @@
     </div>
     <div class="terminal-preview" aria-label="Illustrative trader terminal preview with green and red candles">
       <div class="preview-bar"><span class="preview-dot green"></span><span class="preview-dot red"></span><strong>MARKET EXPLORER</strong><small>DEMO VISUAL</small></div>
-      <div class="preview-heading"><div><strong>RELIANCE · NSE</strong><span>Example candlestick visualization</span></div><div class="preview-bull">▲ BULL <span class="preview-divider">/</span> <span class="preview-bear">▼ BEAR</span></div></div>
+      <div class="preview-heading"><div><strong>RELIANCE · NSE</strong><span>Example candlestick visualization</span></div><div class="preview-bull"><img class="animal-icon bull-mark" src="/icons/bull.svg" alt="" aria-hidden="true" decoding="async"> BULL <span class="preview-divider">/</span> <span class="preview-bear"><img class="animal-icon bear-mark" src="/icons/bear.svg" alt="" aria-hidden="true" decoding="async"> BEAR</span></div></div>
       <svg id="preview-svg" viewBox="0 0 580 280" role="img" aria-label="Illustrative chart, not actual stock prices">
         <g stroke="#22353a" stroke-width="1" opacity=".7"><path d="M0 45H580M0 90H580M0 135H580M0 180H580M0 225H580"/></g>
         <g id="candles"></g>
@@ -67,7 +53,7 @@
     <div class="section-heading"><span class="eyebrow">WHAT YOU CAN EXPLORE</span><h2>Tools built for curious market learners</h2><p>Start with one company, then explore the market at your own pace.</p></div>
     <div class="feature-grid">
       <a href="/#/stocks" class="feature"><span class="feature-icon">↗</span><h3>Stock Research</h3><p>Choose an NSE stock, review historical trends, technical indicators and hypothetical risk calculations.</p><span class="feature-link">Open stock research ↗</span></a>
-      <a href="/terminal" class="feature feature-green"><span class="feature-icon bull-bear-icon" aria-hidden="true"><span class="market-badge bull-badge"><svg class="market-animal bull-animal" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="#beta-bull"></use></svg><span class="market-direction">▲</span></span><span class="market-badge bear-badge"><svg class="market-animal bear-animal" viewBox="0 0 32 32" focusable="false" aria-hidden="true"><use href="#beta-bear"></use></svg><span class="market-direction">▼</span></span></span><h3>Trader Terminal</h3><p>Green and red candlesticks, flexible intervals, market watchlists, pattern candidates and simulated scenarios.</p><span class="feature-link">Explore Trader Mode ↗</span></a>
+      <a href="/terminal" class="feature feature-green"><span class="feature-icon bull-bear-icon" aria-hidden="true"><span class="market-badge bull-badge"><img class="market-animal bull-animal" src="/icons/bull.svg" alt="" aria-hidden="true" decoding="async"><span class="market-direction">▲</span></span><span class="market-badge bear-badge"><img class="market-animal bear-animal" src="/icons/bear.svg" alt="" aria-hidden="true" decoding="async"><span class="market-direction">▼</span></span></span><h3>Trader Terminal</h3><p>Green and red candlesticks, flexible intervals, market watchlists, pattern candidates and simulated scenarios.</p><span class="feature-link">Explore Trader Mode ↗</span></a>
       <a href="/#/scanner" class="feature"><span class="feature-icon">◎</span><h3>Market Scanner</h3><p>Compare stocks using dated NSE price files. Rankings only appear when enough historical data exists.</p><span class="feature-link">See the scanner ↗</span></a>
       <a href="/#/paper" class="feature"><span class="feature-icon">▤</span><h3>Paper Portfolio</h3><p>Practice position sizing with a fixed budget and save hypothetical ideas in your own browser.</p><span class="feature-link">Try paper trading ↗</span></a>
     </div>

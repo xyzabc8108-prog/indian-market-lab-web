@@ -40,3 +40,14 @@ main{overflow:hidden}.hero{max-width:1380px;margin:auto;padding:94px 4% 84px;dis
 .bull-bear-icon .market-badge .market-animal{width:28px;height:28px}
 .bull-bear-icon .market-direction{font:900 12px/1 Manrope,system-ui,sans-serif}
 @media(max-width:540px){.header-action{gap:3px}.header-action .header-market-marks .market-animal{width:14px;height:14px}}
+
+/* Brand silhouettes shared with every Indian Market Lab section. */
+.brand-symbol.iml-small-pair{width:68px;height:45px;display:inline-flex;align-items:center;justify-content:center;gap:2px;background:linear-gradient(135deg,#08251a,#290d16);border:1px solid #2e6050}
+.iml-small-pair img{display:block;width:30px;height:27px;object-fit:contain}
+.market-animal{display:inline-block;object-fit:contain;stroke:none;fill:none}
+.header-market-marks .market-animal{height:20px;width:24px}
+.preview-bull{display:inline-flex;align-items:center;gap:4px}
+.preview-bull>.animal-icon{width:28px;height:20px}
+.preview-bear{display:inline-flex;align-items:center;gap:4px}
+.preview-bear>.animal-icon{width:28px;height:20px}
+@media(max-width:540px){.brand-symbol.iml-small-pair{width:56px;height:39px}.brand-symbol.iml-small-pair img{width:25px;height:22px}}

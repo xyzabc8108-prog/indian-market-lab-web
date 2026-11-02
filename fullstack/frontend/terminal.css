@@ -163,3 +163,19 @@ input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px #00e6762
 #last-change.flat{color:#b7b7b7}
 @media(max-width:780px){.terminal-brand-mark .animal-icon{width:20px;height:20px}}
 @media(max-width:520px){.market-mood .mood-icon{gap:1px}.market-mood .mood-icon .animal-icon{width:24px;height:24px}.mood-arrow{font-size:13px}}
+
+/* Actual silhouette assets, replacing generic SVG faces and emoji. */
+.animal-icon{object-fit:contain;stroke:none;fill:none;vertical-align:middle;display:inline-block}
+.mode-direction,.chart-bottom .bull-direction,.chart-bottom .bear-direction{display:inline-flex;align-items:center;gap:4px}
+.mode-direction .animal-icon{height:17px;width:24px}
+.chart-bottom .animal-icon{width:23px;height:18px}
+.trend-tag{display:inline-flex;align-items:center;gap:6px}
+.trend-tag .animal-icon{width:28px;height:23px}
+.desk-card strong .animal-icon{height:23px;width:33px}
+.scenario-card span .animal-icon{height:17px;width:24px;margin-right:5px}
+.pattern-item .symbol .animal-icon{width:35px;height:27px}
+.terminal-brand-mark .animal-icon{width:32px;height:29px}
+.market-mood .mood-icon .animal-icon{width:48px;height:34px}
+.gate-symbols .animal-icon{width:64px;height:37px}
+@media(max-width:780px){.terminal-brand-mark .animal-icon{width:25px;height:24px}}
+@media(max-width:520px){.market-mood .mood-icon .animal-icon{width:34px;height:26px}.gate-symbols .animal-icon{width:52px;height:31px}}
