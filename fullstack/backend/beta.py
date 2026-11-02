@@ -67,6 +67,10 @@ class Feedback(BaseModel):
         value = value.strip()
         if len(value) < 12:
             raise ValueError("Describe your feedback in at least 12 characters.")
+        if any(ord(char) < 32 and char not in "\n\t" for char in value):
+            raise ValueError("Feedback contains invalid control characters.")
+        if "<" in value or ">" in value:
+            raise ValueError("Please write feedback as plain text without HTML tags.")
         return value
 
 
@@ -78,14 +82,8 @@ def public_contact_email() -> str | None:
     return contact
 
 
-def beta_config() -> tuple[str, str] | None:
-    # Explicit operator approval after publishing privacy contact and deletion policy.
-    # Database credentials alone must never silently start collecting public emails.
-    if os.environ.get("BETA_PRIVACY_READY", "").strip().lower() != "true":
-        return None
-    # A public contact is necessary but never sufficient to open registration.
-    if public_contact_email() is None:
-        return None
+def storage_config() -> tuple[str, str] | None:
+    """Server-only database access, even when public signups are closed."""
     url = os.environ.get("BETA_SUPABASE_URL", "").strip().rstrip("/")
     key = os.environ.get("BETA_SUPABASE_SECRET_KEY", "").strip()
     parsed = urlparse(url)
@@ -97,6 +95,15 @@ def beta_config() -> tuple[str, str] | None:
         not key.startswith("sb_secret_")):
         return None
     return url, key
+
+
+def beta_config() -> tuple[str, str] | None:
+    """Public intake needs verified storage plus an explicit privacy readiness flag."""
+    if os.environ.get("BETA_PRIVACY_READY", "").strip().lower() != "true":
+        return None
+    if public_contact_email() is None:
+        return None
+    return storage_config()
 
 
 def _remote(table: str, payload: dict | None = None) -> int:
@@ -112,7 +119,6 @@ def _remote(table: str, payload: dict | None = None) -> int:
         endpoint += "?select=id&limit=0"
     headers = {
         "apikey": key,
-        "Authorization": "Bearer " + key,
         "Accept": "application/json",
         "User-Agent": "IndianMarketLabBeta/1.0",
     }
@@ -152,7 +158,7 @@ def _accept(request: Request, kind: str) -> None:
         while history and now - history[0] > 3600:
             history.popleft()
         # One server process: a basic abuse brake, not distributed spam protection.
-        if len(history) >= (5 if kind == "waitlist" else 12):
+        if len(history) >= (3 if kind == "waitlist" else 12):
             raise HTTPException(429, "Too many submissions. Please try later.")
         history.append(now)
         if len(_recent) > 5000:
@@ -212,3 +218,59 @@ def feedback(request: Request, form: Feedback):
         "feature": form.feature, "rating": form.rating, "message": form.message,
     })
     return {"received": True}
+
+
+class WaitlistSignup(BaseModel):
+    email: str = Field(min_length=5, max_length=254)
+    feature_interest: str = Field(default="charts", max_length=32)
+    consent_given: bool
+    website: str = Field(default="", max_length=150)
+
+    @field_validator("email")
+    @classmethod
+    def verify_email(cls, value: str) -> str:
+        return Interest.validate_email(value)
+
+    @field_validator("feature_interest")
+    @classmethod
+    def verify_interest(cls, value: str) -> str:
+        return Interest.validate_feature(value)
+
+
+@router.post("/waitlist", status_code=202)
+def signup_waitlist(request: Request, form: WaitlistSignup):
+    """New explicit-consent API, backed by the same existing beta_waitlist table."""
+    return interest(request, Interest(
+        email=form.email, feature=form.feature_interest,
+        consent=form.consent_given, website=form.website,
+    ))
+
+
+class WithdrawalRequest(BaseModel):
+    email: str = Field(min_length=5, max_length=254)
+    confirmation: bool
+    website: str = Field(default="", max_length=150)
+
+    @field_validator("email")
+    @classmethod
+    def verify_email(cls, value: str) -> str:
+        return Interest.validate_email(value)
+
+
+@router.post("/withdrawal-request", status_code=202)
+def withdrawal_request(request: Request, form: WithdrawalRequest):
+    """Queue a request; actual erasure requires manual email-ownership verification."""
+    if not form.confirmation:
+        raise HTTPException(422, "Confirm that you are requesting withdrawal.")
+    if storage_config() is None:
+        raise HTTPException(503, "Data requests are unavailable. Please email rohanchhaya108@gmail.com.")
+    _accept(request, "withdrawal")
+    if form.website:
+        return {"received": True, "next_step": "verify_email_with_support"}
+    # This does not disclose whether the requested address appears in the waitlist.
+    # It also never deletes records based solely on an unverified email address.
+    from fullstack.backend.beta_admin import db_call
+    db_call("beta_withdrawal_requests", method="POST",
+            payload={"email": form.email, "status": "pending"},
+            prefer="return=minimal")
+    return {"received": True, "next_step": "verify_email_with_support"}
