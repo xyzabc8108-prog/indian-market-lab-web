@@ -116,44 +116,44 @@ def is_stale(ts: pd.Timestamp, days: int = 10) -> bool:
 
 
 def stock_report(ticker: str, capital: float, risk_pct: float) -> dict:
+    """Descriptive historical stock research: no security-specific trade levels."""
     if not (1000 <= capital <= 50_000_000 and .1 <= risk_pct <= 5):
         raise ValueError('Capital must be ₹1,000–₹5 crore; planned risk 0.1–5%.')
     symbol = normalize_ticker(ticker)
     frame = validate_ohlcv(yahoo_history(symbol, '1y'))
     snap = technical_snapshot(frame)
-    plan = planning_levels(snap, atr_multiple=1.5, target_multiple=2)
-    budget = position_budget(capital, risk_pct, 25.0, plan['entry'], plan['stop'], plan['target'],
-                             fees_round_trip_per_unit=0.0, slippage_pct_per_side=.1)
     timestamp = snap['asof']
     stale = is_stale(timestamp)
     caution = []
     if stale:
-        caution.append('Last historical bar is more than 10 days old; do not act on this as a current quote.')
+        caution.append('The last candle is older than 10 days; check the historical timestamp.')
     if snap['rsi14'] > 70:
-        caution.append('RSI above 70 indicates elevated momentum and potential reversal risk.')
+        caution.append('RSI above 70 indicates elevated historical momentum and possible reversals.')
     if snap['vol_annual_pct'] > 50:
-        caution.append('High historical annualized volatility can produce large gaps and slippage.')
+        caution.append('Historical volatility is high and market prices can gap unexpectedly.')
     if snap['price'] <= snap['sma20']:
-        caution.append('Price is below its 20-session average; trend confirmation is weak.')
-    if budget['no_trade']:
-        caution.append('No whole share fits within both the planned-risk and cash-allocation limits.')
+        caution.append('Price is below its 20-session average; past trend evidence is mixed.')
     if not caution:
-        caution = ['Past trends may reverse and stops do not guarantee fills.']
-    favorable = [item for item in snap['observations'] if 'above' in item.lower() or 'breakout' in item.lower()]
-    decision = 'WAIT / NO PAPER TRADE' if stale or budget['no_trade'] or snap['bias'] != 'Upward evidence' else 'CONDITIONAL PAPER PLAN'
+        caution = ['Historical prices and patterns cannot predict future market performance.']
+    # Virtual budget is user controlled; no entry, stop, target or quantity is generated.
     return {
         'symbol': symbol, 'price': round(float(snap['price']), 2),
-        'time': timestamp.isoformat(), 'data_source': 'Unofficial Yahoo historical daily prices',
-        'stale': stale, 'decision': decision, 'bias': snap['bias'],
+        'time': timestamp.isoformat(),
+        'data_source': 'Unofficial Yahoo historical daily prices',
+        'stale': stale,
+        'bias': snap['bias'],
         'indicators': {k: round(float(snap[k]), 2) if snap[k] is not None else None for k in
-            ('sma20', 'sma50', 'rsi14', 'atr14', 'momentum20_pct', 'vol_annual_pct', 'support20', 'resistance20')},
-        'plan': {k: round(float(plan[k]), 2) for k in ('entry', 'stop', 'target', 'rr')},
-        'budget': {k: (bool(v) if isinstance(v, bool) else round(float(v), 2) if isinstance(v, (int, float)) else v)
-                   for k, v in budget.items()},
-        'observations': snap['observations'], 'favorable': favorable, 'risks': caution,
-        'note': 'Educational, hypothetical daily-bar analysis. Not an executable quote, live feed or trading recommendation.',
+            ('sma20', 'sma50', 'rsi14', 'atr14', 'momentum20_pct', 'vol_annual_pct')},
+        'budget': {
+            'capital': round(capital, 2),
+            'risk_pct': round(risk_pct, 2),
+            'risk_budget': round(capital * risk_pct / 100, 2),
+            'allocation_limit': round(capital * .25, 2),
+        },
+        'observations': snap['observations'],
+        'risks': caution,
+        'note': 'Historical educational statistics and user-defined virtual risk amount, not a trade plan.',
     }
-
 
 class RiskRequest(BaseModel):
     capital: float = Field(default=50000, gt=0, le=50000000)
