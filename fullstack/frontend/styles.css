@@ -20,3 +20,11 @@
 
 /* Beta launch links — visible but distinct from Trader Mode */
 .beta-entry{display:inline-flex;gap:6px;align-items:center;color:#ddf8ed;background:#18403b;border:1px solid #3b7e6c;border-radius:22px;padding:8px 13px;font-size:12px;font-weight:800;white-space:nowrap}.beta-entry:hover{background:#236054}.beta-home-callout{display:flex;align-items:center;gap:16px;border:1px solid #397667;border-radius:16px;background:linear-gradient(110deg,#183d3a,#123043);padding:24px;margin:0 0 42px}.beta-home-callout .beta-home-icon{font-size:30px;color:var(--teal)}.beta-home-callout>span:nth-child(2){flex:1}.beta-home-callout strong,.beta-home-callout small{display:block}.beta-home-callout strong{font:800 17px Manrope}.beta-home-callout small{color:#a5bec7;font-size:12px;margin-top:5px}.beta-home-callout b{color:var(--teal);font-size:12px;white-space:nowrap}@media(max-width:560px){.beta-entry{font-size:11px;padding:8px}.beta-entry span{display:none}.beta-home-callout{flex-wrap:wrap;padding:19px}.beta-home-callout b{width:100%;margin-left:44px}}
+
+
+/* Persistent, concise financial research disclosure and links. */
+.global-disclosure{padding:9px 28px;background:#15282f;border-bottom:1px solid #3f5557;color:#c5d9dc;font-size:11px;line-height:1.65}
+.global-disclosure strong{color:#e6f7f2}
+.global-disclosure a,.footer a{color:#74e5c7;text-decoration:underline;text-underline-offset:2px}
+.global-disclosure a:focus-visible,.footer a:focus-visible{outline:2px solid #74e5c7;outline-offset:3px}
+@media(max-width:720px){.global-disclosure{padding:11px 15px}}
