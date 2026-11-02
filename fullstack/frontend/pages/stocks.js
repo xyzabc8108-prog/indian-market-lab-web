@@ -1,5 +1,5 @@
 import {api,h,money,pct,num,loading,error,metric,spark,infoSource,formatDateTime} from '../api.js';
-export function render(){const q=new URLSearchParams(location.hash.split('?')[1]||'').get('symbol')||'RELIANCE';return `<div class="page-head"><span class="eyebrow">EQUITY ANALYTICS / ONE STOCK AT A TIME</span><h1>Stock Research</h1><p>Choose a symbol. Indicators, risks, entry references and paper sizing update together.</p></div>
+export function render(){const q=new URLSearchParams(location.hash.split('?')[1]||'').get('symbol')||'RELIANCE';return `<div class="page-head"><span class="eyebrow">EQUITY ANALYTICS / ONE STOCK AT A TIME</span><h1>Stock Research</h1><p>Select an NSE stock to explore historical indicators and a virtual risk budget.</p></div>
 <section class="panel"><div class="field-grid cols-4"><label class="grow">NSE symbol / company search<input id="stock-name" list="ticker-results" spellcheck="false" autocomplete="off" value="${h(q)}" placeholder="RELIANCE, INFY, HDFCBANK…"><datalist id="ticker-results"></datalist></label><label>Paper capital ₹<input type="number" id="capital" min="1000" max="50000000" value="50000"></label><label>Risk per idea %<input type="number" id="risk" min="0.1" max="5" step="0.1" value="1"></label><button class="button" id="run-stock" type="button">Refresh analysis</button></div><div id="search-hint" class="muted tiny">Choose a listed ticker or type its NSE symbol. Analysis starts automatically after a short pause.</div></section>
 <div id="stock-output">${loading('Preparing historical stock analysis…')}</div>`;}
 export async function mount(root){
@@ -47,13 +47,19 @@ export async function mount(root){
  try{const params=new URLSearchParams({capital,risk_pct:risk});const data=await api('/api/stock/'+encodeURIComponent(sym)+'/analysis?'+params);
  if(current!==runId)return;
  out.removeAttribute('aria-busy');
- const good=data.decision.startsWith('CONDITIONAL');out.innerHTML=`<div class="status-banner ${good?'favorable':'waiting'}"><span class="status-dot"></span><div><strong>${h(data.decision)}</strong><p>${h(data.symbol.replace(/\.NS$/i,''))} · ${h(data.bias)} · Last price update: ${h(formatDateTime(data.time))}</p></div></div>
- <div class="metrics-row stock-metrics">${metric('Historical close',money(data.price),'May be delayed')}${metric('RSI (14)',num(data.indicators.rsi14),'Momentum reference')}${metric('ATR (14)',money(data.indicators.atr14),'Volatility range')}${metric('20-day momentum',pct(data.indicators.momentum20_pct),'Past performance')}</div>
- <section class="panel"><div class="panel-title"><h2>Historical price path</h2><span class="data-label">Historical prices · ${h(formatDateTime(data.time))}</span></div><div id="stock-chart">${loading('Loading daily bars…')}</div></section>
- <div class="two-col"><section class="panel"><div class="panel-title"><h2>Illustrative paper-trade plan</h2><span class="data-label">LONG / CASH EQUITY</span></div>
- <div class="notice ${good?'':'waiting-note'}">${good?'Conditional research setup, not a recommendation or an order.':'WAIT status: these quantities are a what-if example only. No paper position is opened or suggested.'}</div><div class="plan-grid">${metric('Reference entry',money(data.plan.entry))}${metric('ATR stop',money(data.plan.stop))}${metric('2R target',money(data.plan.target))}</div><div class="hr"></div><div class="plan-grid">${metric('Hypothetical shares',num(data.budget.shares))}${metric('Cash needed',money(data.budget.investment))}${metric('Planned loss',money(data.budget.planned_loss))}</div><p class="muted">Planned risk budget: ${money(data.budget.risk_budget)}. Actual gaps, fees and slippage can exceed the estimate. No orders are placed.</p></section>
- <section class="panel"><div class="panel-title"><h2>Reasoning & risk factors</h2><span class="data-label">HOW THE RESULT WAS CALCULATED</span></div><h3>Conditions observed</h3><ul class="reason-list">${data.observations.map(x=>`<li>${h(x)}</li>`).join('')}</ul><h3>Reasons to be cautious</h3><ul class="reason-list risk-list">${data.risks.map(x=>`<li>${h(x)}</li>`).join('')}</ul></section></div>
- <div class="notice">${h(infoSource)} A wait result means the conditions are not strong enough for a paper-trade setup.</div>`;
+ const status=data.stale?'OLDER HISTORICAL DATA':'HISTORICAL RESEARCH';
+ out.innerHTML=`<div class="status-banner ${data.stale?'waiting':'favorable'}"><span class="status-dot"></span><div><strong>${h(status)}</strong><p>${h(data.symbol.replace(/\\.NS$/i,''))} · ${h(data.bias)} · Last candle: ${h(formatDateTime(data.time))} IST</p></div></div>
+ <div class="metrics-row stock-metrics">${metric('Historical close',money(data.price),'Not a live quote')}${metric('RSI (14)',num(data.indicators.rsi14),'Historical momentum')}${metric('ATR (14)',money(data.indicators.atr14),'Historical volatility')}${metric('20-day momentum',pct(data.indicators.momentum20_pct),'Past price movement')}</div>
+ <section class="panel"><div class="panel-title"><h2>Historical price path</h2><span class="data-label">Last candle · ${h(formatDateTime(data.time))} IST</span></div><div id="stock-chart">${loading('Loading daily bars…')}</div></section>
+ <div class="two-col">
+ <section class="panel"><div class="panel-title"><h2>Your virtual risk budget</h2><span class="data-label">USER-CONTROLLED EXAMPLE</span></div>
+ <div class="notice">These figures depend only on the virtual capital and risk percentage you entered. No stock-specific entry, stop, target or share quantity is generated.</div>
+ <div class="plan-grid">${metric('Virtual capital',money(data.budget.capital))}${metric('Risk limit',pct(data.budget.risk_pct))}${metric('Virtual risk amount',money(data.budget.risk_budget))}</div>
+ <p class="muted">Illustrative cash allocation cap (25% of virtual capital): ${money(data.budget.allocation_limit)}. Trading losses can exceed planned amounts.</p></section>
+ <section class="panel"><div class="panel-title"><h2>What historical data shows</h2><span class="data-label">DESCRIPTIVE INDICATORS</span></div>
+ <h3>Observed conditions</h3><ul class="reason-list">${data.observations.map(x=>`<li>${h(x)}</li>`).join('')}</ul>
+ <h3>Limitations</h3><ul class="reason-list risk-list">${data.risks.map(x=>`<li>${h(x)}</li>`).join('')}</ul></section></div>
+ <div class="notice">${h(infoSource)} Statistical observations are not trading signals.</div>`;
  try{
    const history=await api('/api/stock/'+encodeURIComponent(sym)+'/history?period=6mo');
    if(current===runId)root.querySelector('#stock-chart').innerHTML=spark(history.items);
