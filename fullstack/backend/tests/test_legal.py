@@ -110,14 +110,13 @@ def test_operator_identity_and_legal_references_present():
     assert 'NSE Data Usage Policy' in terms
 
 
-def test_public_contact_address_is_optional_and_html_escaped(monkeypatch):
-    monkeypatch.delenv('IML_PUBLIC_CONTACT_EMAIL', raising=False)
-    no_contact=client.get('/privacy')
-    assert no_contact.status_code==200
-    assert 'Our verified contact email will be available' in no_contact.text
-    monkeypatch.setenv('IML_PUBLIC_CONTACT_EMAIL','support@example.invalid')
-    with_contact=client.get('/privacy')
-    assert with_contact.status_code==200
-    assert 'href="mailto:support@example.invalid"' in with_contact.text
-    assert 'support@example.invalid</a>' in with_contact.text
-    assert 'Cache-Control' in with_contact.headers
+def test_official_contact_email_published_on_both_pages():
+    privacy = client.get('/privacy')
+    terms = client.get('/terms')
+    assert privacy.status_code == 200 and terms.status_code == 200
+    email_link = 'href="mailto:rohanchhaya108@gmail.com"'
+    assert email_link in privacy.text
+    assert email_link in terms.text
+    assert 'rohanchhaya108@gmail.com</a>' in privacy.text
+    assert 'Our verified contact email will be available' not in privacy.text
+    assert privacy.headers.get('cache-control') == 'no-store'
