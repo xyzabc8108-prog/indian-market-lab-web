@@ -1,4 +1,4 @@
-import {api,h,money,pct,formatDateTime} from './api.js';
+import {api,h,money,pct,formatDateTime} from './api.js?v=ux2';
 
 const RANGES={
  '1m':['1d','5d'], '5m':['5d','1mo'],'15m':['5d','1mo'],
@@ -242,8 +242,8 @@ function scenarioChart(scenario){
    return '<line x1="'+left+'" y1="'+yy+'" x2="'+(w-right)+'" y2="'+yy+'" stroke="#242424" stroke-dasharray="3 5"/>'+
           '<text x="4" y="'+(yy+3)+'" font-size="11" fill="#a0a0a0">'+h(fmt(maximum-t*span))+'</text>';
  }).join('');
- const caption='<text x="'+left+'" y="'+(height-8)+'" fill="#a0a0a0" font-size="11">Next candle 1</text>'+
-  '<text x="'+(w-right)+'" y="'+(height-8)+'" fill="#a0a0a0" font-size="11" text-anchor="end">Next candle '+scenario.horizon+'</text>';
+ const caption='<text x="'+left+'" y="'+(height-8)+'" fill="#a0a0a0" font-size="11">Simulated candle 1</text>'+
+  '<text x="'+(w-right)+'" y="'+(height-8)+'" fill="#a0a0a0" font-size="11" text-anchor="end">Simulated candle '+scenario.horizon+'</text>';
  const dots=bands.map((b,i)=>'<circle cx="'+x(i)+'" cy="'+y(b.mid)+'" r="8" fill="transparent"><title>Candle '+(i+1)+' | Lower '+fmt(b.low)+' | Mid '+fmt(b.mid)+' | Upper '+fmt(b.high)+'</title></circle>').join('');
  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+w+' '+height+'" role="img" aria-label="Illustrative scenario range for future candles">'+ticks+
   '<polygon points="'+shade+'" fill="#00e676" fill-opacity=".13"/>'+
@@ -269,7 +269,7 @@ function display(data){
  $('last-price').textContent=fmt(data.last_price);
  $('last-change').textContent=(data.change_pct>0?'+':'')+pct(data.change_pct)+' · previous candle';
  $('last-change').className=data.change_pct>=0?'positive':'negative';
- $('last-update').textContent='Last candle: '+formatDateTime(data.latest_time)+' IST · Historical data may be delayed';
+ $('last-update').textContent='Last candle: '+formatDateTime(data.latest_time)+' IST · Age: '+(Number(data.bar_age_minutes)>=1440?Math.floor(data.bar_age_minutes/1440)+' days':Math.max(0,Math.floor(data.bar_age_minutes/60))+' hours')+' · Not an exchange live feed';
  const mood=$('terminal-direction');mood.textContent=(data.trend==='Bullish'?'🐂 BULLISH':data.trend==='Bearish'?'🐻 BEARISH':'↔ SIDEWAYS');
  mood.className='trend-tag '+data.trend.toLowerCase();
  $('chart-candles').textContent=data.bars.length.toLocaleString('en-IN')+' historical candles · '+data.interval;
@@ -301,6 +301,7 @@ function showError(message){
  $('pattern-total').textContent='0 spotted';
  $('model-share').textContent='—';$('bear-price').textContent='—';$('bull-price').textContent='—';
  $('desk-trend').textContent='No data';
+ examplePaperBudget();
 }
 async function loadTerminal(){
  const seq=++state.seq;
