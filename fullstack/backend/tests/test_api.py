@@ -52,6 +52,25 @@ def test_trader_csp_permits_chart_vendor_but_disallows_inline_scripts():
     assert "'unsafe-inline'" not in policy.split('script-src ')[1].split(';')[0]
 
 
+
+def test_mobile_layout_styles_are_served_with_cache_busting():
+    home = client.get('/')
+    terminal = client.get('/terminal')
+    assert home.status_code == 200
+    assert terminal.status_code == 200
+    assert '/styles.css?v=mobile21-17' in home.text
+    assert '/terminal.css?v=mobile21-17' in terminal.text
+    research_css = client.get('/styles.css').text
+    trader_css = client.get('/terminal.css').text
+    assert 'Step 21.17: responsive research dashboard' in research_css
+    assert 'grid-template-columns: minmax(0, 1fr);' in research_css
+    assert 'scroll-snap-type: x proximity;' in research_css
+    assert 'Step 21.17: phone-first terminal' in trader_css
+    assert trader_css.rfind('.terminal-mode { display: none; }') > trader_css.rfind('.terminal-mode{display:inline-flex;')
+    assert 'max-height: calc(100dvh - 20px);' in trader_css
+    assert 'overscroll-behavior-x: contain;' in trader_css
+
+
 def test_universe_and_index_structure(monkeypatch):
     monkeypatch.setattr(main, 'symbol_directory', lambda: (main.fallback_symbols(), 'offline test'))
     r = client.get('/api/universe', params={'q':'reli', 'limit':10})
