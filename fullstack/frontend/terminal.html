@@ -6,13 +6,27 @@
 <meta name="theme-color" content="#030303">
 <meta name="description" content="Indian Market Lab Trader Mode — explore NSE candles, patterns, and historical scenario analysis. Paper trading only.">
 <title>Trader Mode | Indian Market Lab</title>
-<link rel="stylesheet" href="/terminal.css?v=ux5">
+<link rel="stylesheet" href="/terminal.css?v=ux6">
 <link rel="stylesheet" href="/feedback-widget.css?v=1">
 </head>
 <body class="terminal-page terms-pending">
+<!-- Crisp, theme-colored vector bull/bear emblems replace OS-dependent emoji glyphs. -->
+<svg class="terminal-svg-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+  <symbol id="iml-bull" viewBox="0 0 32 32">
+    <path d="M9 11C5 11 3 8 3 4.5c3.1 2.8 5.7 2.7 8.2 3.1M23 11c4 0 6-3 6-6.5-3.1 2.8-5.7 2.7-8.2 3.1"/>
+    <path d="M9 12c0-4.2 2.5-6 7-6s7 1.8 7 6v7c0 5.3-2.8 8.5-7 8.5S9 24.3 9 19z"/>
+    <path d="M12.5 17.8h.01M19.5 17.8h.01M13.5 23c1.7 1.2 3.3 1.2 5 0"/>
+  </symbol>
+  <symbol id="iml-bear" viewBox="0 0 32 32">
+    <circle cx="8.3" cy="9.3" r="3.9"/><circle cx="23.7" cy="9.3" r="3.9"/>
+    <path d="M6.6 15.5c0-6.3 3.7-10 9.4-10s9.4 3.7 9.4 10v3.2c0 5.8-3.7 9.1-9.4 9.1s-9.4-3.3-9.4-9.1z"/>
+    <path d="M12.2 18h.01M19.8 18h.01M13.5 23.3c1.8 1.2 3.2 1.2 5 0"/>
+  </symbol>
+</svg>
+
 <div id="legal-gate" class="legal-gate" role="dialog" aria-modal="true" aria-labelledby="legal-gate-title" aria-describedby="legal-gate-copy">
   <div class="legal-gate-card">
-    <div class="gate-symbols" aria-hidden="true"><span>🐂</span><span>🐻</span></div>
+    <div class="gate-symbols" aria-hidden="true"><span class="animal-mark"><svg class="animal-icon bull-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><use href="#iml-bull"></use></svg></span><span class="animal-mark"><svg class="animal-icon bear-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><use href="#iml-bear"></use></svg></span></div>
     <span class="gate-eyebrow">BEFORE ENTERING TRADER MODE</span>
     <h2 id="legal-gate-title">Understand the risks</h2>
     <p id="legal-gate-copy">Indian Market Lab provides educational market research. It is not presented as a SEBI-registered Research Analyst or Investment Adviser. Historical prices can be delayed. Candlestick patterns and statistical volatility ranges are historical mathematical illustrations, not personalized buy or sell instructions. Trading can cause substantial losses.</p>
@@ -27,8 +41,8 @@
 
 <div class="terminal-app" id="terminal-interactive" inert>
   <header class="terminal-header">
-    <div class="terminal-brand"><span class="terminal-brand-mark" aria-hidden="true"><span>🐂</span><span>🐻</span></span><div><strong>INDIAN MARKET LAB</strong><small>TRADER TERMINAL</small></div></div>
-    <div class="terminal-mode" aria-label="Trader Mode is enabled"><span class="terminal-led"></span> 🐂 TRADER MODE 🐻 <span class="terminal-on">ON</span></div>
+    <div class="terminal-brand"><span class="terminal-brand-mark" aria-hidden="true"><span class="animal-mark"><svg class="animal-icon bull-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><use href="#iml-bull"></use></svg></span><span class="animal-mark"><svg class="animal-icon bear-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><use href="#iml-bear"></use></svg></span></span><div><strong>INDIAN MARKET LAB</strong><small>TRADER TERMINAL</small></div></div>
+    <div class="terminal-mode" aria-label="Trader Mode is enabled"><span class="terminal-led"></span> TRADER MODE <span class="mode-direction bull-direction">▲ BULL</span><span class="mode-direction bear-direction">▼ BEAR</span> <span class="terminal-on">ON</span></div>
     <div class="terminal-header-end"><span id="ist-clock" aria-label="Indian Standard Time">IST</span><a class="terminal-exit" href="/#/home" title="Return to normal research mode"><span class="mode-slider" aria-hidden="true"></span> Exit Trader Mode</a></div>
   </header>
   <div class="terminal-disclosure" role="note"><strong>Important disclosure:</strong> Historical charts, candlestick patterns and statistical volatility ranges are not investment advice. No exchange-verified live prices or real orders. Trading can result in substantial losses. <a href="/terms">Terms &amp; Risk ↗</a></div>
@@ -60,7 +74,7 @@
       <div class="terminal-chart-panel">
         <div class="chart-header"><div><strong>PRICE ACTION</strong><small id="chart-timeframe">Candlestick chart</small></div><div class="overlay-options"><label><input type="checkbox" id="show-sma20" checked> SMA 20</label><label><input type="checkbox" id="show-sma50" checked> SMA 50</label><label><input type="checkbox" id="show-ema20"> EMA 20</label><span class="live-flag">● HISTORICAL DATA</span></div></div>
         <div id="candle-chart" role="img" aria-label="Historical NSE candlestick chart with volume" class="candle-stage"><div class="chart-placeholder">Loading candlestick chart…</div></div>
-        <div class="chart-bottom"><span id="chart-candles">— candles</span><span>🐂 Green = Bullish candle &nbsp; 🐻 Red = Bearish candle &nbsp; · &nbsp; Wheel to zoom, drag to explore</span></div>
+        <div class="chart-bottom"><span id="chart-candles">— candles</span><span><span class="bull-direction">▲ Green = upward candle</span> &nbsp; <span class="bear-direction">▼ Red = downward candle</span> &nbsp; · &nbsp; Wheel to zoom, drag to explore</span></div>
       </div>
       <section class="terminal-forecast panel-terminal">
         <div class="block-heading"><div><span class="terminal-eyebrow">HISTORICAL RESAMPLING</span><h2>Statistical scenario distribution <span class="scenario-chip">SIMULATION</span></h2><p>Statistical paths from historical candle changes. These ranges do not predict prices.</p></div><span id="scenario-window">10 simulated candles</span></div>
@@ -76,9 +90,9 @@
       <footer class="terminal-footer"><span>Indian Market Lab · Paper research · No trades placed · Prices may be delayed · <a href="/terms">Disclaimer &amp; Terms</a> · <a href="/privacy">Privacy</a></span><span>Charts powered by <a href="https://www.tradingview.com/" target="_blank" rel="noopener noreferrer">TradingView Lightweight Charts™</a></span></footer>
     </main>
     <aside class="terminal-desk">
-      <div class="desk-title"><h2>THE TRADER'S DESK</h2><span>🐂 / 🐻</span></div>
-      <div class="market-mood"><div class="mood-icon">🐂</div><div class="mood-content"><span>UPPER VOLATILITY RANGE (90th %)</span><strong id="bull-price">—</strong><small>Illustrative 90th percentile; not a target</small></div></div>
-      <div class="market-mood bear"><div class="mood-icon">🐻</div><div class="mood-content"><span>LOWER VOLATILITY RANGE (10th %)</span><strong id="bear-price">—</strong><small>Illustrative 10th percentile; not a target</small></div></div>
+      <div class="desk-title"><h2>THE TRADER'S DESK</h2><span class="desk-marks" aria-label="Bull upward and bear downward"><svg class="animal-icon bull-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><use href="#iml-bull"></use></svg> <span class="bull-direction">▲</span> / <svg class="animal-icon bear-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><use href="#iml-bear"></use></svg> <span class="bear-direction">▼</span></span></div>
+      <div class="market-mood"><div class="mood-icon"><svg class="animal-icon bull-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><use href="#iml-bull"></use></svg><span class="mood-arrow bull-direction" aria-hidden="true">▲</span></div><div class="mood-content"><span>UPPER VOLATILITY RANGE (90th %)</span><strong id="bull-price">—</strong><small>Illustrative 90th percentile; not a target</small></div></div>
+      <div class="market-mood bear"><div class="mood-icon"><svg class="animal-icon bear-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><use href="#iml-bear"></use></svg><span class="mood-arrow bear-direction" aria-hidden="true">▼</span></div><div class="mood-content"><span>LOWER VOLATILITY RANGE (10th %)</span><strong id="bear-price">—</strong><small>Illustrative 10th percentile; not a target</small></div></div>
       <div class="desk-card"><div class="desk-label">RECENT PRICE TREND</div><strong id="desk-trend">—</strong><p id="desk-pattern">Waiting for historical data…</p></div>
       <div class="desk-card"><div class="desk-label">POSSIBLE PATHS ABOVE LAST CLOSE</div><strong id="model-share">—</strong><p>Share within the historical simulation, not forecast accuracy.</p></div>
       <div class="desk-card risk-limit">
@@ -96,6 +110,6 @@
   </div>
 </div>
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js" defer></script>
-<script type="module" src="/terminal.js?v=ux6"></script>
+<script type="module" src="/terminal.js?v=ux7"></script>
 <script defer src="/feedback-widget.js?v=1"></script>
 </body></html>

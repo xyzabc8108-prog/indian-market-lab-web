@@ -134,3 +134,32 @@ input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px #00e6762
 .terminal-export:disabled{color:#8a8a8a;background:#121212;border-color:#363636;cursor:not-allowed}
 .terminal-export:focus-visible{outline:2px solid #00e676;outline-offset:3px}
 .terminal-export-result{font-size:11px;color:#acb8ae;flex-basis:100%;line-height:1.65}
+
+
+/* Accessible, consistent bull ▲ / bear ▼ visual language (no platform-dependent emoji). */
+.terminal-svg-defs{position:absolute;width:0;height:0;overflow:hidden}
+.animal-icon{display:inline-block;width:1.3em;height:1.3em;flex:none;vertical-align:middle;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.bull-mark,.bull-direction{color:var(--green,#00e676)}
+.bear-mark,.bear-direction{color:var(--red,#ff3158)}
+.animal-mark{display:inline-flex;align-items:center;justify-content:center;line-height:1}
+.gate-symbols{align-items:center;gap:14px}
+.gate-symbols .animal-icon{width:36px;height:36px;filter:drop-shadow(0 0 8px currentColor)}
+.terminal-brand-mark{gap:2px}
+.terminal-brand-mark .animal-mark{margin:0!important;font-size:initial;filter:none!important}
+.terminal-brand-mark .animal-icon{width:27px;height:27px;filter:drop-shadow(0 0 5px currentColor)}
+.terminal-mode{display:inline-flex;align-items:center;gap:7px}
+.mode-direction{font-weight:900;white-space:nowrap}
+.desk-marks{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:900}
+.desk-marks .animal-icon{width:19px;height:19px}
+.market-mood .mood-icon{display:flex;align-items:center;gap:3px;filter:none!important}
+.market-mood .mood-icon .animal-icon{width:37px;height:37px;filter:drop-shadow(0 0 9px currentColor)}
+.mood-arrow{font-size:18px;font-weight:900;line-height:1}
+.pattern-item .symbol{display:inline-flex;align-items:center;gap:4px;filter:none!important}
+.pattern-item .symbol .animal-icon{width:26px;height:26px;filter:drop-shadow(0 0 4px currentColor)}
+.pattern-item .symbol .direction-arrow{font-size:14px;font-weight:900}
+.chart-bottom .bull-direction,.chart-bottom .bear-direction{font-weight:800}
+#last-change.positive{color:var(--green)}
+#last-change.negative{color:var(--red)}
+#last-change.flat{color:#b7b7b7}
+@media(max-width:780px){.terminal-brand-mark .animal-icon{width:20px;height:20px}}
+@media(max-width:520px){.market-mood .mood-icon{gap:1px}.market-mood .mood-icon .animal-icon{width:24px;height:24px}.mood-arrow{font-size:13px}}

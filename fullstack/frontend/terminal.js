@@ -323,9 +323,11 @@ function renderPatterns(patterns,library){
  $('pattern-total').textContent=patterns.length+' spotted';
  $('pattern-results').innerHTML=patterns.length
   ?patterns.map(p=>{
-    const icon=/bullish|upward|bottom|hammer|morning|soldiers|piercing/i.test(p.tendency+' '+p.name)?'🐂':
-               /bearish|downward|top|star|crows/i.test(p.tendency+' '+p.name)?'🐻':'◆';
-    const tone=icon==='🐂'?' bull':icon==='🐻'?' bear':'';
+    const bullish=/bullish|upward|bottom|hammer|morning|soldiers|piercing/i.test(p.tendency+' '+p.name);
+    const bearish=!bullish&&/bearish|downward|top|star|crows/i.test(p.tendency+' '+p.name);
+    const tone=bullish?' bull':bearish?' bear':'';
+    const icon=bullish?'<svg class="animal-icon bull-mark" viewBox="0 0 32 32" aria-hidden="true"><use href="#iml-bull"></use></svg><span class="direction-arrow bull-direction">▲</span>':
+               bearish?'<svg class="animal-icon bear-mark" viewBox="0 0 32 32" aria-hidden="true"><use href="#iml-bear"></use></svg><span class="direction-arrow bear-direction">▼</span>':'◆';
     return '<div class="pattern-item'+tone+'"><span class="symbol">'+icon+'</span><div><strong>'+h(p.name)+'</strong><small>'+h(p.category)+' · '+h(p.tendency)+' · '+h(formatDateTime(p.time))+'</small><p>'+h(p.reason)+'</p></div></div>';
    }).join('')
   :'<div class="empty-radar">No supported pattern candidates spotted in the recent candles. That is a valid outcome.</div>';
@@ -338,10 +340,10 @@ function display(data){
  $('export-result').textContent='';
  $('instrument-name').textContent=data.symbol.replace(/\.NS$/,'');
  $('last-price').textContent=fmt(data.last_price);
- $('last-change').textContent=(data.change_pct>0?'+':'')+pct(data.change_pct)+' · previous candle';
- $('last-change').className=data.change_pct>=0?'positive':'negative';
+ $('last-change').textContent=(data.change_pct>0?'▲ +':data.change_pct<0?'▼ ':'↔ ')+pct(data.change_pct)+' · previous candle';
+ $('last-change').className=data.change_pct>0?'positive':data.change_pct<0?'negative':'flat';
  $('last-update').textContent='Last candle: '+formatDateTime(data.latest_time)+' IST · Age: '+(Number(data.bar_age_minutes)>=1440?Math.floor(data.bar_age_minutes/1440)+' days':Math.max(0,Math.floor(data.bar_age_minutes/60))+' hours')+' · Not an exchange live feed';
- const mood=$('terminal-direction');mood.textContent=(data.trend==='Bullish'?'🐂 BULLISH':data.trend==='Bearish'?'🐻 BEARISH':'↔ SIDEWAYS');
+ const mood=$('terminal-direction');mood.textContent=(data.trend==='Bullish'?'▲ BULLISH':data.trend==='Bearish'?'▼ BEARISH':'↔ SIDEWAYS');
  mood.className='trend-tag '+data.trend.toLowerCase();
  $('chart-candles').textContent=data.bars.length.toLocaleString('en-IN')+' historical candles · '+data.interval;
  $('chart-timeframe').textContent='NSE · '+data.interval+' interval · '+RANGE_LABELS[data.lookback];
@@ -353,7 +355,7 @@ function display(data){
  $('forecast-chart').innerHTML=scenarioChart(data.scenario);
  $('bull-price').textContent=fmt(data.scenario.upside);
  $('bear-price').textContent=fmt(data.scenario.downside);
- $('desk-trend').textContent=data.trend==='Bullish'?'🐂 Bullish trend':data.trend==='Bearish'?'🐻 Bearish trend':'↔ Sideways trend';
+ $('desk-trend').textContent=data.trend==='Bullish'?'▲ Bullish trend':data.trend==='Bearish'?'▼ Bearish trend':'↔ Sideways trend';
  $('desk-pattern').textContent=data.patterns.length?data.patterns.slice(0,2).map(x=>x.name).join(' · '):'No clear recent candle formation in the supported library.';
  $('model-share').textContent=data.scenario.modeled_above_reference_pct.toFixed(1)+'%';
  renderPatterns(data.patterns,data.pattern_library);
