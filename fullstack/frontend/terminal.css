@@ -103,3 +103,16 @@ input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px #00e6762
 .gate-decline{display:block;text-align:center;margin-top:14px;color:#ff6380;font-size:12px;font-weight:800}
 .legal-gate a:focus-visible,.gate-check input:focus-visible,.gate-accept:focus-visible{outline:2px solid #00e676;outline-offset:3px}
 @media(max-width:550px){.legal-gate{padding:12px}.legal-gate-card{padding:22px}.terminal-disclosure{padding:10px 14px;font-size:10px}}
+
+/* Terminal UX: responsive user-defined practice risk and retry. */
+.risk-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}
+.risk-controls label{display:flex;flex-direction:column;gap:5px;color:#cacaca;font-size:11px;font-weight:700}
+.risk-controls label:last-child{grid-column:1 / -1}
+.risk-controls input{width:100%;padding:8px 9px;background:#070707;color:#f1f1f1;border:1px solid #3b3b3b;border-radius:7px}
+.risk-controls input:focus-visible{outline:2px solid #00e676;outline-offset:1px}
+#paper-risk-amount{display:block;color:#f5f5f5;font-size:20px;margin-top:9px}
+#paper-risk-amount small{font-size:11px;color:#9c9c9c}
+.terminal-retry{padding:11px 15px;border:1px solid #ff3158;background:#2c0915;color:#fff;border-radius:8px;font-weight:800;white-space:nowrap}
+.terminal-retry:hover{background:#421323}
+.terminal-retry:focus-visible{outline:2px solid #00e676;outline-offset:2px}
+@media(max-width:420px){.risk-controls{grid-template-columns:1fr}.risk-controls label:last-child{grid-column:auto}}
