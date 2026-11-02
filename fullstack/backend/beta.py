@@ -70,10 +70,21 @@ class Feedback(BaseModel):
         return value
 
 
+def public_contact_email() -> str | None:
+    """Return the configured public grievance/support address, never a placeholder."""
+    contact = os.environ.get("IML_PUBLIC_CONTACT_EMAIL", "").strip().lower()
+    if not _EMAIL.fullmatch(contact) or ".." in contact:
+        return None
+    return contact
+
+
 def beta_config() -> tuple[str, str] | None:
     # Explicit operator approval after publishing privacy contact and deletion policy.
     # Database credentials alone must never silently start collecting public emails.
     if os.environ.get("BETA_PRIVACY_READY", "").strip().lower() != "true":
+        return None
+    # Collecting contact details is disabled without a working published contact.
+    if public_contact_email() is None:
         return None
     url = os.environ.get("BETA_SUPABASE_URL", "").strip().rstrip("/")
     key = os.environ.get("BETA_SUPABASE_SECRET_KEY", "").strip()
