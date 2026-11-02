@@ -21,11 +21,11 @@ import pandas as pd
 IST = ZoneInfo("Asia/Kolkata")
 CANDLE_RANGES = {
     "1m": ("1d", "5d"),
-    "5m": ("5d", "1mo"),
-    "15m": ("5d", "1mo"),
-    "1h": ("5d", "1mo"),
-    "1d": ("3mo", "6mo", "1y", "2y", "5y"),
-    "1wk": ("6mo", "1y", "2y", "5y"),
+    "5m": ("1d", "5d"),
+    "15m": ("1wk", "1mo"),
+    "1h": ("1wk", "1mo"),
+    "1d": ("3mo", "6mo", "1y"),
+    "1wk": ("1y", "3y", "5y"),
 }
 TICKER = re.compile(r"^[A-Z0-9][A-Z0-9&.-]{0,24}$")
 _CACHE: dict[tuple[str,str,str], tuple[float, pd.DataFrame]] = {}
@@ -105,9 +105,12 @@ def fetch_candles(ticker: str, interval: str, lookback: str) -> pd.DataFrame:
     now = time.monotonic()
     if cached and cached[0] > now:
         return cached[1].copy()
+    # The provider accepts 5d/1mo/5y, not every human-friendly range.
+    # Fetch a compatible envelope and trim to the requested calendar period.
+    provider_range = {"1wk": "1mo", "3y": "5y"}.get(lookback, lookback)
     uri = ("https://query1.finance.yahoo.com/v8/finance/chart/"
            + quote(ticker, safe=".")
-           + "?interval=" + interval + "&range=" + lookback)
+           + "?interval=" + interval + "&range=" + provider_range)
     req = Request(uri, headers={"User-Agent": "Mozilla/5.0", "Accept": "application/json"})
     try:
         with urlopen(req, timeout=12) as response:
@@ -120,6 +123,12 @@ def fetch_candles(ticker: str, interval: str, lookback: str) -> pd.DataFrame:
             "low": bars["low"], "close": bars["close"],
             "volume": bars["volume"],
         })
+        if lookback in ("1wk", "3y"):
+            from pandas import Timedelta
+            from pandas import Timestamp
+            days = 7 if lookback == "1wk" else 365 * 3 + 1
+            cutoff = Timestamp.now(tz="UTC") - Timedelta(days=days)
+            frame = frame.loc[frame["time"] >= cutoff].copy()
         frame = validate_candles(frame)
     except (TimeoutError, HTTPError, URLError, OSError, ValueError,
             TypeError, KeyError, IndexError, json.JSONDecodeError) as exc:
