@@ -12,7 +12,7 @@ def test_legal_pages_are_public_and_readable():
     assert terms.status_code == 200 and privacy.status_code == 200
     assert css.status_code == 200
     assert 'Disclaimer &amp; Terms of Use' in terms.text
-    assert '2 November 2026' in terms.text
+    assert 'November 2, 2026' in terms.text
     assert 'Privacy Notice' in privacy.text
     assert 'does not hold itself out as a SEBI-registered' in terms.text
     assert 'not an instruction to transact' in terms.text
@@ -40,7 +40,7 @@ def test_terminal_acknowledgement_is_explicit_and_blocks_interaction():
     assert 'id="legal-gate"' in page.text
     assert 'id="terminal-interactive" inert' in page.text
     assert 'id="legal-acknowledge" required' in page.text
-    assert 'id="legal-continue" type="submit" disabled' in page.text
+    assert 'id="legal-continue" type="submit" disabled>I Understand — Enter Terminal' in page.text
     assert 'href="/terms"' in page.text
     assert "if(!acknowledgement.checked)return;" in script.text
     assert "startTerminal();" in script.text
@@ -52,7 +52,7 @@ def test_public_legal_copy_has_no_internal_implementation_notes():
     terms=client.get('/terms').text
     privacy=client.get('/privacy').text
     for text in (terms,privacy):
-        assert '2 November 2026' in text
+        assert 'November 2, 2026' in text
         for forbidden in (
             'No contact email is invented', 'Do not enable real-email collection',
             'secret access key', 'separate persistent database',
@@ -71,12 +71,28 @@ def test_terminal_navigation_neutral_labels_and_risk_inputs():
     assert 'href="/beta">Leave Trader Mode' not in page
     assert 'href="/#/home">Return to research home' in page
     assert 'href="/#/home"' in page
-    assert 'UPPER HISTORICAL BAND' in page
-    assert 'LOWER HISTORICAL BAND' in page
+    assert 'UPPER VOLATILITY RANGE (90th %)' in page
+    assert 'LOWER VOLATILITY RANGE (10th %)' in page
     assert 'id="paper-capital"' in page
     assert 'id="paper-risk"' in page
     assert 'id="paper-stop"' in page
     assert 'function resetHistory()' in script
     assert 'timeoutMs:45000' in script
     assert 'researchSnapshots' in script
-    assert 'localStorage.getItem(LEGAL_NOTICE_VERSION)' in script
+    assert 'sessionStorage.getItem(LEGAL_NOTICE_VERSION)' in script
+
+
+def test_watchlist_recovery_and_range_selection_contract():
+    page=client.get('/terminal').text
+    js=client.get('/terminal.js').text
+    assert 'id="watch-retry"' in page
+    assert 'id="terminal-symbol"' in page
+    assert 'watchSlowTimer=setTimeout(' in js
+    assert '},5000);' in js
+    assert "'1m':['1d','5d']" in js
+    assert "'5m':['1d','5d']" in js
+    assert "'15m':['1wk','1mo']" in js
+    assert "'1h':['1wk','1mo']" in js
+    assert "'1d':['3mo','6mo','1y']" in js
+    assert "'1wk':['1y','3y','5y']" in js
+    assert 'Last candle:' in js
