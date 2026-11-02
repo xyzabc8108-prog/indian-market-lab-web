@@ -136,3 +136,30 @@ def test_supabase_secret_key_is_not_sent_as_a_jwt(monkeypatch):
     assert req.get_header("Authorization") is None
     assert req.full_url.startswith("https://dedicated-test.supabase.co/rest/v1/")
     assert "sb_secret_" not in req.full_url
+
+
+
+def test_admin_can_discard_fraudulent_request_without_deleting_waitlist(monkeypatch):
+    setup_database(monkeypatch)
+    uid="123e4567-e89b-12d3-a456-426614174000"
+    calls=[]
+    monkeypatch.setattr(beta_admin,"db_call",
+                        lambda table,**kw: calls.append((table,kw)) or [{"id":uid}])
+    assert client.delete("/api/admin/withdrawals/"+uid).status_code==401
+    result=client.delete("/api/admin/withdrawals/"+uid,headers=HEADERS)
+    assert result.status_code==200
+    assert result.json()=={"request_discarded":True,"subscriber_unchanged":True}
+    assert len(calls)==1
+    assert calls[0][0]=="beta_withdrawal_requests"
+    assert calls[0][1]["method"]=="DELETE"
+    assert result.headers["cache-control"]=="no-store"
+
+
+def test_private_admin_can_review_even_if_new_signups_are_closed(monkeypatch):
+    setup_database(monkeypatch)
+    monkeypatch.setenv("BETA_PRIVACY_READY","false")
+    monkeypatch.setattr(beta_admin,"db_call",lambda table,**kw: [])
+    assert beta.beta_config() is None
+    r=client.get("/api/admin/submissions?kind=withdrawals",headers=HEADERS)
+    assert r.status_code==200
+    assert r.json()["items"]==[]
