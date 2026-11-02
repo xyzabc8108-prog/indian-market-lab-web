@@ -15,15 +15,13 @@ from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 import json
 import math
-import os
 import re
-from html import escape
 import sys
 import time
 
 import pandas as pd
 from fastapi import FastAPI, File, HTTPException, Query, UploadFile
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -35,7 +33,7 @@ from full_market_scanner import parse_price_uploads, scan_market
 from research_engine import technical_snapshot, position_budget, validate_ohlcv, option_long_budget, future_budget
 from news_radar import read_public_headlines, OFFICIAL_LINKS
 from fullstack.backend.terminal_engine import terminal_report, CANDLE_RANGES
-from fullstack.backend.beta import router as beta_router, public_contact_email
+from fullstack.backend.beta import router as beta_router
 
 FRONTEND = Path(__file__).resolve().parents[1] / 'frontend'
 IST = ZoneInfo('Asia/Kolkata')
@@ -344,15 +342,7 @@ def terms_page():
 
 @app.get('/privacy')
 def privacy_page():
-    # Only publish a verified address configured by the operator.
-    markup = (FRONTEND / 'privacy.html').read_text(encoding='utf-8')
-    email = public_contact_email()
-    if email:
-        safe = escape(email, quote=True)
-        marker = ('<span data-public-contact-email>Our verified contact email will be '
-                  'available before beta registrations open.</span>')
-        markup = markup.replace(marker, f'<a href="mailto:{safe}">{safe}</a>')
-    return HTMLResponse(markup, headers={'Cache-Control': 'no-store'})
+    return FileResponse(FRONTEND / 'privacy.html', headers={'Cache-Control': 'no-store'})
 
 
 @app.get('/beta')
