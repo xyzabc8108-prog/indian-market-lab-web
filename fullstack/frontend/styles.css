@@ -41,3 +41,87 @@
 .beta-home-icon.iml-small-pair{width:54px;gap:0}
 .beta-home-icon.iml-small-pair img{width:25px;height:25px}
 @media(max-width:510px){.trader-mode-icon.iml-small-pair{display:inline-flex}.trader-mode-icon.iml-small-pair img{width:18px;height:16px}}
+
+
+/* Step 21.17: responsive research dashboard header/navigation.
+   The mobile breadcrumb and two mode controls should never occupy one row. */
+@media (max-width: 850px) {
+  .sidebar { min-width: 0; max-width: 100%; }
+  .sidebar nav {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    overscroll-behavior-x: contain;
+    scroll-padding-inline: 8px;
+    scrollbar-width: thin;
+    padding-bottom: 7px;
+  }
+  .sidebar nav a { flex: none; scroll-snap-align: start; }
+  .topbar, .top-actions, .breadcrumb { min-width: 0; }
+}
+
+@media (max-width: 600px) {
+  .sidebar { padding: 14px 12px 10px; gap: 9px; }
+  .sidebar .brand { min-width: 0; padding: 0 3px 8px; gap: 10px; }
+  .sidebar .brand > div { min-width: 0; }
+  .sidebar .brand strong { font-size: 12px; letter-spacing: .07em; }
+  .sidebar .brand small { font-size: 8px; letter-spacing: .12em; }
+  .sidebar nav a { font-size: 12px; padding: 8px 11px; gap: 6px; }
+  .topbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+    min-height: 0;
+    gap: 9px;
+    padding: 11px 14px 13px;
+  }
+  .breadcrumb {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 10px;
+    line-height: 1.4;
+    letter-spacing: .045em;
+  }
+  .breadcrumb span { margin: 0 7px; }
+  .breadcrumb b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .top-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.18fr);
+    align-items: stretch;
+    width: 100%;
+    gap: 9px;
+  }
+  .beta-entry, .trader-toggle {
+    display: inline-flex;
+    min-width: 0;
+    width: 100%;
+    min-height: 39px;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 8px 9px;
+    font-size: 11px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  .trader-toggle .toggle-track { flex: none; width: 25px; }
+  .trader-mode-icon.iml-small-pair { flex: none; }
+  .trader-mode-icon.iml-small-pair img { width: 16px; height: 15px; }
+  .workspace, .workspace > main { min-width: 0; max-width: 100%; }
+  .workspace > main { padding-inline: 14px; }
+  .global-disclosure { padding: 10px 14px; line-height: 1.55; }
+}
+
+@media (max-width: 370px) {
+  .top-actions { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 6px; }
+  .beta-entry, .trader-toggle { font-size: 10px; padding: 8px 5px; gap: 3px; }
+  .trader-mode-icon.iml-small-pair img { width: 14px; height: 13px; }
+  .sidebar .brand strong { font-size: 11px; }
+}
