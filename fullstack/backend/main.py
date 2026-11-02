@@ -30,7 +30,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 from market_universe import fallback_equities, indices_table, load_equity_csv, EQUITY_URL
 from full_market_scanner import parse_price_uploads, scan_market
-from research_engine import technical_snapshot, planning_levels, position_budget, validate_ohlcv, option_long_budget, future_budget
+from research_engine import technical_snapshot, validate_ohlcv, option_long_budget, future_budget
 from news_radar import read_public_headlines, OFFICIAL_LINKS
 from fullstack.backend.terminal_engine import terminal_report, CANDLE_RANGES
 from fullstack.backend.beta import router as beta_router
