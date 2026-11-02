@@ -48,7 +48,7 @@ export async function mount(root){
  if(current!==runId)return;
  out.removeAttribute('aria-busy');
  const status=data.stale?'OLDER HISTORICAL DATA':'HISTORICAL RESEARCH';
- out.innerHTML=`<div class="status-banner ${data.stale?'waiting':'favorable'}"><span class="status-dot"></span><div><strong>${h(status)}</strong><p>${h(data.symbol.replace(/\\.NS$/i,''))} · ${h(data.bias)} · Last candle: ${h(formatDateTime(data.time))} IST</p></div></div>
+ out.innerHTML=`<div class="status-banner ${data.stale?'waiting':'favorable'}"><span class="status-dot"></span><div><strong>${h(status)}</strong><p>${h(data.symbol.replace(/\.NS$/i,''))} · ${h(data.bias)} · Last candle: ${h(formatDateTime(data.time))} IST</p></div></div>
  <div class="metrics-row stock-metrics">${metric('Historical close',money(data.price),'Not a live quote')}${metric('RSI (14)',num(data.indicators.rsi14),'Historical momentum')}${metric('ATR (14)',money(data.indicators.atr14),'Historical volatility')}${metric('20-day momentum',pct(data.indicators.momentum20_pct),'Past price movement')}</div>
  <section class="panel"><div class="panel-title"><h2>Historical price path</h2><span class="data-label">Last candle · ${h(formatDateTime(data.time))} IST</span></div><div id="stock-chart">${loading('Loading daily bars…')}</div></section>
  <div class="two-col">
