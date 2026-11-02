@@ -32,4 +32,4 @@ jobs:
       - run: python -m pip install -r fullstack/backend/requirements.txt pytest httpx
       - run: python -m pytest -q fullstack/backend/tests/test_api.py fullstack/backend/tests/test_beta.py fullstack/backend/tests/test_terminal.py fullstack/backend/tests/test_legal.py
       - run: |
-          for f in fullstack/frontend/app.js fullstack/frontend/api.js fullstack/frontend/pages/*.js fullstack/frontend/beta.js fullstack/frontend/terminal.js; do node --check "$f"; done
+          for f in fullstack/frontend/app.js fullstack/frontend/api.js fullstack/frontend/pages/*.js fullstack/frontend/beta.js fullstack/frontend/terminal.js fullstack/frontend/feedback-widget.js; do node --check "$f"; done
