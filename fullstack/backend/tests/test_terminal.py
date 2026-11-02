@@ -122,3 +122,15 @@ def test_terminal_rejects_invalid_interval_before_provider_call(monkeypatch):
                               params={'interval': interval, 'lookback': lookback})
         assert response.status_code == 422
     assert calls == []
+
+
+def test_documented_timeframes_match_backend():
+    assert te.CANDLE_RANGES == {
+        '1m': ('1d','5d'), '5m': ('1d','5d'),
+        '15m': ('1wk','1mo'), '1h': ('1wk','1mo'),
+        '1d': ('3mo','6mo','1y'), '1wk': ('1y','3y','5y')
+    }
+    # Human-readable 1-week and 3-year periods use a supported provider envelope.
+    for interval, period in [('1m','6mo'),('1d','5y'),('1wk','6mo')]:
+        resp=client.get('/api/terminal/TCS',params={'interval':interval,'lookback':period})
+        assert resp.status_code == 422
