@@ -295,9 +295,9 @@ function display(data){
  $('chart-timeframe').textContent='NSE · '+data.interval+' interval · '+RANGE_LABELS[data.lookback];
  $('scenario-window').textContent=data.scenario.horizon+' simulated candles';
  $('scenario-metrics').innerHTML=
-  '<div class="scenario-card bear"><span>LOWER HISTORICAL BAND · P10</span><strong>'+fmt(data.scenario.downside)+'</strong></div>'+
-  '<div class="scenario-card"><span>MEDIAN RESAMPLED BAND · P50</span><strong>'+fmt(data.scenario.middle)+'</strong></div>'+
-  '<div class="scenario-card bull"><span>UPPER HISTORICAL BAND · P90</span><strong>'+fmt(data.scenario.upside)+'</strong></div>';
+  '<div class="scenario-card bear"><span>LOWER VOLATILITY RANGE (10th %)</span><strong>'+fmt(data.scenario.downside)+'</strong></div>'+
+  '<div class="scenario-card"><span>MIDDLE VOLATILITY RANGE (50th %)</span><strong>'+fmt(data.scenario.middle)+'</strong></div>'+
+  '<div class="scenario-card bull"><span>UPPER VOLATILITY RANGE (90th %)</span><strong>'+fmt(data.scenario.upside)+'</strong></div>';
  $('forecast-chart').innerHTML=scenarioChart(data.scenario);
  $('bull-price').textContent=fmt(data.scenario.upside);
  $('bear-price').textContent=fmt(data.scenario.downside);
