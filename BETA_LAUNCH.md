@@ -23,7 +23,10 @@ The existing research pages and /terminal remain available. No paid subscription
    BETA_SUPABASE_URL=https://YOUR_PROJECT_ID.supabase.co
    BETA_SUPABASE_SECRET_KEY=sb_secret_...
    BETA_PUBLIC_ORIGIN=https://indian-market-lab-fullstack.onrender.com
-4. Redeploy Render and check /api/beta/status. Both form flags should read true once the two private tables are available.
+   BETA_PRIVACY_READY=true
+   Set this LAST, only after publishing verified owner/privacy contacts and
+   retention, consent withdrawal and data-deletion procedures in /privacy.
+4. Redeploy Render and check /api/beta/status. Keeping BETA_PRIVACY_READY unset or false disables collection even when database credentials exist. Both form flags should read true once the two private tables are available.
 5. Make a disposable-email signup and one feedback submission. Verify both records in the dedicated Supabase database, then delete the tests.
 6. Before collecting real emails, publish a privacy-contact email and establish retention, consent withdrawal and deletion procedures. A self-service deletion request is not implemented yet.
 7. Monitor false-positives, error rates and spam. The simple per-IP limiter is in memory only and is not a robust anti-bot platform.
@@ -60,3 +63,7 @@ Weeks 2-3: seek 15-20 voluntary testers and collect structured feedback.
 Week 4: prioritize retention functionality and evaluate whether anybody wants paid features.
 
 Review commercial market-data licensing and SEBI classification of proposed paid features before monetizing. A disclaimer does not guarantee exemption.
+
+## Terms and acknowledgements
+
+/terms and /privacy explain the beta's real features and data-handling limitations. The Trader Terminal shows a versioned first-visit acknowledgement before making chart requests. The notice is not a SEBI registration exemption, and local acknowledgement does not replace legal compliance. Obtain advice from an Indian securities/privacy lawyer and publish verified operator/contact details before charging users or enabling public email collection.
