@@ -108,3 +108,17 @@ def test_provider_unavailable_no_fake_candles(monkeypatch):
     response=client.get('/api/terminal/RELIANCE',params={'interval':'1d','lookback':'1y'})
     assert response.status_code==503
     assert 'No data' in response.json()['detail']
+
+
+def test_terminal_rejects_invalid_interval_before_provider_call(monkeypatch):
+    # The endpoint must reject unsupported pairs even if the provider is mocked.
+    calls = []
+    def provider(*args):
+        calls.append(args)
+        return history()
+    monkeypatch.setattr(te, 'fetch_candles', provider)
+    for interval, lookback in [('1m', '5y'), ('1d', '1d'), ('bogus', '6mo')]:
+        response = client.get('/api/terminal/RELIANCE',
+                              params={'interval': interval, 'lookback': lookback})
+        assert response.status_code == 422
+    assert calls == []
