@@ -5,7 +5,6 @@ An email address alone is NOT sufficient proof of ownership for deletion.
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
 import json
 import os
 import secrets
@@ -139,24 +138,19 @@ def complete_withdrawal(request: Request, request_id: str, form: Completion):
     if not isinstance(records, list) or not records:
         raise HTTPException(404, "Withdrawal request not found.")
     item = records[0]
-    if item.get("status") == "completed":
-        return no_store({"completed": True, "already_completed": True})
     if item.get("status") != "pending":
         raise HTTPException(409, "Withdrawal request is not pending.")
     email = item.get("email", "")
     if not isinstance(email, str) or not email:
         raise HTTPException(503, "Withdrawal request cannot be verified.")
-    # Delete the matching waitlist entry, then mark request completed.
-    # Retrying after a partial network failure remains safe.
+    # Delete the waitlist entry AND the request containing the same email.
+    # Keeping a completed erasure request would otherwise retain the address.
+    # Retrying after a partial network failure is safe while the pending queue exists.
     db_call("beta_waitlist", method="DELETE", filters={"email": email},
             select="id")
-    db_call("beta_withdrawal_requests", method="PATCH",
-            filters={"id": uid, "status": "pending"},
-            payload={"status": "completed",
-                     "verification_method": form.verification_method,
-                     "resolved_at": datetime.now(timezone.utc).isoformat()},
-            select="id")
-    return no_store({"completed": True})
+    db_call("beta_withdrawal_requests", method="DELETE",
+            filters={"id": uid}, select="id")
+    return no_store({"completed": True, "email_removed_from_queue": True})
 
 
 @admin_router.delete("/feedback/{feedback_id}")
