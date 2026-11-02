@@ -56,6 +56,7 @@ def test_invalid_email_consent_feature_and_feedback():
 def test_ready_endpoints_have_no_public_pii(monkeypatch):
     monkeypatch.setenv("BETA_SUPABASE_URL", "https://dedicated-test.supabase.co")
     monkeypatch.setenv("BETA_SUPABASE_SECRET_KEY", "sb_secret_placeholder")
+    monkeypatch.setenv("BETA_PRIVACY_READY", "true")
     monkeypatch.setattr(beta, "_recent", defaultdict(deque))
     monkeypatch.setattr(beta, "_status_cache", None)
     requests = []
@@ -86,6 +87,7 @@ def test_ready_endpoints_have_no_public_pii(monkeypatch):
 def test_public_form_origin_restriction_and_bot_trap(monkeypatch):
     monkeypatch.setenv("BETA_SUPABASE_URL", "https://dedicated-test.supabase.co")
     monkeypatch.setenv("BETA_SUPABASE_SECRET_KEY", "sb_secret_placeholder")
+    monkeypatch.setenv("BETA_PRIVACY_READY", "true")
     monkeypatch.setenv("BETA_PUBLIC_ORIGIN", "https://example.test")
     monkeypatch.setattr(beta, "_recent", defaultdict(deque))
     calls = []
@@ -102,6 +104,7 @@ def test_public_form_origin_restriction_and_bot_trap(monkeypatch):
 def test_rate_limiter(monkeypatch):
     monkeypatch.setenv("BETA_SUPABASE_URL", "https://dedicated-test.supabase.co")
     monkeypatch.setenv("BETA_SUPABASE_SECRET_KEY", "sb_secret_placeholder")
+    monkeypatch.setenv("BETA_PRIVACY_READY", "true")
     monkeypatch.delenv("BETA_PUBLIC_ORIGIN", raising=False)
     monkeypatch.setattr(beta, "_recent", defaultdict(deque))
     monkeypatch.setattr(beta, "_remote", lambda table, payload=None: 201)
@@ -109,3 +112,13 @@ def test_rate_limiter(monkeypatch):
     for _ in range(5):
         assert client.post("/api/beta/interest", json=payload).status_code == 202
     assert client.post("/api/beta/interest", json=payload).status_code == 429
+
+
+def test_credentials_alone_do_not_open_beta(monkeypatch):
+    monkeypatch.setenv("BETA_SUPABASE_URL", "https://dedicated-test.supabase.co")
+    monkeypatch.setenv("BETA_SUPABASE_SECRET_KEY", "sb_secret_placeholder")
+    monkeypatch.delenv("BETA_PRIVACY_READY", raising=False)
+    r=client.get("/api/beta/status")
+    assert r.status_code==200
+    assert r.json()["waitlist_open"] is False
+    assert r.json()["feedback_open"] is False
