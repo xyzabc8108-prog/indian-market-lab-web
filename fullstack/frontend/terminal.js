@@ -370,7 +370,7 @@ function startTerminal(){
  loadTerminal();
 }
 function hasAcknowledged(){
- try{return sessionStorage.getItem(LEGAL_NOTICE_VERSION)==='yes'||localStorage.getItem(LEGAL_NOTICE_VERSION)==='yes';}catch{return false;}
+ try{return sessionStorage.getItem(LEGAL_NOTICE_VERSION)==='yes';}catch{return false;}
 }
 acknowledgement.addEventListener('change',()=>{
  continueButton.disabled=!acknowledgement.checked;
