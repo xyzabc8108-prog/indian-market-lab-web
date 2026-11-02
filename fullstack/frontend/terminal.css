@@ -126,3 +126,11 @@ input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px #00e6762
 .legal-gate-card{display:flex;flex-direction:column}
 #legal-gate-form{position:sticky;bottom:-34px;z-index:2;background:linear-gradient(180deg,#0b0b0bee,#080808);padding:12px 0 8px;margin-top:auto;border-top:1px solid #333}
 @media(max-height:650px){.legal-gate-card{padding:20px}.gate-symbols{margin-bottom:4px}.gate-links{margin:8px 0}.legal-gate h2{margin:5px 0}.legal-gate p{line-height:1.6}}
+
+
+/* Local research-note export; no upload or brokerage action. */
+.terminal-export{font:inherit;font-size:12px;font-weight:800;padding:11px 13px;border:1px solid #167941;color:#00e676;background:#091d11;border-radius:9px;cursor:pointer;white-space:nowrap}
+.terminal-export:hover:not(:disabled){background:#123d23}
+.terminal-export:disabled{color:#8a8a8a;background:#121212;border-color:#363636;cursor:not-allowed}
+.terminal-export:focus-visible{outline:2px solid #00e676;outline-offset:3px}
+.terminal-export-result{font-size:11px;color:#acb8ae;flex-basis:100%;line-height:1.65}
