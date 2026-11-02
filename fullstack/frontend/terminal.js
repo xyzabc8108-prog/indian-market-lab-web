@@ -18,6 +18,34 @@ const state={symbol:'RELIANCE',interval:'1d',lookback:'6mo',horizon:10,
             watchMode:'all',search:'',offset:0,watchSeq:0,seq:0,latest:null,
             chart:null,resizeObserver:null,series:null,selectedFromList:false};
 let symbolTimer=null;
+const researchSnapshots=new Map(); // In-memory only; no fabricated historical quotes.
+function examplePaperBudget(){
+  const capital=Number($('paper-capital').value);
+  const riskPct=Number($('paper-risk').value);
+  const stopPct=Number($('paper-stop').value);
+  const output=$('paper-risk-amount'),detail=$('paper-risk-detail');
+  if(!Number.isFinite(capital)||capital<1000||capital>50000000||
+     !Number.isFinite(riskPct)||riskPct<0.1||riskPct>5||
+     !Number.isFinite(stopPct)||stopPct<0.1||stopPct>50){
+    output.textContent='—';
+    detail.textContent='Enter ₹1,000–₹5 crore capital, 0.1–5% risk and 0.1–50% example stop distance.';
+    return;
+  }
+  const riskBudget=capital*riskPct/100;
+  output.textContent=fmt(riskBudget)+' / hypothetical idea';
+  const reference=Number(state.latest?.last_price);
+  if(Number.isFinite(reference)&&reference>0){
+    const investmentLimit=capital*.25;
+    const perShare=reference*stopPct/100;
+    const byRisk=Math.floor(riskBudget/perShare);
+    const byCash=Math.floor(investmentLimit/reference);
+    const qty=Math.max(0,Math.min(byRisk,byCash));
+    detail.textContent='Example: '+qty+' virtual shares at the last historical close, with '+stopPct+
+      '% stop distance and up to 25% cash allocation. Not a trading instruction; gaps and costs can exceed this estimate.';
+  }else{
+    detail.textContent='Virtual risk amount only. Example share counts require a valid historical stock close. No real orders.';
+  }
+}
 function clock(){
  $('ist-clock').textContent=formatDateTime(new Date().toISOString())+' IST';
 }
@@ -63,7 +91,7 @@ async function loadWatch(append=false){
  if(!append)state.offset=0;
  const q=state.search.trim();
  try{
-   const d=await api('/api/terminal/universe?'+new URLSearchParams({q,limit:60,offset:state.offset}));
+   const d=await api('/api/terminal/universe?'+new URLSearchParams({q,limit:60,offset:state.offset}),{timeoutMs:30000});
    if(seq!==state.watchSeq)return;
    watchCards(d.items,append);
    state.offset+=d.items.length;
@@ -111,6 +139,11 @@ $('future-horizon').addEventListener('change',()=>{
  state.horizon=Number($('future-horizon').value);loadTerminal();
 });
 $('reload-terminal').addEventListener('click',()=>loadTerminal());
+$('retry-terminal').addEventListener('click',()=>loadTerminal());
+for(const id of ['paper-capital','paper-risk','paper-stop']){
+ $(id).addEventListener('input',examplePaperBudget);
+}
+examplePaperBudget();
 for(const id of ['show-sma20','show-sma50','show-ema20']){
  $(id).addEventListener('change',()=>{if(state.latest)drawCandles(state.latest.bars)});
 }
@@ -241,11 +274,11 @@ function display(data){
  mood.className='trend-tag '+data.trend.toLowerCase();
  $('chart-candles').textContent=data.bars.length.toLocaleString('en-IN')+' historical candles · '+data.interval;
  $('chart-timeframe').textContent='NSE · '+data.interval+' interval · '+RANGE_LABELS[data.lookback];
- $('scenario-window').textContent='Next '+data.scenario.horizon+' candles';
+ $('scenario-window').textContent=data.scenario.horizon+' simulated candles';
  $('scenario-metrics').innerHTML=
-  '<div class="scenario-card bear"><span>🐻 BEAR CASE · LOWER RANGE</span><strong>'+fmt(data.scenario.downside)+'</strong></div>'+
-  '<div class="scenario-card"><span>↔ MIDDLE PATH</span><strong>'+fmt(data.scenario.middle)+'</strong></div>'+
-  '<div class="scenario-card bull"><span>🐂 BULL CASE · UPPER RANGE</span><strong>'+fmt(data.scenario.upside)+'</strong></div>';
+  '<div class="scenario-card bear"><span>LOWER HISTORICAL BAND · P10</span><strong>'+fmt(data.scenario.downside)+'</strong></div>'+
+  '<div class="scenario-card"><span>MEDIAN RESAMPLED BAND · P50</span><strong>'+fmt(data.scenario.middle)+'</strong></div>'+
+  '<div class="scenario-card bull"><span>UPPER HISTORICAL BAND · P90</span><strong>'+fmt(data.scenario.upside)+'</strong></div>';
  $('forecast-chart').innerHTML=scenarioChart(data.scenario);
  $('bull-price').textContent=fmt(data.scenario.upside);
  $('bear-price').textContent=fmt(data.scenario.downside);
@@ -254,10 +287,12 @@ function display(data){
  $('model-share').textContent=data.scenario.modeled_above_reference_pct.toFixed(1)+'%';
  renderPatterns(data.patterns,data.pattern_library);
  drawCandles(data.bars);
+ examplePaperBudget();
 }
 function showError(message){
+ $('retry-terminal').hidden=false;
  cleanupChart();state.latest=null;
- $('candle-chart').innerHTML='<div class="chart-placeholder">⚠ '+h(message)+'</div>';
+ $('candle-chart').innerHTML='<div class="chart-placeholder">⚠ '+h(message)+'<br>Use the Retry button above, or change your candle interval.</div>';
  $('last-price').textContent='—';$('last-change').textContent='Data not available';
  $('last-update').textContent='Choose a different interval or retry. Nothing has been simulated as a quote.';
  $('scenario-metrics').innerHTML='<div class="empty-radar">Historical price data is required before scenarios can be calculated.</div>';
@@ -270,6 +305,8 @@ function showError(message){
 async function loadTerminal(){
  const seq=++state.seq;
  const symbol=state.symbol;
+ const cacheKey=symbol+'|'+state.interval+'|'+state.lookback+'|'+state.horizon;
+ $('retry-terminal').hidden=true;
  $('reload-terminal').disabled=true;
  $('last-update').textContent='Checking '+symbol+' historical prices…';
  $('candle-chart').innerHTML='<div class="chart-placeholder">Loading price candles and chart patterns…</div>';
@@ -277,10 +314,21 @@ async function loadTerminal(){
  if(!RANGES[state.interval].includes(state.lookback))resetHistory();
  try{
   const q=new URLSearchParams({interval:state.interval,lookback:state.lookback,horizon:String(state.horizon)});
-  const data=await api('/api/terminal/'+encodeURIComponent(symbol)+'?'+q);
+  const data=await api('/api/terminal/'+encodeURIComponent(symbol)+'?'+q,{timeoutMs:45000});
   if(seq!==state.seq)return;
+  researchSnapshots.set(cacheKey,data);
+  if(researchSnapshots.size>6)researchSnapshots.delete(researchSnapshots.keys().next().value);
   display(data);
- }catch(e){if(seq===state.seq)showError(e.message);}
+ }catch(e){
+   if(seq!==state.seq)return;
+   const previous=researchSnapshots.get(cacheKey);
+   if(previous){
+     display(previous);
+     $('retry-terminal').hidden=false;
+     $('last-update').textContent='⚠ Showing an earlier successful snapshot from this browser session ('+
+       formatDateTime(previous.latest_time)+' IST). '+e.message;
+   }else{showError(e.message);}
+ }
  finally{if(seq===state.seq)$('reload-terminal').disabled=false;}
 }
 // Show a versioned acknowledgement before starting any interactive chart requests.
