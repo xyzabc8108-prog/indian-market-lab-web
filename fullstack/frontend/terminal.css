@@ -116,3 +116,13 @@ input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px #00e6762
 .terminal-retry:hover{background:#421323}
 .terminal-retry:focus-visible{outline:2px solid #00e676;outline-offset:2px}
 @media(max-width:420px){.risk-controls{grid-template-columns:1fr}.risk-controls label:last-child{grid-column:auto}}
+
+
+/* Beta usability: give delayed market lists an immediate recovery action. */
+.watch-retry{display:inline-flex;align-items:center;justify-content:center;gap:6px;margin:8px 0 11px;width:100%;padding:9px 12px;background:#151515;border:1px solid #00e676;color:#00e676;border-radius:9px;font-weight:800;font-size:12px}
+.watch-retry:hover{background:#0d2518}
+.watch-retry:focus-visible{outline:2px solid #00e676;outline-offset:2px}
+/* The consent action remains accessible on small-height screens. */
+.legal-gate-card{display:flex;flex-direction:column}
+#legal-gate-form{position:sticky;bottom:-34px;z-index:2;background:linear-gradient(180deg,#0b0b0bee,#080808);padding:12px 0 8px;margin-top:auto;border-top:1px solid #333}
+@media(max-height:650px){.legal-gate-card{padding:20px}.gate-symbols{margin-bottom:4px}.gate-links{margin:8px 0}.legal-gate h2{margin:5px 0}.legal-gate p{line-height:1.6}}
