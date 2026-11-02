@@ -76,3 +76,13 @@ Review commercial market-data licensing and SEBI classification of proposed paid
 - The Privacy Notice states an intended acknowledgement goal of 48 hours and deletion processing goal of 14 business days after contact is operational. These are operator service commitments, not a claim that an automated deletion system currently exists.
 - The DPDP Act 2023 rights sections have a phased commencement in the 13 November 2025 Gazette. Do not describe all such rights as effective on 2 November 2026. See https://egazette.gov.in/WriteReadData/2025/267647.pdf .
 - The Rajkot jurisdiction clause is subject to mandatory Indian-law and consumer-jurisdiction requirements.
+
+
+## Beta feedback and terminal study-note tools (2 November 2026)
+
+- Research Home and Trader Terminal now display a compact **Feedback** control. It checks the real \`GET /api/beta/status\` response each time it opens. If \`feedback_open\` is false or the service cannot be reached, its submit button stays disabled and the user sees the published support email; there is no fake success or silent local storage of feedback.
+- When optional private storage is ready, the same widget posts the existing 1–5 rating, permitted feature category, and message fields to \`POST /api/beta/feedback\` with a 12-second timeout. Do not advertise in-site submissions until tested on the deployed Render service.
+- Trader Terminal includes **Save study note (.txt)**. It downloads a text summary locally with the last historical candle timestamp (IST), resampling P10/P50/P90 bands, example virtual risk settings and caveats. The note never becomes a real order, investment recommendation or cloud account. It is disabled until valid historical data is available, and it identifies session-fallback data.
+- The Market Watch input already supports NSE company search and switching the selected instrument; no second search index was created.
+- Persistent browser storage of third-party historical candle feeds is intentionally deferred until the provider's storage, caching and redistribution rights have been verified. The existing session-memory snapshot fallback remains in place.
+- A user-facing paid tier, brokerage execution and email automation are **not** activated by these additions.
