@@ -71,6 +71,10 @@ class Feedback(BaseModel):
 
 
 def beta_config() -> tuple[str, str] | None:
+    # Explicit operator approval after publishing privacy contact and deletion policy.
+    # Database credentials alone must never silently start collecting public emails.
+    if os.environ.get("BETA_PRIVACY_READY", "").strip().lower() != "true":
+        return None
     url = os.environ.get("BETA_SUPABASE_URL", "").strip().rstrip("/")
     key = os.environ.get("BETA_SUPABASE_SECRET_KEY", "").strip()
     parsed = urlparse(url)
