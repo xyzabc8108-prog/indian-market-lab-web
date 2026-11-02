@@ -14,8 +14,8 @@ def test_legal_pages_are_public_and_readable():
     assert 'Disclaimer &amp; Terms of Use' in terms.text
     assert 'November 2, 2026' in terms.text
     assert 'Privacy Notice' in privacy.text
-    assert 'does not hold itself out as a SEBI-registered' in terms.text
-    assert 'not an instruction to transact' in terms.text
+    assert 'not registered with SEBI as a Research Analyst' in terms.text
+    assert 'None of these outputs is intended as an instruction' in terms.text
     assert 'beta_waitlist' not in terms.text
 
 
@@ -62,7 +62,7 @@ def test_public_legal_copy_has_no_internal_implementation_notes():
             assert forbidden.lower() not in text.lower()
     assert 'Render' in privacy
     assert 'TradingView Lightweight Charts' in privacy
-    assert 'not a guaranteed real-time exchange quote' in terms
+    assert 'does not provide exchange-verified live tick feeds' in terms
 
 
 def test_terminal_navigation_neutral_labels_and_risk_inputs():
@@ -96,3 +96,28 @@ def test_watchlist_recovery_and_range_selection_contract():
     assert "'1d':['3mo','6mo','1y']" in js
     assert "'1wk':['1y','3y','5y']" in js
     assert 'Last candle:' in js
+
+
+def test_operator_identity_and_legal_references_present():
+    terms=client.get('/terms').text
+    privacy=client.get('/privacy').text
+    for page in (terms, privacy):
+        assert 'Rohan Chhaya' in page
+        assert 'Rajkot, Gujarat, India' in page
+        assert 'November 2, 2026' in page
+        assert '[your-email@domain.com]' not in page
+    assert 'competent courts located in' in terms
+    assert 'NSE Data Usage Policy' in terms
+
+
+def test_public_contact_address_is_optional_and_html_escaped(monkeypatch):
+    monkeypatch.delenv('IML_PUBLIC_CONTACT_EMAIL', raising=False)
+    no_contact=client.get('/privacy')
+    assert no_contact.status_code==200
+    assert 'Our verified contact email will be available' in no_contact.text
+    monkeypatch.setenv('IML_PUBLIC_CONTACT_EMAIL','support@example.invalid')
+    with_contact=client.get('/privacy')
+    assert with_contact.status_code==200
+    assert 'href="mailto:support@example.invalid"' in with_contact.text
+    assert 'support@example.invalid</a>' in with_contact.text
+    assert 'Cache-Control' in with_contact.headers
