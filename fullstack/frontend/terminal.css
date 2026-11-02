@@ -179,3 +179,118 @@ input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px #00e6762
 .gate-symbols .animal-icon{width:64px;height:37px}
 @media(max-width:780px){.terminal-brand-mark .animal-icon{width:25px;height:24px}}
 @media(max-width:520px){.market-mood .mood-icon .animal-icon{width:34px;height:26px}.gate-symbols .animal-icon{width:52px;height:31px}}
+
+
+/* Step 21.17: phone-first terminal layout repair.
+   Keep these rules last: older icon styles accidentally re-enabled the
+   full-size TRADER MODE badge after it was hidden by a mobile media rule. */
+@media (max-width: 900px) {
+  .terminal-header { gap: 10px; padding-inline: 14px; min-width: 0; }
+  .terminal-brand { min-width: 0; flex: 0 1 auto; gap: 8px; }
+  .terminal-brand > div { min-width: 0; }
+  .terminal-brand strong { font-size: 10px; letter-spacing: .065em; white-space: nowrap; }
+  .terminal-brand small { display: block; font-size: 8px; letter-spacing: .08em; white-space: nowrap; }
+  .terminal-header-end { margin-left: auto; gap: 8px; flex: none; }
+  .terminal-mode { display: none; }
+  .terminal-exit { gap: 7px; padding: 8px 10px; font-size: 11px; }
+  .mode-slider { width: 28px; height: 17px; flex: none; }
+  .mode-slider:after { width: 13px; height: 13px; }
+}
+
+@media (max-width: 780px) {
+  .terminal-layout, .terminal-main, .terminal-watch, .terminal-desk {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .terminal-watch { width: 100%; max-height: none; overflow: hidden; padding: 16px 14px 11px; }
+  .watch-items {
+    flex: none;
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    min-height: 76px;
+    gap: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    padding: 4px 0 10px;
+  }
+  .watch-item {
+    flex: 0 0 clamp(126px, 39vw, 170px);
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+    padding: 10px 11px;
+    background: #111;
+    border: 1px solid #2d2d2d;
+    scroll-snap-align: start;
+  }
+  .watch-item strong, .watch-item small {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .terminal-main { width: 100%; }
+  .terminal-control, .terminal-chart-panel, .terminal-forecast, .pattern-panel { min-width: 0; }
+  .terminal-mode { display: none; }
+}
+
+@media (max-width: 600px) {
+  .terminal-header { height: 60px; padding-inline: 12px; }
+  .terminal-brand-mark { width: 48px; height: 36px; flex: none; }
+  .terminal-brand-mark .animal-icon { width: 24px; height: 22px; }
+  .terminal-brand strong { font-size: 9px; }
+  .terminal-brand small { font-size: 7px; }
+  .terminal-exit { font-size: 10px; padding: 8px 9px; }
+  .terminal-main { padding: 15px 12px 32px; }
+  .terminal-symbol-head { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; margin-bottom: 14px; }
+  .terminal-symbol-head > div { min-width: 0; }
+  .symbol-title { flex-wrap: wrap; gap: 7px; }
+  .symbol-title h1 { font-size: clamp(24px, 7vw, 30px); margin: 6px 0; }
+  .quote-stack { text-align: left; display: flex; gap: 8px 14px; align-items: baseline; flex-wrap: wrap; }
+  .quote-value { font-size: 25px; }
+  .terminal-control { padding: 12px; gap: 9px; }
+  .controls-group { min-width: 0; flex: 1 1 calc(50% - 9px); }
+  .controls-group select { min-width: 0; }
+  .terminal-chart-panel { padding: 12px; }
+  .block-heading { flex-wrap: wrap; }
+  .block-heading > span { white-space: normal; }
+  .terminal-disclosure { padding: 10px 12px; line-height: 1.55; }
+
+  /* Make the consent panel comfortable on narrow or short phones. */
+  .legal-gate { padding: 10px; align-items: center; }
+  .legal-gate-card {
+    width: 100%;
+    max-height: calc(100dvh - 20px);
+    padding: 18px 17px;
+    border-radius: 15px;
+    overscroll-behavior: contain;
+  }
+  .gate-symbols { gap: 8px; margin-bottom: 8px; }
+  .gate-symbols .animal-icon { width: 46px; height: 29px; }
+  .gate-eyebrow { font-size: 9px; letter-spacing: .1em; }
+  .legal-gate h2 { font-size: clamp(21px, 6vw, 26px); line-height: 1.2; margin: 8px 0 10px; }
+  .legal-gate p { font-size: 12px; line-height: 1.6; margin: 0; }
+  .gate-links { gap: 10px 17px; margin: 13px 0 10px; }
+  .gate-links a { font-size: 11px; }
+  #legal-gate-form { bottom: 0; margin-top: 8px; padding: 10px 0 4px; }
+  .gate-check { padding: 11px; gap: 10px; font-size: 11.5px; line-height: 1.5; }
+  .gate-accept { padding: 12px; margin-top: 11px; font-size: 12px; }
+  .gate-decline { margin-top: 11px; font-size: 11px; }
+}
+
+@media (max-width: 360px) {
+  .terminal-header { padding-inline: 8px; gap: 6px; }
+  .terminal-brand { gap: 5px; }
+  .terminal-brand strong { font-size: 8px; letter-spacing: 0; }
+  .terminal-brand small { font-size: 7px; }
+  .terminal-exit { gap: 5px; padding: 7px; font-size: 9px; }
+  .legal-gate-card { padding: 15px 12px; }
+}
+
+@media (max-height: 590px) and (max-width: 780px) {
+  .legal-gate { align-items: flex-start; }
+  .legal-gate-card { max-height: calc(100dvh - 20px); }
+}
