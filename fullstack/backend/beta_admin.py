@@ -159,3 +159,13 @@ def delete_feedback(request: Request, feedback_id: str):
     uid = validated_uuid(feedback_id)
     db_call("beta_feedback", method="DELETE", filters={"id": uid}, select="id")
     return no_store({"deleted": True})
+
+
+@admin_router.delete("/withdrawals/{request_id}")
+def discard_unverified_withdrawal(request: Request, request_id: str):
+    """Delete only an unverified request record, never the subscriber entry."""
+    require_admin(request)
+    uid = validated_uuid(request_id)
+    db_call("beta_withdrawal_requests", method="DELETE",
+            filters={"id": uid}, select="id")
+    return no_store({"request_discarded": True, "subscriber_unchanged": True})
