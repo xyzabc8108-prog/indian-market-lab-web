@@ -34,6 +34,7 @@ from research_engine import technical_snapshot, position_budget, validate_ohlcv,
 from news_radar import read_public_headlines, OFFICIAL_LINKS
 from fullstack.backend.terminal_engine import terminal_report, CANDLE_RANGES
 from fullstack.backend.beta import router as beta_router
+from fullstack.backend.beta_admin import admin_router
 
 FRONTEND = Path(__file__).resolve().parents[1] / 'frontend'
 IST = ZoneInfo('Asia/Kolkata')
@@ -42,6 +43,7 @@ INDEX_TICKERS = {'^NSEI', '^NSEBANK', '^CNXIT'}
 CACHE: dict[tuple[str, str], tuple[float, pd.DataFrame]] = {}
 app = FastAPI(title='Indian Market Lab API', description='Educational NSE research; no orders or live feed guarantees.', version='2.0')
 app.include_router(beta_router)
+app.include_router(admin_router)
 
 
 def normalize_ticker(value: str) -> str:
