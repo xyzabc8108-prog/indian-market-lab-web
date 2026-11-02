@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#030303">
 <meta name="description" content="Indian Market Lab Trader Mode — explore NSE candles, patterns, and historical scenario analysis. Paper trading only.">
 <title>Trader Mode | Indian Market Lab</title>
-<link rel="stylesheet" href="/terminal.css?v=legal1">
+<link rel="stylesheet" href="/terminal.css?v=ux2">
 </head>
 <body class="terminal-page terms-pending">
 <div id="legal-gate" class="legal-gate" role="dialog" aria-modal="true" aria-labelledby="legal-gate-title" aria-describedby="legal-gate-copy">
@@ -20,7 +20,7 @@
       <label class="gate-check"><input type="checkbox" id="legal-acknowledge" required><span>I understand that the tools are for research and paper trading, that prices and scenarios may be inaccurate, and that no real orders are placed.</span></label>
       <button class="gate-accept" id="legal-continue" type="submit" disabled>Enter Trader Mode</button>
     </form>
-    <a class="gate-decline" href="/beta">Leave Trader Mode</a>
+    <a class="gate-decline" href="/#/home">Return to research home</a>
   </div>
 </div>
 
@@ -36,9 +36,9 @@
       <div class="terminal-side-title"><h2>MARKET WATCH</h2><span>🇮🇳 NSE</span></div>
       <label class="sr-only" for="terminal-symbol">Search NSE stock</label>
       <input id="terminal-symbol" autocomplete="off" spellcheck="false" placeholder="Search company / symbol..." value="RELIANCE">
-      <div id="universe-source" class="mini-muted">Loading stocks...</div>
+      <div id="universe-source" class="mini-muted">Search the NSE stock directory</div>
       <div class="watch-actions"><button id="watch-all" class="selected" type="button">All equities</button><button id="watch-favorites" type="button">Popular</button></div>
-      <div id="terminal-watch-items" class="watch-items"><div class="terminal-skeleton">Loading stocks…</div></div>
+      <div id="terminal-watch-items" class="watch-items" aria-live="polite"><div class="terminal-skeleton">Loading stock list…</div></div>
       <button id="watch-more" class="watch-more" type="button" hidden>Load more stocks ↓</button>
       <div class="watch-caption">Choose a stock to see its chart and scenarios. Symbols depend on the available NSE directory.</div>
     </aside>
@@ -53,7 +53,7 @@
         </div>
         <div class="controls-group"><label for="chart-lookback">CHART HISTORY</label><select id="chart-lookback"><option value="6mo">Last 6 months</option></select></div>
         <div class="controls-group"><label for="future-horizon">LOOK AHEAD</label><select id="future-horizon"><option value="5">5 candles</option><option selected value="10">10 candles</option><option value="20">20 candles</option><option value="40">40 candles</option></select></div>
-        <button class="terminal-refresh" id="reload-terminal" type="button">⟳ Refresh analysis</button>
+        <button class="terminal-refresh" id="reload-terminal" type="button">⟳ Refresh analysis</button><button id="retry-terminal" class="terminal-retry" type="button" hidden>↻ Retry loading data</button>
       </div>
       <div class="terminal-chart-panel">
         <div class="chart-header"><div><strong>PRICE ACTION</strong><small id="chart-timeframe">Candlestick chart</small></div><div class="overlay-options"><label><input type="checkbox" id="show-sma20" checked> SMA 20</label><label><input type="checkbox" id="show-sma50" checked> SMA 50</label><label><input type="checkbox" id="show-ema20"> EMA 20</label><span class="live-flag">● HISTORICAL DATA</span></div></div>
@@ -61,10 +61,10 @@
         <div class="chart-bottom"><span id="chart-candles">— candles</span><span>🐂 Green = Bullish candle &nbsp; 🐻 Red = Bearish candle &nbsp; · &nbsp; Wheel to zoom, drag to explore</span></div>
       </div>
       <section class="terminal-forecast panel-terminal">
-        <div class="block-heading"><div><span class="terminal-eyebrow">WHAT COULD HAPPEN NEXT?</span><h2>Future price scenarios <span class="scenario-chip">SIMULATION</span></h2><p>Illustrative paths based on historical price changes — not guaranteed predictions.</p></div><span id="scenario-window">Next 10 candles</span></div>
+        <div class="block-heading"><div><span class="terminal-eyebrow">HISTORICAL RESAMPLING</span><h2>Statistical scenario distribution <span class="scenario-chip">SIMULATION</span></h2><p>Statistical paths from historical candle changes. These ranges do not predict prices.</p></div><span id="scenario-window">10 simulated candles</span></div>
         <div class="scenario-metrics" id="scenario-metrics"><div>Preparing scenario ranges…</div></div>
         <div class="forecast-chart" id="forecast-chart"></div>
-        <p class="small-disclaimer">Bands show the middle 80% of 2,500 model paths. The share of simulated paths rising is not a real probability of a stock going up.</p>
+        <p class="small-disclaimer">Bands show the 10th, 50th and 90th percentiles across 2,500 historical resamples. They are not trading targets or calibrated probabilities.</p>
       </section>
       <section class="pattern-panel panel-terminal">
         <div class="block-heading"><div><span class="terminal-eyebrow">PATTERN RADAR</span><h2>Chart & candlestick patterns</h2><p>Possible formations from recent candles. A shape alone is not confirmation.</p></div><span class="radar-count" id="pattern-total">—</span></div>
@@ -75,15 +75,24 @@
     </main>
     <aside class="terminal-desk">
       <div class="desk-title"><h2>THE TRADER'S DESK</h2><span>🐂 / 🐻</span></div>
-      <div class="market-mood"><div class="mood-icon">🐂</div><div class="mood-content"><span>BULL SCENARIO</span><strong id="bull-price">—</strong><small>Upper illustrative range</small></div></div>
-      <div class="market-mood bear"><div class="mood-icon">🐻</div><div class="mood-content"><span>BEAR SCENARIO</span><strong id="bear-price">—</strong><small>Lower illustrative range</small></div></div>
+      <div class="market-mood"><div class="mood-icon">🐂</div><div class="mood-content"><span>UPPER HISTORICAL BAND · P90</span><strong id="bull-price">—</strong><small>Illustrative 90th percentile; not a target</small></div></div>
+      <div class="market-mood bear"><div class="mood-icon">🐻</div><div class="mood-content"><span>LOWER HISTORICAL BAND · P10</span><strong id="bear-price">—</strong><small>Illustrative 10th percentile; not a target</small></div></div>
       <div class="desk-card"><div class="desk-label">RECENT PRICE TREND</div><strong id="desk-trend">—</strong><p id="desk-pattern">Waiting for historical data…</p></div>
       <div class="desk-card"><div class="desk-label">POSSIBLE PATHS ABOVE LAST CLOSE</div><strong id="model-share">—</strong><p>Share within the historical simulation, not forecast accuracy.</p></div>
-      <div class="desk-card risk-limit"><div class="desk-label">PAPER RISK LIMIT</div><strong>₹500 <small>/ idea</small></strong><p>Based on ₹50,000 paper capital and 1% planned risk. Stops cannot guarantee a maximum loss.</p></div>
+      <div class="desk-card risk-limit">
+        <div class="desk-label">YOUR VIRTUAL RISK BUDGET</div>
+        <div class="risk-controls">
+          <label for="paper-capital">Virtual capital (₹)<input id="paper-capital" type="number" min="1000" max="50000000" step="1000" value="50000" inputmode="decimal"></label>
+          <label for="paper-risk">Risk limit (%)<input id="paper-risk" type="number" min="0.1" max="5" step="0.1" value="1" inputmode="decimal"></label>
+          <label for="paper-stop">Example stop distance (%)<input id="paper-stop" type="number" min="0.1" max="50" step="0.1" value="3" inputmode="decimal"></label>
+        </div>
+        <strong id="paper-risk-amount">₹500.00 <small>/ idea</small></strong>
+        <p id="paper-risk-detail">A hypothetical risk budget. Adjust the values to explore risk; a stop does not guarantee a maximum loss.</p>
+      </div>
       <div class="desk-warning">⚠ Scenarios can be wrong. No real-time exchange feed, order entry or brokerage connection.</div>
     </aside>
   </div>
 </div>
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js" defer></script>
-<script type="module" src="/terminal.js?v=legal1"></script>
+<script type="module" src="/terminal.js?v=ux2"></script>
 </body></html>
