@@ -55,7 +55,7 @@
         </div>
         <div class="controls-group"><label for="chart-lookback">CHART HISTORY</label><select id="chart-lookback" aria-label="Chart history for selected candle interval"><option value="3mo">3 months</option><option value="6mo" selected>6 months</option><option value="1y">1 year</option></select></div>
         <div class="controls-group"><label for="future-horizon">LOOK AHEAD</label><select id="future-horizon"><option value="5">5 candles</option><option selected value="10">10 candles</option><option value="20">20 candles</option><option value="40">40 candles</option></select></div>
-        <button class="terminal-refresh" id="reload-terminal" type="button">⟳ Refresh analysis</button><button id="retry-terminal" class="terminal-retry" type="button" hidden>↻ Retry loading data</button>
+        <button class="terminal-refresh" id="reload-terminal" type="button">⟳ Refresh analysis</button><button id="retry-terminal" class="terminal-retry" type="button" hidden>↻ Retry loading data</button><button id="export-research-note" class="terminal-export" type="button" disabled>↓ Save study note (.txt)</button><span id="export-result" class="terminal-export-result" role="status" aria-live="polite"></span>
       </div>
       <div class="terminal-chart-panel">
         <div class="chart-header"><div><strong>PRICE ACTION</strong><small id="chart-timeframe">Candlestick chart</small></div><div class="overlay-options"><label><input type="checkbox" id="show-sma20" checked> SMA 20</label><label><input type="checkbox" id="show-sma50" checked> SMA 50</label><label><input type="checkbox" id="show-ema20"> EMA 20</label><span class="live-flag">● HISTORICAL DATA</span></div></div>
@@ -96,6 +96,6 @@
   </div>
 </div>
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js" defer></script>
-<script type="module" src="/terminal.js?v=ux5"></script>
+<script type="module" src="/terminal.js?v=ux6"></script>
 <script defer src="/feedback-widget.js?v=1"></script>
 </body></html>
