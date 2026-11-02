@@ -47,6 +47,55 @@ function examplePaperBudget(){
     detail.textContent='Virtual risk amount only. Example share counts require a valid historical stock close. No real orders.';
   }
 }
+function buildStudyNote(){
+ const d=state.latest;
+ if(!d||!d.scenario)return null;
+ const capital=Number($('paper-capital').value);
+ const risk=Number($('paper-risk').value);
+ const stop=Number($('paper-stop').value);
+ const valid=Number.isFinite(capital)&&capital>=1000&&capital<=50000000&&Number.isFinite(risk)&&risk>=.1&&risk<=5&&Number.isFinite(stop)&&stop>=.1&&stop<=50;
+ return [
+  'INDIAN MARKET LAB — PERSONAL RESEARCH NOTE',
+  'Generated (IST): '+formatDateTime(new Date().toISOString())+' IST',
+  'Instrument: '+String(d.symbol||state.symbol),
+  'Historical candle interval: '+String(d.interval),
+  'Historical chart window: '+String(d.lookback),
+  'Last available candle (IST): '+formatDateTime(d.latest_time)+' IST',
+  'Source: '+String(d.source||'Third-party historical market data; provider may delay or restrict updates'),
+  'Last historical close: '+fmt(d.last_price),
+  'Snapshot status: '+(state.cachedSnapshot?'Earlier successful data from this browser session':'Last response received from the research API'),
+  '',
+  'HISTORICAL RESAMPLING — NOT PRICE TARGETS',
+  'Simulated horizon: '+String(d.scenario.horizon)+' candles',
+  'Lower volatility range (10th percentile): '+fmt(d.scenario.downside),
+  'Median simulated range (50th percentile): '+fmt(d.scenario.middle),
+  'Upper volatility range (90th percentile): '+fmt(d.scenario.upside),
+  'Simulation: '+String(d.scenario.paths||2500)+' resampled paths (not calibrated probabilities)',
+  '',
+  'YOUR USER-ENTERED VIRTUAL RISK SETTINGS',
+  'Virtual capital: '+(valid?fmt(capital):'Invalid setting'),
+  'Example risk percentage: '+(valid?risk+'%':'Invalid setting'),
+  'Example stop distance: '+(valid?stop+'%':'Invalid setting'),
+  'Virtual risk amount: '+(valid?fmt(capital*risk/100):'Invalid setting'),
+  '',
+  'Educational historical statistics and virtual paper calculations only.',
+  'No live exchange data guarantee. No investment recommendation or orders.',
+  'Historical price ranges and a virtual risk cap cannot predict or bound real losses.',
+  'Terms: https://indian-market-lab-fullstack.onrender.com/terms'
+ ].join('\n');
+}
+function saveStudyNote(){
+ const note=buildStudyNote();
+ if(!note){$('export-result').textContent='Load historical data before exporting.';return;}
+ const symbol=String(state.latest?.symbol||'stock').replace(/[^A-Za-z0-9_-]/g,'_').slice(0,35);
+ const stamp=new Date().toISOString().slice(0,10);
+ const blob=new Blob([note],{type:'text/plain;charset=utf-8'});
+ const url=URL.createObjectURL(blob),link=document.createElement('a');
+ link.href=url;link.download='IndianMarketLab_'+symbol+'_'+stamp+'_study.txt';
+ document.body.appendChild(link);link.click();link.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+ $('export-result').textContent='Personal research note saved as a text file on this device.';
+}
 function clock(){
  $('ist-clock').textContent=formatDateTime(new Date().toISOString())+' IST';
 }
@@ -158,6 +207,7 @@ $('future-horizon').addEventListener('change',()=>{
  state.horizon=Number($('future-horizon').value);loadTerminal();
 });
 $('reload-terminal').addEventListener('click',()=>loadTerminal());
+$('export-research-note').addEventListener('click',saveStudyNote);
 $('retry-terminal').addEventListener('click',()=>loadTerminal());
 for(const id of ['paper-capital','paper-risk','paper-stop']){
  $(id).addEventListener('input',examplePaperBudget);
@@ -284,6 +334,8 @@ function renderPatterns(patterns,library){
 }
 function display(data){
  state.latest=data;
+ $('export-research-note').disabled=false;
+ $('export-result').textContent='';
  $('instrument-name').textContent=data.symbol.replace(/\.NS$/,'');
  $('last-price').textContent=fmt(data.last_price);
  $('last-change').textContent=(data.change_pct>0?'+':'')+pct(data.change_pct)+' · previous candle';
@@ -310,6 +362,8 @@ function display(data){
 }
 function showError(message){
  $('retry-terminal').hidden=false;
+ $('export-research-note').disabled=true;
+ $('export-result').textContent='Historical data is required to save a study note.';
  cleanupChart();state.latest=null;
  $('candle-chart').innerHTML='<div class="chart-placeholder">⚠ '+h(message)+'<br>Use the Retry button above, or change your candle interval.</div>';
  $('last-price').textContent='—';$('last-change').textContent='Data not available';
@@ -338,11 +392,13 @@ async function loadTerminal(){
   if(seq!==state.seq)return;
   researchSnapshots.set(cacheKey,data);
   if(researchSnapshots.size>6)researchSnapshots.delete(researchSnapshots.keys().next().value);
+  state.cachedSnapshot=false;
   display(data);
  }catch(e){
    if(seq!==state.seq)return;
    const previous=researchSnapshots.get(cacheKey);
    if(previous){
+     state.cachedSnapshot=true;
      display(previous);
      $('retry-terminal').hidden=false;
      $('last-update').textContent='⚠ Showing an earlier successful snapshot from this browser session ('+
