@@ -57,7 +57,6 @@ def test_ready_endpoints_have_no_public_pii(monkeypatch):
     monkeypatch.setenv("BETA_SUPABASE_URL", "https://dedicated-test.supabase.co")
     monkeypatch.setenv("BETA_SUPABASE_SECRET_KEY", "sb_secret_placeholder")
     monkeypatch.setenv("BETA_PRIVACY_READY", "true")
-    monkeypatch.setenv("IML_PUBLIC_CONTACT_EMAIL", "support@example.invalid")
     monkeypatch.setattr(beta, "_recent", defaultdict(deque))
     monkeypatch.setattr(beta, "_status_cache", None)
     requests = []
@@ -89,7 +88,6 @@ def test_public_form_origin_restriction_and_bot_trap(monkeypatch):
     monkeypatch.setenv("BETA_SUPABASE_URL", "https://dedicated-test.supabase.co")
     monkeypatch.setenv("BETA_SUPABASE_SECRET_KEY", "sb_secret_placeholder")
     monkeypatch.setenv("BETA_PRIVACY_READY", "true")
-    monkeypatch.setenv("IML_PUBLIC_CONTACT_EMAIL", "support@example.invalid")
     monkeypatch.setenv("BETA_PUBLIC_ORIGIN", "https://example.test")
     monkeypatch.setattr(beta, "_recent", defaultdict(deque))
     calls = []
@@ -107,7 +105,6 @@ def test_rate_limiter(monkeypatch):
     monkeypatch.setenv("BETA_SUPABASE_URL", "https://dedicated-test.supabase.co")
     monkeypatch.setenv("BETA_SUPABASE_SECRET_KEY", "sb_secret_placeholder")
     monkeypatch.setenv("BETA_PRIVACY_READY", "true")
-    monkeypatch.setenv("IML_PUBLIC_CONTACT_EMAIL", "support@example.invalid")
     monkeypatch.delenv("BETA_PUBLIC_ORIGIN", raising=False)
     monkeypatch.setattr(beta, "_recent", defaultdict(deque))
     monkeypatch.setattr(beta, "_remote", lambda table, payload=None: 201)
@@ -127,13 +124,14 @@ def test_credentials_alone_do_not_open_beta(monkeypatch):
     assert r.json()["feedback_open"] is False
 
 
-def test_beta_requires_public_support_email_even_when_other_settings_ready(monkeypatch):
-    monkeypatch.setenv("BETA_SUPABASE_URL", "https://dedicated-test.supabase.co")
-    monkeypatch.setenv("BETA_SUPABASE_SECRET_KEY", "sb_secret_placeholder")
-    monkeypatch.setenv("BETA_PRIVACY_READY", "true")
-    monkeypatch.delenv("IML_PUBLIC_CONTACT_EMAIL", raising=False)
+def test_published_email_does_not_open_waitlist_by_itself(monkeypatch):
+    assert beta.public_contact_email() == "rohanchhaya108@gmail.com"
+    monkeypatch.delenv("BETA_SUPABASE_URL", raising=False)
+    monkeypatch.delenv("BETA_SUPABASE_SECRET_KEY", raising=False)
+    monkeypatch.delenv("BETA_PRIVACY_READY", raising=False)
     monkeypatch.setattr(beta, "_status_cache", None)
     assert beta.beta_config() is None
     r = client.get("/api/beta/status")
     assert r.status_code == 200
     assert r.json()["waitlist_open"] is False
+    assert r.json()["feedback_open"] is False
