@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#030303">
 <meta name="description" content="Indian Market Lab Trader Mode — explore NSE candles, patterns, and historical scenario analysis. Paper trading only.">
 <title>Trader Mode | Indian Market Lab</title>
-<link rel="stylesheet" href="/terminal.css?v=ux3">
+<link rel="stylesheet" href="/terminal.css?v=ux4">
 </head>
 <body class="terminal-page terms-pending">
 <div id="legal-gate" class="legal-gate" role="dialog" aria-modal="true" aria-labelledby="legal-gate-title" aria-describedby="legal-gate-copy">
@@ -18,7 +18,7 @@
     <div class="gate-links"><a href="/terms" target="_blank" rel="noopener noreferrer">Read Terms &amp; Risk ↗</a><a href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Notice ↗</a></div>
     <form id="legal-gate-form">
       <label class="gate-check"><input type="checkbox" id="legal-acknowledge" required><span>I understand that the tools are for research and paper trading, that prices and scenarios may be inaccurate, and that no real orders are placed.</span></label>
-      <button class="gate-accept" id="legal-continue" type="submit" disabled>Enter Trader Mode</button>
+      <button class="gate-accept" id="legal-continue" type="submit" disabled>I Understand — Enter Terminal</button>
     </form>
     <a class="gate-decline" href="/#/home">Return to research home</a>
   </div>
@@ -36,7 +36,8 @@
       <div class="terminal-side-title"><h2>MARKET WATCH</h2><span>🇮🇳 NSE</span></div>
       <label class="sr-only" for="terminal-symbol">Search NSE stock</label>
       <input id="terminal-symbol" autocomplete="off" spellcheck="false" placeholder="Search company / symbol..." value="RELIANCE">
-      <div id="universe-source" class="mini-muted">Search the NSE stock directory</div>
+      <div id="universe-source" class="mini-muted" role="status" aria-live="polite">Search the NSE stock directory</div>
+      <button id="watch-retry" class="watch-retry" type="button" hidden>↻ Retry stock list</button>
       <div class="watch-actions"><button id="watch-all" class="selected" type="button">All equities</button><button id="watch-favorites" type="button">Popular</button></div>
       <div id="terminal-watch-items" class="watch-items" aria-live="polite"><div class="terminal-skeleton">Loading stock list…</div></div>
       <button id="watch-more" class="watch-more" type="button" hidden>Load more stocks ↓</button>
@@ -44,8 +45,8 @@
     </aside>
     <main class="terminal-main">
       <div class="terminal-symbol-head">
-        <div><div class="terminal-eyebrow">MARKET CHARTS <span class="subtle-divider">/</span> HISTORICAL ANALYSIS</div><div class="symbol-title"><h1 id="instrument-name">RELIANCE</h1><span id="terminal-direction" class="trend-tag">ANALYZING</span></div><p id="last-update">Fetching available market candles…</p></div>
-        <div class="quote-stack"><div class="quote-value" id="last-price">—</div><span id="last-change">Historical close</span></div>
+        <div><div class="terminal-eyebrow">MARKET CHARTS <span class="subtle-divider">/</span> HISTORICAL ANALYSIS</div><div class="symbol-title"><h1 id="instrument-name">RELIANCE</h1><span id="terminal-direction" class="trend-tag">ANALYZING</span></div><p id="last-update" aria-live="polite">Checking last available candle timestamp (IST)…</p></div>
+        <div class="quote-stack"><div class="quote-value" id="last-price">—</div><span id="last-change">Last historical close · timestamp pending</span></div>
       </div>
       <div class="terminal-control panel-terminal">
         <div class="controls-group">
@@ -75,8 +76,8 @@
     </main>
     <aside class="terminal-desk">
       <div class="desk-title"><h2>THE TRADER'S DESK</h2><span>🐂 / 🐻</span></div>
-      <div class="market-mood"><div class="mood-icon">🐂</div><div class="mood-content"><span>UPPER HISTORICAL BAND · P90</span><strong id="bull-price">—</strong><small>Illustrative 90th percentile; not a target</small></div></div>
-      <div class="market-mood bear"><div class="mood-icon">🐻</div><div class="mood-content"><span>LOWER HISTORICAL BAND · P10</span><strong id="bear-price">—</strong><small>Illustrative 10th percentile; not a target</small></div></div>
+      <div class="market-mood"><div class="mood-icon">🐂</div><div class="mood-content"><span>UPPER VOLATILITY RANGE (90th %)</span><strong id="bull-price">—</strong><small>Illustrative 90th percentile; not a target</small></div></div>
+      <div class="market-mood bear"><div class="mood-icon">🐻</div><div class="mood-content"><span>LOWER VOLATILITY RANGE (10th %)</span><strong id="bear-price">—</strong><small>Illustrative 10th percentile; not a target</small></div></div>
       <div class="desk-card"><div class="desk-label">RECENT PRICE TREND</div><strong id="desk-trend">—</strong><p id="desk-pattern">Waiting for historical data…</p></div>
       <div class="desk-card"><div class="desk-label">POSSIBLE PATHS ABOVE LAST CLOSE</div><strong id="model-share">—</strong><p>Share within the historical simulation, not forecast accuracy.</p></div>
       <div class="desk-card risk-limit">
@@ -94,5 +95,5 @@
   </div>
 </div>
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js" defer></script>
-<script type="module" src="/terminal.js?v=ux3"></script>
+<script type="module" src="/terminal.js?v=ux4"></script>
 </body></html>
