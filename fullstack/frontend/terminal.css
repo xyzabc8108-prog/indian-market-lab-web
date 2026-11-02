@@ -79,3 +79,27 @@ input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px #00e6762
 }
 .pattern-item.bull .symbol{filter:brightness(0) saturate(100%) invert(61%) sepia(85%) saturate(1200%) hue-rotate(90deg)}
 .pattern-item.bear .symbol{filter:brightness(0) saturate(100%) invert(36%) sepia(98%) saturate(3800%) hue-rotate(326deg)}
+
+
+/* Versioned first-visit Trader Mode notice */
+[hidden]{display:none!important}
+.terms-pending{overflow:hidden}
+.terms-pending .terminal-app{filter:blur(6px);pointer-events:none;user-select:none}
+.terminal-disclosure{background:#111;border-bottom:1px solid #383838;color:#dedede;font-size:11px;line-height:1.65;padding:9px 22px}
+.terminal-disclosure strong{color:#fff}.terminal-disclosure a{color:#00e676;font-weight:800;text-decoration:underline;text-underline-offset:2px}
+.legal-gate{position:fixed;inset:0;z-index:9999;background:#000e;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto;overscroll-behavior:contain}
+.legal-gate-card{background:linear-gradient(145deg,#101010,#050505);border:1px solid #393939;box-shadow:0 30px 70px #000c,0 0 50px #00e67612;border-radius:19px;padding:34px;width:min(560px,100%);max-height:calc(100dvh - 35px);overflow:auto}
+.gate-symbols{font-size:31px;display:flex;gap:8px;margin-bottom:16px}
+.gate-eyebrow{color:#00e676;font-size:10px;letter-spacing:.15em;font-weight:800}
+.legal-gate h2{font:800 clamp(24px,4vw,32px)/1.3 Manrope,sans-serif;color:#f6f6f6;margin:12px 0 16px}
+.legal-gate p{font-size:13px;color:#c2c2c2;line-height:1.9}
+.gate-links{display:flex;flex-wrap:wrap;gap:18px;margin:18px 0 25px}
+.gate-links a{color:#00e676;font-weight:800;font-size:12px;text-decoration:underline;text-underline-offset:3px}
+.gate-check{display:flex;gap:12px;align-items:flex-start;background:#121212;border:1px solid #313131;border-radius:12px;padding:14px;font-size:12px;line-height:1.7;color:#eee;cursor:pointer}
+.gate-check input{margin:3px 0 0;accent-color:#00e676;flex:none;width:19px;height:19px}
+.gate-accept{background:#00e676;color:#030303;border:none;border-radius:10px;padding:13px 20px;margin-top:16px;width:100%;font-size:13px;font-weight:800}
+.gate-accept:hover:not(:disabled){background:#47ff9e}
+.gate-accept:disabled{background:#333;color:#999;cursor:not-allowed}
+.gate-decline{display:block;text-align:center;margin-top:14px;color:#ff6380;font-size:12px;font-weight:800}
+.legal-gate a:focus-visible,.gate-check input:focus-visible,.gate-accept:focus-visible{outline:2px solid #00e676;outline-offset:3px}
+@media(max-width:550px){.legal-gate{padding:12px}.legal-gate-card{padding:22px}.terminal-disclosure{padding:10px 14px;font-size:10px}}
