@@ -1,10 +1,10 @@
 import {api,h,money,pct,formatDateTime} from './api.js?v=ux2';
 
 const RANGES={
- '1m':['1d','5d'], '5m':['5d','1mo'],'15m':['5d','1mo'],
- '1h':['5d','1mo'],'1d':['3mo','6mo','1y','2y','5y'],'1wk':['6mo','1y','2y','5y']
+ '1m':['1d','5d'], '5m':['1d','5d'], '15m':['1wk','1mo'],
+ '1h':['1wk','1mo'], '1d':['3mo','6mo','1y'], '1wk':['1y','3y','5y']
 };
-const RANGE_LABELS={'1d':'1 day','5d':'5 days','1mo':'1 month','3mo':'3 months','6mo':'6 months','1y':'1 year','2y':'2 years','5y':'5 years'};
+const RANGE_LABELS={'1d':'1 day','5d':'5 days','1wk':'1 week','1mo':'1 month','3mo':'3 months','6mo':'6 months','1y':'1 year','2y':'2 years','3y':'3 years','5y':'5 years'};
 const POPULAR=[
  ['RELIANCE','Reliance Industries'],['TCS','Tata Consultancy Services'],['INFY','Infosys'],
  ['HDFCBANK','HDFC Bank'],['ICICIBANK','ICICI Bank'],['SBIN','State Bank of India'],
@@ -18,6 +18,7 @@ const state={symbol:'RELIANCE',interval:'1d',lookback:'6mo',horizon:10,
             watchMode:'all',search:'',offset:0,watchSeq:0,seq:0,latest:null,
             chart:null,resizeObserver:null,series:null,selectedFromList:false};
 let symbolTimer=null;
+let watchSlowTimer=null;
 const researchSnapshots=new Map(); // In-memory only; no fabricated historical quotes.
 function examplePaperBudget(){
   const capital=Number($('paper-capital').value);
@@ -80,6 +81,8 @@ function choose(sym,company=''){
 }
 async function loadWatch(append=false){
  const seq=++state.watchSeq;
+ clearTimeout(watchSlowTimer);
+ $('watch-retry').hidden=true;
  if(state.watchMode==='popular'){
    const q=state.search.toLowerCase();
    const filtered=POPULAR.filter(item=>item.Symbol.toLowerCase().includes(q)||item.Company.toLowerCase().includes(q));
@@ -90,9 +93,22 @@ async function loadWatch(append=false){
  }
  if(!append)state.offset=0;
  const q=state.search.trim();
+ if(!append){
+  $('terminal-watch-items').innerHTML='<div class="terminal-skeleton">Searching stock directory…</div>';
+  $('universe-source').textContent='Finding NSE stocks…';
+ }
+ // Render may be waking up. After five seconds let the user retry without blocking search.
+ watchSlowTimer=setTimeout(()=>{
+  if(seq===state.watchSeq){
+    $('universe-source').textContent='This is taking longer than usual. You can retry the stock list.';
+    $('watch-retry').hidden=false;
+  }
+ },5000);
  try{
-   const d=await api('/api/terminal/universe?'+new URLSearchParams({q,limit:60,offset:state.offset}),{timeoutMs:30000});
+   const d=await api('/api/terminal/universe?'+new URLSearchParams({q,limit:60,offset:state.offset}),{timeoutMs:22000});
    if(seq!==state.watchSeq)return;
+   clearTimeout(watchSlowTimer);
+   $('watch-retry').hidden=true;
    watchCards(d.items,append);
    state.offset+=d.items.length;
    $('watch-more').hidden=!d.has_more;
@@ -101,9 +117,11 @@ async function loadWatch(append=false){
      ' · '+d.total.toLocaleString('en-IN')+' matching';
  }catch(e){
    if(seq!==state.watchSeq)return;
+   clearTimeout(watchSlowTimer);
    if(!append)watchCards(POPULAR);
-   $('universe-source').textContent='Market directory unavailable. Enter any valid NSE symbol directly.';
+   $('universe-source').textContent='The stock list is unavailable. Popular stocks are shown; you can retry or type any valid NSE symbol.';
    $('watch-more').hidden=true;
+   $('watch-retry').hidden=false;
  }
 }
 function toggleWatch(mode){
@@ -115,6 +133,7 @@ function toggleWatch(mode){
 $('watch-all').addEventListener('click',()=>toggleWatch('all'));
 $('watch-favorites').addEventListener('click',()=>toggleWatch('popular'));
 $('watch-more').addEventListener('click',()=>loadWatch(true));
+$('watch-retry').addEventListener('click',()=>loadWatch());
 $('terminal-symbol').addEventListener('input',()=>{
  clearTimeout(symbolTimer);
  state.search=$('terminal-symbol').value.trim();
@@ -351,7 +370,7 @@ function startTerminal(){
  loadTerminal();
 }
 function hasAcknowledged(){
- try{return localStorage.getItem(LEGAL_NOTICE_VERSION)==='yes';}catch{return false;}
+ try{return sessionStorage.getItem(LEGAL_NOTICE_VERSION)==='yes'||localStorage.getItem(LEGAL_NOTICE_VERSION)==='yes';}catch{return false;}
 }
 acknowledgement.addEventListener('change',()=>{
  continueButton.disabled=!acknowledgement.checked;
@@ -359,7 +378,7 @@ acknowledgement.addEventListener('change',()=>{
 gateForm.addEventListener('submit',event=>{
  event.preventDefault();
  if(!acknowledgement.checked)return;
- try{localStorage.setItem(LEGAL_NOTICE_VERSION,'yes');}catch{
+ try{sessionStorage.setItem(LEGAL_NOTICE_VERSION,'yes');}catch{
    // Storage may be unavailable: allow this session, but prompt next visit.
  }
  startTerminal();
