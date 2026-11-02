@@ -14,10 +14,10 @@
     <div class="gate-symbols" aria-hidden="true"><span>🐂</span><span>🐻</span></div>
     <span class="gate-eyebrow">BEFORE ENTERING TRADER MODE</span>
     <h2 id="legal-gate-title">Understand the risks</h2>
-    <p id="legal-gate-copy">Indian Market Lab provides educational market research. It is not presented as a SEBI-registered Research Analyst or Investment Adviser. Historical prices can be delayed. Candle patterns, bull/bear scenarios and hypothetical price levels are not personalized buy or sell instructions. Trading can cause substantial losses.</p>
+    <p id="legal-gate-copy">Indian Market Lab provides educational market research. It is not presented as a SEBI-registered Research Analyst or Investment Adviser. Historical prices can be delayed. Candlestick patterns and statistical volatility ranges are historical mathematical illustrations, not personalized buy or sell instructions. Trading can cause substantial losses.</p>
     <div class="gate-links"><a href="/terms" target="_blank" rel="noopener noreferrer">Read Terms &amp; Risk ↗</a><a href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Notice ↗</a></div>
     <form id="legal-gate-form">
-      <label class="gate-check"><input type="checkbox" id="legal-acknowledge" required><span>I understand that the tools are for research and paper trading, that prices and scenarios may be inaccurate, and that no real orders are placed.</span></label>
+      <label class="gate-check"><input type="checkbox" id="legal-acknowledge" required><span>I understand that charts, candlestick patterns and statistical volatility ranges are educational and may be inaccurate, and that no real orders are placed.</span></label>
       <button class="gate-accept" id="legal-continue" type="submit" disabled>I Understand — Enter Terminal</button>
     </form>
     <a class="gate-decline" href="/#/home">Return to research home</a>
@@ -30,7 +30,7 @@
     <div class="terminal-mode" aria-label="Trader Mode is enabled"><span class="terminal-led"></span> 🐂 TRADER MODE 🐻 <span class="terminal-on">ON</span></div>
     <div class="terminal-header-end"><span id="ist-clock" aria-label="Indian Standard Time">IST</span><a class="terminal-exit" href="/#/home" title="Return to normal research mode"><span class="mode-slider" aria-hidden="true"></span> Exit Trader Mode</a></div>
   </header>
-  <div class="terminal-disclosure" role="note"><strong>Important disclosure:</strong> Historical charts, illustrative price levels and scenario outputs are not investment advice. No exchange-verified live prices or real orders. Trading can result in substantial losses. <a href="/terms">Terms &amp; Risk ↗</a></div>
+  <div class="terminal-disclosure" role="note"><strong>Important disclosure:</strong> Historical charts, candlestick patterns and statistical volatility ranges are not investment advice. No exchange-verified live prices or real orders. Trading can result in substantial losses. <a href="/terms">Terms &amp; Risk ↗</a></div>
   <div class="terminal-layout">
     <aside class="terminal-watch">
       <div class="terminal-side-title"><h2>MARKET WATCH</h2><span>🇮🇳 NSE</span></div>
@@ -52,7 +52,7 @@
         <div class="controls-group">
           <label for="candle-interval">CANDLE TIME</label><select id="candle-interval"><option value="1m">1 min</option><option value="5m">5 min</option><option value="15m">15 min</option><option value="1h">1 hour</option><option selected value="1d">1 day</option><option value="1wk">1 week</option></select>
         </div>
-        <div class="controls-group"><label for="chart-lookback">CHART HISTORY</label><select id="chart-lookback"><option value="6mo">Last 6 months</option></select></div>
+        <div class="controls-group"><label for="chart-lookback">CHART HISTORY</label><select id="chart-lookback" aria-label="Chart history for selected candle interval"><option value="3mo">3 months</option><option value="6mo" selected>6 months</option><option value="1y">1 year</option></select></div>
         <div class="controls-group"><label for="future-horizon">LOOK AHEAD</label><select id="future-horizon"><option value="5">5 candles</option><option selected value="10">10 candles</option><option value="20">20 candles</option><option value="40">40 candles</option></select></div>
         <button class="terminal-refresh" id="reload-terminal" type="button">⟳ Refresh analysis</button><button id="retry-terminal" class="terminal-retry" type="button" hidden>↻ Retry loading data</button>
       </div>
@@ -95,5 +95,5 @@
   </div>
 </div>
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js" defer></script>
-<script type="module" src="/terminal.js?v=ux4"></script>
+<script type="module" src="/terminal.js?v=ux5"></script>
 </body></html>
