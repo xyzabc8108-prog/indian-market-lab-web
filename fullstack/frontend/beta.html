@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071521">
+<meta name="description" content="Indian Market Lab Beta — explore Indian stock charts, NSE company search, historical screeners and paper-trading research. Free beta preview.">
+<meta property="og:title" content="Indian Market Lab | Beta">
+<meta property="og:description" content="Research Indian stocks. Explore charts. Practice without placing real orders.">
+<meta property="og:type" content="website">
+<title>Indian Market Lab — Beta</title>
+<link rel="stylesheet" href="/beta.css?v=1">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="brand" href="/beta" aria-label="Indian Market Lab beta home"><span class="brand-symbol">↗</span><span><strong>INDIAN MARKET LAB</strong><small>PUBLIC BETA</small></span></a>
+  <nav class="navigation" aria-label="Main navigation">
+    <a href="#features">Features</a><a href="#how-it-works">How it works</a><a href="#feedback">Feedback</a>
+  </nav>
+  <a class="header-action" href="/terminal">🐂 Trader Mode <span aria-hidden="true">↗</span></a>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="eyebrow"><span class="live-dot"></span> FREE BETA PREVIEW</span>
+      <h1>Explore the Indian market.<br><em>Think like a researcher.</em></h1>
+      <p>One simple place to explore NSE-listed companies, read price charts, check market patterns, test paper-trading ideas and learn the risks. No brokerage account needed.</p>
+      <div class="hero-actions"><a class="primary" href="/terminal">Open Trader Terminal <span aria-hidden="true">↗</span></a><a class="secondary" href="/#/stocks">Explore Stocks</a></div>
+      <p class="hero-footnote">Historical market research · Prices can be delayed · No real orders</p>
+    </div>
+    <div class="terminal-preview" aria-label="Illustrative trader terminal preview with green and red candles">
+      <div class="preview-bar"><span class="preview-dot green"></span><span class="preview-dot red"></span><strong>MARKET EXPLORER</strong><small>DEMO VISUAL</small></div>
+      <div class="preview-heading"><div><strong>RELIANCE · NSE</strong><span>Example candlestick visualization</span></div><div class="preview-bull">🐂 BULL <span class="preview-divider">/</span> <span class="preview-bear">🐻 BEAR</span></div></div>
+      <svg id="preview-svg" viewBox="0 0 580 280" role="img" aria-label="Illustrative chart, not actual stock prices">
+        <g stroke="#22353a" stroke-width="1" opacity=".7"><path d="M0 45H580M0 90H580M0 135H580M0 180H580M0 225H580"/></g>
+        <g id="candles"></g>
+        <path d="M8 198C70 193 94 185 141 172S217 168 270 147S354 122 404 129S506 92 570 58" stroke="#41cda0" stroke-width="2" stroke-dasharray="6 6" fill="none" opacity=".5"/>
+      </svg>
+      <div class="preview-bottom"><span><i class="green-dot"></i> Bullish candle</span><span><i class="red-dot"></i> Bearish candle</span><span>Not a live chart</span></div>
+    </div>
+  </section>
+
+  <section class="trust-strip" aria-label="What to expect">
+    <div><strong>Free to explore</strong><span>Core research tools</span></div>
+    <div><strong>Separate Trader Mode</strong><span>Charts and pattern explorer</span></div>
+    <div><strong>Paper-trading only</strong><span>No real buy or sell orders</span></div>
+    <div><strong>Clearly labelled data</strong><span>Historical, not guaranteed live</span></div>
+  </section>
+
+  <section id="features" class="section content-wrap">
+    <div class="section-heading"><span class="eyebrow">WHAT YOU CAN EXPLORE</span><h2>Tools built for curious market learners</h2><p>Start with one company, then explore the market at your own pace.</p></div>
+    <div class="feature-grid">
+      <a href="/#/stocks" class="feature"><span class="feature-icon">↗</span><h3>Stock Research</h3><p>Choose an NSE stock, review historical trends, technical indicators and hypothetical risk calculations.</p><span class="feature-link">Open stock research ↗</span></a>
+      <a href="/terminal" class="feature feature-green"><span class="feature-icon">🐂🐻</span><h3>Trader Terminal</h3><p>Green and red candlesticks, flexible intervals, market watchlists, pattern candidates and simulated scenarios.</p><span class="feature-link">Explore Trader Mode ↗</span></a>
+      <a href="/#/scanner" class="feature"><span class="feature-icon">◎</span><h3>Market Scanner</h3><p>Compare stocks using dated NSE price files. Rankings only appear when enough historical data exists.</p><span class="feature-link">See the scanner ↗</span></a>
+      <a href="/#/paper" class="feature"><span class="feature-icon">▤</span><h3>Paper Portfolio</h3><p>Practice position sizing with a fixed budget and save hypothetical ideas in your own browser.</p><span class="feature-link">Try paper trading ↗</span></a>
+    </div>
+  </section>
+
+  <section id="how-it-works" class="section steps-section">
+    <div class="content-wrap">
+      <div class="section-heading"><span class="eyebrow">HOW IT WORKS</span><h2>From curiosity to a clear research routine</h2></div>
+      <div class="steps">
+        <div><span class="number">01</span><h3>Select a stock</h3><p>Use a company name or NSE symbol to open the available historical chart.</p></div>
+        <div><span class="number">02</span><h3>Explore evidence</h3><p>Change candle intervals, examine patterns and compare possible scenarios.</p></div>
+        <div><span class="number">03</span><h3>Practice a plan</h3><p>Check your risk budget and record a hypothetical idea without investing real money.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section content-wrap boundaries" aria-label="Important information">
+    <div><span class="eyebrow">KNOW BEFORE YOU START</span><h2>Research, not guaranteed predictions.</h2></div>
+    <p>Market history, candle patterns and computer simulations can help explain possibilities, but they cannot tell you exactly where a stock will go. Data may be delayed, incomplete or unavailable. Always verify current information independently. This beta does not place orders or offer personalized investment advice.</p>
+  </section>
+
+  <section id="join" class="section content-wrap signup-grid">
+    <div class="section-heading signup-copy"><span class="eyebrow">EARLY ACCESS</span><h2>Help shape what comes next</h2><p>Explore the free beta today. If you'd like to hear when new features are ready, you can join the early-access list once registration opens.</p><div class="mini-line">No payments or subscriptions are being charged in this beta.</div></div>
+    <div class="form-card">
+      <div class="form-top"><strong>Early-access interest</strong><span id="waitlist-badge" class="form-badge">Checking availability</span></div>
+      <p class="subdued">We will only use your email for beta invitations and product updates you request.</p>
+      <form id="waitlist-form">
+        <label for="wait-email">Email address</label><input id="wait-email" name="email" type="email" maxlength="254" required autocomplete="email" placeholder="you@example.com">
+        <label for="wait-feature">What interests you most?</label>
+        <select id="wait-feature" name="feature">
+          <option value="charts">Trading charts</option><option value="scanner">Stock screener</option><option value="backtesting">Strategy backtesting</option><option value="paper-trading">Paper trading</option><option value="news">Market news</option><option value="other">Something else</option>
+        </select>
+        <label class="checkline"><input id="wait-consent" type="checkbox" required> <span>I agree to be contacted about Indian Market Lab's beta. I can withdraw my interest by replying to an invitation.</span></label>
+        <label class="hp" aria-hidden="true" for="wait-website">Website<input type="text" id="wait-website" name="website" tabindex="-1" autocomplete="off"></label>
+        <button type="submit" class="primary full" id="wait-submit" disabled>Registration opening soon</button>
+        <div class="form-message" id="wait-result" role="status" aria-live="polite">Checking early-access registration.</div>
+      </form>
+    </div>
+  </section>
+
+  <section class="section content-wrap" id="feedback">
+    <div class="section-heading"><span class="eyebrow">BETA FEEDBACK</span><h2>Tell us what to improve</h2><p>Your feedback helps prioritize features. Please don't include account numbers, passwords, or other private information.</p></div>
+    <div class="form-card feedback-card">
+      <form id="feedback-form">
+        <div class="feedback-grid"><div><label for="feedback-feature">Which tool?</label><select id="feedback-feature" required><option value="charts">Trader Terminal</option><option value="scanner">Market Scanner</option><option value="backtesting">Strategy testing</option><option value="paper-trading">Paper Portfolio</option><option value="news">News</option><option value="other">General feedback</option></select></div>
+        <div><label for="feedback-rating">Your experience</label><select id="feedback-rating" required><option value="5">5 — Excellent</option><option value="4" selected>4 — Good</option><option value="3">3 — Okay</option><option value="2">2 — Needs work</option><option value="1">1 — Difficult</option></select></div></div>
+        <label for="feedback-message">What would make Indian Market Lab better?</label><textarea id="feedback-message" rows="4" minlength="12" maxlength="1200" required placeholder="Tell us which feature worked, what was confusing, or what you would add..."></textarea>
+        <label class="hp" aria-hidden="true" for="feedback-website">Website<input id="feedback-website" type="text" tabindex="-1" autocomplete="off"></label>
+        <button class="primary" id="feedback-submit" type="submit" disabled>Feedback opening soon</button>
+        <div class="form-message" id="feedback-result" role="status" aria-live="polite">Checking feedback availability.</div>
+        <p class="subdued">Feedback is anonymous when submissions are enabled. If unavailable, you can <a href="https://github.com/xyzabc8108-prog/indian-market-lab-web/issues/new?title=Beta%20feedback" target="_blank" rel="noopener noreferrer">open a GitHub feedback issue</a> (GitHub sign-in required).</p>
+      </form>
+    </div>
+  </section>
+
+  <footer class="site-footer"><div class="content-wrap foot-layout"><div><strong>INDIAN MARKET LAB</strong><p>Explore. Learn. Practice.</p></div><div><a href="/#/about">Help &amp; Information</a><a href="/terminal">Trader Terminal</a><a href="#join">Early access</a></div><small>Beta preview · Historical information may be delayed · No real trades</small></div></footer>
+</main>
+<script type="module" src="/beta.js?v=1"></script>
+</body>
+</html>
