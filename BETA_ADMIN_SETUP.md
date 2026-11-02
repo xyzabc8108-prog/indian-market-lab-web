@@ -29,12 +29,13 @@ Admin: HTTPS Authorization: Bearer <BETA_ADMIN_TOKEN>, never in the URL:
 - GET /api/admin/submissions?kind=withdrawals&limit=30&offset=0 (or kind=waitlist / feedback). Private, paginated, no-store.
 - POST /api/admin/withdrawals/{uuid}/complete: body {"verification_method":"reply-from-subscribed-email","confirmed_by_operator":true}. ONLY after ownership confirmation by replying from the subscribed mailbox.
 - DELETE /api/admin/feedback/{uuid}: operator-controlled erasure of a feedback entry.
+- DELETE /api/admin/withdrawals/{uuid}: discard a fraudulent/unverified request without touching the subscriber's record.
 
 ## Operational procedure
 
 1. Review pending requests regularly via the protected admin endpoint, not application logs.
 2. Verify ownership by corresponding with the person from the subscribing email address at the public support mailbox.
-3. After verification, complete the withdrawal. The backend deletes BOTH the waitlist entry and the withdrawal request record that contains the same email.
+3. After verification, complete the withdrawal. The backend deletes BOTH the waitlist entry and the withdrawal request record that contains the same email. Discard demonstrably false/unverified requests separately without deleting subscriber records.
 4. Anonymous feedback is not linked to subscriber identity; removal requires the particular feedback ID.
 5. A public request is not an automated email-ownership verification or deletion. No email delivery provider is configured.
 6. Test denial for missing/invalid admin tokens. Confirm that adding a contact email alone never opens the public beta.
