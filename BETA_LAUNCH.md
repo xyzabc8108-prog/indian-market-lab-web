@@ -17,7 +17,7 @@ The existing research pages and /terminal remain available. No paid subscription
 
 **Never use the connected Ashok Enterprise Supabase project.** That database belongs to another website. Create a dedicated Supabase project.
 
-1. In the new project's SQL editor, run fullstack/backend/beta_schema.sql. Verify that both tables have RLS enabled and anon/authenticated lack privileges.
+1. In the new project's SQL editor, run fullstack/backend/beta_schema.sql. Verify that all three tables (including the withdrawal queue) have RLS enabled and anon/authenticated lack privileges.
 2. Create an sb_secret_ API key for that dedicated project. Do not paste it into GitHub or frontend assets.
 3. In the Render web service's Environment settings, configure:
    BETA_SUPABASE_URL=https://YOUR_PROJECT_ID.supabase.co
@@ -28,7 +28,7 @@ The existing research pages and /terminal remain available. No paid subscription
    retention, consent withdrawal and data-deletion procedures in /privacy.
 4. Redeploy Render and check /api/beta/status. Keeping BETA_PRIVACY_READY unset or false, disables collection even when database credentials exist. Both form flags should read true once the two private tables are available.
 5. Make a disposable-email signup and one feedback submission. Verify both records in the dedicated Supabase database, then delete the tests.
-6. Before collecting real emails, publish a privacy-contact email and establish retention, consent withdrawal and deletion procedures. A self-service deletion request is not implemented yet.
+6. Before collecting real emails, confirm the published privacy contact is monitored and the operator can process verified withdrawals. The POST /api/beta/withdrawal-request endpoint queues a request, but a private administrator must confirm email ownership before deleting entries. See BETA_ADMIN_SETUP.md.
 7. Monitor false-positives, error rates and spam. The simple per-IP limiter is in memory only and is not a robust anti-bot platform.
 
 No existing Supabase project has been modified.
@@ -86,3 +86,7 @@ Review commercial market-data licensing and SEBI classification of proposed paid
 - The Market Watch input already supports NSE company search and switching the selected instrument; no second search index was created.
 - Persistent browser storage of third-party historical candle feeds is intentionally deferred until the provider's storage, caching and redistribution rights have been verified. The existing session-memory snapshot fallback remains in place.
 - A user-facing paid tier, brokerage execution and email automation are **not** activated by these additions.
+
+## Secure beta administration
+
+See [BETA_ADMIN_SETUP.md](BETA_ADMIN_SETUP.md) for the dedicated Supabase project setup, server-held BETA_ADMIN_TOKEN, pagination of private submissions, request queue, manual email-ownership verification, and deletion of a request along with its subscriber email. No user data has been copied to the unrelated Ashok Enterprise database. This repository setup is not itself a database deployment and does not open forms.
