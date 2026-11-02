@@ -43,7 +43,7 @@ create index if not exists beta_withdrawals_status_date_idx
 
 alter table public.beta_withdrawal_requests enable row level security;
 revoke all on table public.beta_withdrawal_requests from anon, authenticated;
-grant select, insert, update on table public.beta_withdrawal_requests to service_role;
+grant select, insert, update, delete on table public.beta_withdrawal_requests to service_role;
 
 -- Feedback requires operator read/delete privileges for privacy and moderation.
 grant select, insert, delete on table public.beta_feedback to service_role;
