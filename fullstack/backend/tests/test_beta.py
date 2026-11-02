@@ -109,7 +109,7 @@ def test_rate_limiter(monkeypatch):
     monkeypatch.setattr(beta, "_recent", defaultdict(deque))
     monkeypatch.setattr(beta, "_remote", lambda table, payload=None: 201)
     payload = {"email": "test@example.invalid", "feature": "charts", "consent": True}
-    for _ in range(5):
+    for _ in range(3):
         assert client.post("/api/beta/interest", json=payload).status_code == 202
     assert client.post("/api/beta/interest", json=payload).status_code == 429
 
@@ -135,3 +135,34 @@ def test_published_email_does_not_open_waitlist_by_itself(monkeypatch):
     assert r.status_code == 200
     assert r.json()["waitlist_open"] is False
     assert r.json()["feedback_open"] is False
+
+
+
+def test_new_waitlist_alias_requires_explicit_consent(monkeypatch):
+    monkeypatch.setenv("BETA_SUPABASE_URL", "https://dedicated-test.supabase.co")
+    monkeypatch.setenv("BETA_SUPABASE_SECRET_KEY", "sb_secret_placeholder")
+    monkeypatch.setenv("BETA_PRIVACY_READY", "true")
+    monkeypatch.setattr(beta, "_recent", defaultdict(deque))
+    submitted = []
+    monkeypatch.setattr(beta, "_remote", lambda table, payload=None: submitted.append(payload) or 201)
+    invalid = client.post("/api/beta/waitlist", json={
+        "email": "test@example.invalid", "feature_interest": "scanner",
+        "consent_given": False,
+    })
+    assert invalid.status_code == 422
+    valid = client.post("/api/beta/waitlist", json={
+        "email": "test@example.invalid", "feature_interest": "scanner",
+        "consent_given": True,
+    })
+    assert valid.status_code == 202
+    assert submitted[0]["email"] == "test@example.invalid"
+    assert submitted[0]["feature"] == "scanner"
+    assert "consent_at" in submitted[0]
+
+
+def test_feedback_rejects_html_and_control_chars():
+    for text in ("Hello <script>alert(1)</script>", "Hello\nworld\x01 test feedback"):
+        r=client.post("/api/beta/feedback", json={
+            "feature": "other", "rating": 4, "message": text,
+        })
+        assert r.status_code == 422
