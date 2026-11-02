@@ -283,6 +283,43 @@ async function loadTerminal(){
  }catch(e){if(seq===state.seq)showError(e.message);}
  finally{if(seq===state.seq)$('reload-terminal').disabled=false;}
 }
-resetHistory();
-loadWatch();
-loadTerminal();
+// Show a versioned acknowledgement before starting any interactive chart requests.
+const LEGAL_NOTICE_VERSION='iml-risk-ack-2026-11-02-v1';
+const gate=document.getElementById('legal-gate');
+const terminalApp=document.getElementById('terminal-interactive');
+const gateForm=document.getElementById('legal-gate-form');
+const acknowledgement=document.getElementById('legal-acknowledge');
+const continueButton=document.getElementById('legal-continue');
+let terminalStarted=false;
+function startTerminal(){
+ if(terminalStarted)return;
+ terminalStarted=true;
+ gate.hidden=true;
+ document.body.classList.remove('terms-pending');
+ terminalApp.inert=false;
+ resetHistory();
+ loadWatch();
+ loadTerminal();
+}
+function hasAcknowledged(){
+ try{return localStorage.getItem(LEGAL_NOTICE_VERSION)==='yes';}catch{return false;}
+}
+acknowledgement.addEventListener('change',()=>{
+ continueButton.disabled=!acknowledgement.checked;
+});
+gateForm.addEventListener('submit',event=>{
+ event.preventDefault();
+ if(!acknowledgement.checked)return;
+ try{localStorage.setItem(LEGAL_NOTICE_VERSION,'yes');}catch{
+   // Storage may be unavailable: allow this session, but prompt next visit.
+ }
+ startTerminal();
+});
+if(hasAcknowledged()){
+ startTerminal();
+}else{
+ gate.hidden=false;
+ terminalApp.inert=true;
+ acknowledgement.focus();
+}
+
