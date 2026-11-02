@@ -120,3 +120,33 @@ def test_official_contact_email_published_on_both_pages():
     assert 'rohanchhaya108@gmail.com</a>' in privacy.text
     assert 'Our verified contact email will be available' not in privacy.text
     assert privacy.headers.get('cache-control') == 'no-store'
+
+
+def test_legal_home_links_and_live_beta_form_status_copy():
+    privacy=client.get('/privacy').text
+    terms=client.get('/terms').text
+    for page in (privacy,terms):
+        assert 'href="/#/home"' in page
+        assert 'Return to research home' in page
+        assert 'href="/beta"' in page
+        assert 'currently closed' not in page
+    assert 'href="/beta#join"' in privacy
+    assert 'href="/beta#feedback"' in privacy
+    assert 'href="mailto:rohanchhaya108@gmail.com"' in privacy
+    assert 'when the contact channel is available' not in privacy
+    assert 'Public Beta page' in terms
+
+
+def test_terminal_modals_banners_and_initial_ranges_match():
+    html=client.get('/terminal').text
+    assert 'bull/bear scenarios and hypothetical price levels' not in html
+    assert 'illustrative price levels and scenario outputs' not in html
+    assert html.count('candlestick patterns and statistical volatility ranges')>=1
+    assert 'Candlestick patterns and statistical volatility ranges' in html
+    assert '<select id="chart-lookback"' in html
+    assert '<option value="3mo">3 months</option>' in html
+    assert '<option value="6mo" selected>6 months</option>' in html
+    assert '<option value="1y">1 year</option>' in html
+    script=client.get('/terminal.js').text
+    assert "resetHistory();loadTerminal();" in script
+    assert "const select=$('chart-lookback'),ranges=RANGES[state.interval];" in script
