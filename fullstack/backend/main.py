@@ -20,7 +20,7 @@ import sys
 import time
 
 import pandas as pd
-from fastapi import FastAPI, File, HTTPException, Query, UploadFile
+from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -44,6 +44,53 @@ CACHE: dict[tuple[str, str], tuple[float, pd.DataFrame]] = {}
 app = FastAPI(title='Indian Market Lab API', description='Educational NSE research; no orders or live feed guarantees.', version='2.0')
 app.include_router(beta_router)
 app.include_router(admin_router)
+
+# Restrict browser resource execution without blocking the externally hosted
+# Lightweight Charts library currently used by Trader Mode.
+_SITE_CSP = (
+    "default-src 'self'; "
+    "base-uri 'self'; "
+    "object-src 'none'; "
+    "frame-ancestors 'none'; "
+    "form-action 'self'; "
+    "script-src 'self' https://unpkg.com; "
+    "style-src 'self' 'unsafe-inline'; "
+    "img-src 'self' data:; "
+    "font-src 'self' data:; "
+    "connect-src 'self'"
+)
+
+# FastAPI's stock Swagger/ReDoc pages need their documented CDN scripts
+# and inline initialization. This narrower exception does not apply to
+# any public beta or trader page.
+_DOCS_CSP = (
+    "default-src 'self'; "
+    "base-uri 'self'; "
+    "object-src 'none'; "
+    "frame-ancestors 'none'; "
+    "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+    "img-src 'self' data: https://fastapi.tiangolo.com"
+)
+
+
+@app.middleware('http')
+async def browser_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    # Browsers ignore HSTS over plain HTTP (e.g., during local development).
+    # Do not includeSubDomains on the shared onrender.com domain.
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000'
+    response.headers['Content-Security-Policy'] = (
+        _DOCS_CSP if request.url.path in ('/docs', '/redoc') else _SITE_CSP
+    )
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    response.headers['Permissions-Policy'] = (
+        'camera=(), microphone=(), geolocation=(), payment=()'
+    )
+    return response
+
 
 
 def normalize_ticker(value: str) -> str:
