@@ -33,6 +33,7 @@ from full_market_scanner import parse_price_uploads, scan_market
 from research_engine import technical_snapshot, planning_levels, position_budget, validate_ohlcv, option_long_budget, future_budget
 from news_radar import read_public_headlines, OFFICIAL_LINKS
 from fullstack.backend.terminal_engine import terminal_report, CANDLE_RANGES
+from fullstack.backend.beta import router as beta_router
 
 FRONTEND = Path(__file__).resolve().parents[1] / 'frontend'
 IST = ZoneInfo('Asia/Kolkata')
@@ -40,6 +41,7 @@ SYMBOL = re.compile(r'^[A-Z0-9][A-Z0-9&.-]{0,24}$')
 INDEX_TICKERS = {'^NSEI', '^NSEBANK', '^CNXIT'}
 CACHE: dict[tuple[str, str], tuple[float, pd.DataFrame]] = {}
 app = FastAPI(title='Indian Market Lab API', description='Educational NSE research; no orders or live feed guarantees.', version='2.0')
+app.include_router(beta_router)
 
 
 def normalize_ticker(value: str) -> str:
@@ -327,6 +329,11 @@ async def scanner(files: list[UploadFile] = File(...), capital: float = Query(50
     return {'top': ranked.head(100).to_dict(orient='records'), 'eligible_count': len(ranked),
             'quality': quality, 'summary': summary,
             'disclaimer': 'Only symbols with sufficient uploaded history are scanned. No live data or orders.'}
+
+
+@app.get('/beta')
+def beta_page():
+    return FileResponse(FRONTEND / 'beta.html')
 
 
 @app.get('/terminal')
