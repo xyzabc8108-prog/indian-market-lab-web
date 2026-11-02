@@ -17,3 +17,6 @@
 .toggle-track{display:inline-flex;align-items:center;width:30px;height:18px;border-radius:20px;background:#275447;padding:2px;border:1px solid #3e9a7d}
 .toggle-track>span{height:12px;width:12px;border-radius:50%;background:#d7faf0}
 @media(max-width:510px){.trader-toggle{gap:6px;padding:8px}.trader-mode-icon{display:none}}
+
+/* Beta launch links — visible but distinct from Trader Mode */
+.beta-entry{display:inline-flex;gap:6px;align-items:center;color:#ddf8ed;background:#18403b;border:1px solid #3b7e6c;border-radius:22px;padding:8px 13px;font-size:12px;font-weight:800;white-space:nowrap}.beta-entry:hover{background:#236054}.beta-home-callout{display:flex;align-items:center;gap:16px;border:1px solid #397667;border-radius:16px;background:linear-gradient(110deg,#183d3a,#123043);padding:24px;margin:0 0 42px}.beta-home-callout .beta-home-icon{font-size:30px;color:var(--teal)}.beta-home-callout>span:nth-child(2){flex:1}.beta-home-callout strong,.beta-home-callout small{display:block}.beta-home-callout strong{font:800 17px Manrope}.beta-home-callout small{color:#a5bec7;font-size:12px;margin-top:5px}.beta-home-callout b{color:var(--teal);font-size:12px;white-space:nowrap}@media(max-width:560px){.beta-entry{font-size:11px;padding:8px}.beta-entry span{display:none}.beta-home-callout{flex-wrap:wrap;padding:19px}.beta-home-callout b{width:100%;margin-left:44px}}
