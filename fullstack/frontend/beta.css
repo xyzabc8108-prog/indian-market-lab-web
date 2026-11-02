@@ -25,3 +25,18 @@ main{overflow:hidden}.hero{max-width:1380px;margin:auto;padding:94px 4% 84px;dis
 .beta-disclosure{padding:20px 23px;margin-bottom:55px;border:1px solid #4d736d;border-radius:13px;background:#122b30;color:#cadbdc;font-size:12px;line-height:1.85}
 .beta-disclosure strong{color:#e8f8f6}.beta-disclosure a{color:#8af7d1;font-weight:800;text-decoration:underline;text-underline-offset:2px}
 .checkline a{color:#8af7d1;text-decoration:underline}
+
+
+/* Trader Mode feature: reliable bull / bear symbols (no emoji wrapping on phones). */
+.beta-symbols{position:absolute;width:0;height:0;overflow:hidden}
+.market-animal{display:block;width:26px;height:26px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.bull-animal,.bull-badge{color:var(--green,#00dc87)}
+.bear-animal,.bear-badge{color:var(--red,#ff7688)}
+.header-action{display:inline-flex;align-items:center;justify-content:center;gap:5px}
+.header-action .header-market-marks{display:inline-flex;align-items:center;gap:2px;margin:0}
+.header-action .header-market-marks .market-animal{width:17px;height:17px}
+.feature-icon.bull-bear-icon{width:112px;height:60px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;background:linear-gradient(120deg,#103d35,#34242f);border:1px solid #3b7466;padding:5px;border-radius:13px}
+.bull-bear-icon .market-badge{height:48px;width:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;border-radius:8px;background:#091f20}
+.bull-bear-icon .market-badge .market-animal{width:28px;height:28px}
+.bull-bear-icon .market-direction{font:900 12px/1 Manrope,system-ui,sans-serif}
+@media(max-width:540px){.header-action{gap:3px}.header-action .header-market-marks .market-animal{width:14px;height:14px}}
