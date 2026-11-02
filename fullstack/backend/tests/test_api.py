@@ -49,9 +49,10 @@ def test_stock_report_includes_stale_and_budget(monkeypatch):
     d = result.json()
     assert d['symbol'] == 'RELIANCE.NS'
     assert d['budget']['risk_budget'] == 500
-    assert d['budget']['planned_loss'] <= 500
-    assert d['plan']['stop'] < d['plan']['entry'] < d['plan']['target']
-    assert d['decision'] in ('CONDITIONAL PAPER PLAN','WAIT / NO PAPER TRADE')
+    assert d['budget']['allocation_limit'] == 12500
+    assert 'plan' not in d
+    assert 'decision' not in d
+    assert 'shares' not in d['budget']
     assert client.get('/api/stock/RELIANCE/history').status_code == 200
 
 
@@ -61,7 +62,9 @@ def test_stale_data_forces_wait(monkeypatch):
     monkeypatch.setattr(main, 'yahoo_history', lambda *args: frame)
     report=client.get('/api/stock/INFY/analysis').json()
     assert report['stale'] is True
-    assert report['decision'] == 'WAIT / NO PAPER TRADE'
+    assert 'decision' not in report
+    assert 'plan' not in report
+    assert any('older than 10 days' in msg for msg in report['risks'])
 
 
 def test_fallback_quote_provider_not_fabricated(monkeypatch):
