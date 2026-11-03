@@ -90,3 +90,51 @@ Review commercial market-data licensing and SEBI classification of proposed paid
 ## Secure beta administration
 
 See [BETA_ADMIN_SETUP.md](BETA_ADMIN_SETUP.md) for the dedicated Supabase project setup, server-held BETA_ADMIN_TOKEN, pagination of private submissions, request queue, manual email-ownership verification, and deletion of a request along with its subscriber email. No user data has been copied to the unrelated Ashok Enterprise database. This repository setup is not itself a database deployment and does not open forms.
+
+
+## Approved retention operations (3 November 2026)
+
+Approved initial policy:
+- **Waitlist:** delete immediately upon verified consent withdrawal. Otherwise, delete
+  at 12 calendar months **after formal program closure**, not when signup forms
+  are temporarily switched off.
+- **Feedback:** delete records older than 180 days. A daily 03:20 UTC scheduled
+  Supabase cleanup may create up to one daily sweep of processing latency.
+- **Verified deletion requests:** target processing within 14 business days
+  after receipt (subject to verification and law). The approved policy does not
+  automatically discard pending requests; the operator must review them.
+  After processing, the request record is removed alongside the waitlist email.
+- **In-memory IP counters:** one-hour window; the process's timer expires
+  inactive keys as well as frequently used keys. No persistent IP log is
+  written by the beta intake code.
+
+Database implementation: `fullstack/backend/beta_retention.sql`.
+It creates the protected `private.iml_retention_control` singleton with
+`beta_closed_at = NULL`, a SECURITY INVOKER cleanup function, and an
+`iml-beta-retention-daily` database cron job. The table is **not** a public
+API and no user-supplied input can set the closure timestamp.
+
+**Before/while beta is open:** leave `beta_closed_at` NULL and
+`BETA_PRIVACY_READY=false` until all privacy, data-provider and regulatory
+checks have passed. Enabling a retention job does not enable signups.
+
+**Only when the beta program is formally closed:** first disable intake in
+Render, then as the authorized database operator record the real date:
+
+```sql
+UPDATE private.iml_retention_control
+SET beta_closed_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP
+WHERE singleton_id = 1 AND beta_closed_at IS NULL;
+```
+
+**Monitor** job runs under Supabase Integrations > Cron and query
+`cron.job_run_details` for unexpected failure. Check `cron.job` for
+`iml-beta-retention-daily`. Do not manually override the closing date
+to trigger deletion of real users. SQL test fixtures should use a transaction
+that is rolled back.
+
+**Caution:** this retention schedule governs records in the three beta
+database tables, not cloud backups, email correspondence with support,
+Render access logs, market-data providers or browser-local journals.
+Those systems have separate retention considerations. The scheduled
+cleanup is an operational target; monitor runs to establish ongoing compliance.
