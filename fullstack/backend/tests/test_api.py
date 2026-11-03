@@ -17,6 +17,9 @@ def mock_licensed_data_for_offline_legacy_fixtures(monkeypatch):
     """Only offline mocked-provider tests opt in; deployed default stays closed."""
     monkeypatch.setenv("IML_PUBLIC_PRICE_DATA_ENABLED", "true")
     monkeypatch.setenv("IML_MARKET_DATA_LICENSE_APPROVED", "true")
+    # Only offline regression fixtures deliberately permit legacy upload paths.
+    monkeypatch.setenv("IML_PUBLIC_SCANNER_UPLOAD_ENABLED", "true")
+    monkeypatch.setenv("IML_SCANNER_COMPLIANCE_APPROVED", "true")
 
 IST = ZoneInfo('Asia/Kolkata')
 
@@ -176,6 +179,8 @@ from fullstack.backend.tests.test_market_data_safety import (
     test_public_price_endpoints_blocked_before_provider_or_cache,
     test_helpers_refuse_market_data_even_if_invoked_directly,
     test_non_price_tools_stay_available_and_symbol_directory_is_offline,
-    test_upload_scanner_remains_usable_in_safety_mode,
+    test_scanner_requires_both_operator_approvals,
+    test_public_scanner_upload_fails_before_parsing,
+    test_synthetic_demo_preserves_descriptive_indicators_without_trade_levels,
     test_public_interface_has_explicit_safe_mode_notice,
 )
