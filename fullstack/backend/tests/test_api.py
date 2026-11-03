@@ -167,3 +167,15 @@ def test_scanner_imports_actual_60_session_csv():
     assert report['summary']['Risk per idea ₹']==500
     assert report['quality']['Price rows']==65
     assert report['eligible_count'] <= 1
+
+
+# CI explicitly selects this module: collect the dedicated safety contract tests too.
+# Their own fixtures remove mocked licence flags before asserting the fail-closed mode.
+from fullstack.backend.tests.test_market_data_safety import (
+    test_double_operator_approval_required,
+    test_public_price_endpoints_blocked_before_provider_or_cache,
+    test_helpers_refuse_market_data_even_if_invoked_directly,
+    test_non_price_tools_stay_available_and_symbol_directory_is_offline,
+    test_upload_scanner_remains_usable_in_safety_mode,
+    test_public_interface_has_explicit_safe_mode_notice,
+)
