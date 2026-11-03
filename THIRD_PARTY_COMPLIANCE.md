@@ -61,22 +61,18 @@ Useful terms for review:
 - https://www.google.com/intl/en_us/terms_google_news.html
   (older product-specific terms; check current applicability)
 
-## Bull/bear icon provenance — NOT CLOSED
+## Bull/bear icon provenance — Step 21.21.11 replacement
 
-The repository contains:
-- fullstack/frontend/icons/bull.svg
-- fullstack/frontend/icons/bear.svg
-- fullstack/frontend/icons/bull-bear.svg
+The earlier bull, bear and combined SVG assets were of uncertain provenance.
+The active website now uses new geometric symbols made for this project without
+copying the original silhouettes' path data. Their creation and replacement
+process is recorded in [ICON_PROVENANCE.md](ICON_PROVENANCE.md).
 
-The SVGs use custom path data, but there is no verified documented
-artist/source, source image permission, third-party licence, assignment,
-or independent-original-art record in the repository.
-
-Do not claim copyright ownership or licensed use without evidence.
-The operator should supply the source, original design file, licence
-receipt, or permission to use those specific symbols. If provenance
-cannot be established, replace them with newly commissioned or verified
-appropriately licensed art before a wider commercial launch.
+Important: these changes reduce reliance on third-party-looking artwork but
+do not establish copyright ownership, a registrable trademark, or exhaustive
+non-infringement. Original images remain in historical Git commits; they are
+not linked by the active website. The active source files are replaced and
+versioned URLs force browsers to request the new assets.
 
 ## Current status and remaining checks
 
@@ -85,7 +81,7 @@ appropriately licensed art before a wider commercial launch.
 - Synthetic educational tools continue working.
 - TradingView attribution is added; vendor CDN version pinning and
   actual browser appearance require separate verification.
-- Bull/bear icon rights remain uncertain.
+- The earlier icons' rights remain unknown; their active use has been discontinued. The new geometry's independent creation is documented.
 - No permissions are inferred from the existence of public source URLs.
 - Product-specific NSE/SEBI review and permission for market data remain
   required before restoring price-driven features or paid services.
