@@ -197,7 +197,14 @@ def test_tradingview_upstream_notice_and_license_page():
     assert page.headers['cache-control'] == 'no-store'
     assert 'TradingView Lightweight Charts™' in page.text
     assert 'Copyright (с) 2025 TradingView, Inc. https://www.tradingview.com/' in page.text
-    assert 'https://github.com/tradingview/lightweight-charts/blob/master/LICENSE' in page.text
+    assert '/licenses/TradingView-Lightweight-Charts-Apache-2.0.txt' in page.text
+    assert '/licenses/TradingView-Lightweight-Charts-NOTICE.txt' in page.text
+    licence = client.get('/licenses/TradingView-Lightweight-Charts-Apache-2.0.txt')
+    notice = client.get('/licenses/TradingView-Lightweight-Charts-NOTICE.txt')
+    assert licence.status_code == 200 and notice.status_code == 200
+    assert 'Apache License' in licence.text
+    assert 'END OF TERMS AND CONDITIONS' in licence.text
+    assert 'Copyright (с) 2025 TradingView, Inc. https://www.tradingview.com/' in notice.text
     assert 'https://github.com/tradingview/lightweight-charts/blob/master/NOTICE' in page.text
     assert 'Copyright (с) 2025 TradingView, Inc. https://www.tradingview.com/' in terminal.text
     assert 'href="/third-party-licenses"' in terminal.text
