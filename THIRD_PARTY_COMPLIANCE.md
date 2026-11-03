@@ -17,7 +17,9 @@ licensing or regulatory questions have been resolved**.
   https://github.com/tradingview/lightweight-charts/blob/master/LICENSE
 - This application now displays the upstream two-line NOTICE in the
   Trader Terminal footer and on /third-party-licenses, with an external
-  link to TradingView and source/license links. Existing
+  link to TradingView and source/license links. The original full Apache
+  2.0 LICENSE and NOTICE are preserved as UTF-8 files at
+  fullstack/frontend/licenses/ and served as local text assets. Existing
   `layout.attributionLogo:true` remains enabled in the chart renderer.
 - Using the library does **not** convey permission to republish NSE/Yahoo
   market data or confer any TradingView endorsement.
