@@ -131,3 +131,6 @@
 .global-data-safety a,.market-data-paused a{color:#a8f3d4;text-decoration:underline;font-weight:700}
 .global-data-safety[hidden]{display:none!important}
 @media(max-width:700px){.global-data-safety,.market-data-paused{margin:12px 10px;padding:12px}}
+
+/* Step 21.21.9: never render gated real-market CSV upload UI by default. */
+#scanner-upload-panel[hidden] { display: none !important; }
