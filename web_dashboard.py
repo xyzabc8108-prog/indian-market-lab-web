@@ -11,6 +11,13 @@ import streamlit as st
 IST=ZoneInfo("Asia/Kolkata")
 PERIODS={"1d":["1mo","3mo","6mo","1y","2y","5y"],"5m":["1d","5d","1mo"],"15m":["1d","5d","1mo"]}
 st.set_page_config(page_title="Indian Market Lab",page_icon="📊",layout="wide")
+# Step 21.21.7: fail CLOSED before any legacy UI, quote request or cached stock report.
+# This entrypoint is deployed independently of the full-stack Render backend.
+from streamlit_market_safety import streamlit_price_data_enabled, render_safety_mode
+if not streamlit_price_data_enabled():
+    render_safety_mode()
+    st.stop()  # Streamlit halts execution before any legacy price pages render.
+
 st.markdown("""<style>.stApp{background:linear-gradient(145deg,#081421,#0d2134)}
 [data-testid="stMetric"]{background:#142b43;border:1px solid #29405c;padding:14px;border-radius:12px}
 h1,h2,h3{letter-spacing:-.04em}</style>""",unsafe_allow_html=True)
@@ -29,6 +36,9 @@ def symbols_from(raw):
 
 @st.cache_data(ttl=240,show_spinner=False)
 def history(symbol,interval,period,demo):
+    # Defence in depth for accidental imports of this legacy provider wrapper.
+    if not demo and not streamlit_price_data_enabled():
+        raise ValueError("Public market-price provider access is disabled pending data rights.")
     if demo:
         seed=sum((i+1)*ord(c) for i,c in enumerate(symbol))
         rng=random.Random(seed)
