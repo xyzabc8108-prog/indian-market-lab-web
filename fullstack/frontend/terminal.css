@@ -64,7 +64,7 @@ input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px #00e6762
 .terminal-brand strong{letter-spacing:.11em}
 @media(max-width:780px){.terminal-brand{min-width:0}.terminal-brand-mark{width:46px;height:38px}.terminal-brand-mark span{font-size:19px}}
 
-/* Neon bull and bear marks: recolor emoji silhouettes to the terminal palette. */
+/* Legacy fallback colours for the bull/bear positions; active artwork is newly constructed SVG geometry. */
 .terminal-brand-mark span:first-child{
  filter:brightness(0) saturate(100%) invert(61%) sepia(85%) saturate(1200%) hue-rotate(90deg) brightness(107%) contrast(104%) drop-shadow(0 0 6px #00e676);
 }
