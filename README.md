@@ -17,6 +17,14 @@ The full-market scanner research engine is retained for future authorized
 private/reviewed use. Beta registrations, feedback, payments and brokerage
 orders remain disabled.
 
+**Third-party rights (Step 21.21.10):** The TradingView Lightweight Charts
+NOTICE and full Apache 2.0 licence are reproduced and accessible at
+/third-party-licenses. Public Google News RSS redistribution is paused by
+default; News Intelligence offers official source links instead.
+Bull/bear SVG image provenance remains **unverified** and needs the original
+creation record, licence or permission before wider commercial use.
+See [third-party compliance notes](THIRD_PARTY_COMPLIANCE.md).
+
 **Important:** Older README sections below document historical code and
 features, **not current public functionality or legal approval**. See
 [scanner restrictions](MARKET_DATA_SAFETY.md) and
