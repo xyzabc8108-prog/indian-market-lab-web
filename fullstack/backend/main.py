@@ -32,6 +32,7 @@ from market_universe import fallback_equities, indices_table, load_equity_csv, E
 from full_market_scanner import parse_price_uploads, scan_market
 from research_engine import technical_snapshot, position_budget, validate_ohlcv, option_long_budget, future_budget
 from news_radar import read_public_headlines, OFFICIAL_LINKS
+from fullstack.backend.third_party_safety import public_headline_feed_enabled, NEWS_FEED_PAUSED_NOTICE
 from fullstack.backend.terminal_engine import terminal_report, CANDLE_RANGES
 from fullstack.backend.beta import router as beta_router
 from fullstack.backend.beta_admin import admin_router
@@ -354,12 +355,18 @@ def candles(ticker: str, period: str = Query('6mo')):
 
 @app.get('/api/news')
 def news(topic: str = Query('Indian stock market')):
+    if not public_headline_feed_enabled():
+        return {
+            'items': [], 'official_sources': OFFICIAL_LINKS,
+            'feed_paused': True, 'note': NEWS_FEED_PAUSED_NOTICE
+        }
     try:
         items = read_public_headlines(topic, max_items=12)
         return {'items': [{'title': x['title'], 'url': x['url'],
                            'published': x['published_utc'].isoformat() if x['published_utc'] else None,
                            'source': x['source'], 'mapping': x['mapping']} for x in items],
-                'official_sources': OFFICIAL_LINKS, 'note': 'Headline mapping describes possible exposure, not actual price causation.'}
+                'official_sources': OFFICIAL_LINKS, 'feed_paused': False,
+                'note': 'Headline mapping describes possible exposure, not actual price causation.'}
     except (RuntimeError, ValueError) as exc:
         raise HTTPException(503, str(exc)) from exc
 
@@ -429,6 +436,11 @@ async def scanner(files: list[UploadFile] = File(...), capital: float = Query(50
     return {'top': ranked.head(100).to_dict(orient='records'), 'eligible_count': len(ranked),
             'quality': quality, 'summary': summary,
             'disclaimer': 'Only symbols with sufficient uploaded history are scanned. No live data or orders.'}
+
+
+@app.get('/third-party-licenses')
+def third_party_licences():
+    return FileResponse(FRONTEND / 'third-party-licenses.html', headers={'Cache-Control': 'no-store'})
 
 
 @app.get('/terms')

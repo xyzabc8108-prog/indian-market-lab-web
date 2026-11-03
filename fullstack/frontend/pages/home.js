@@ -6,7 +6,7 @@ export function render(){return `<div class="hero"><span class="eyebrow">MARKET 
 <a class="feature" href="#/scanner"><span class="feature-icon">◎</span><strong>Market Scanner</strong><p>Try a synthetic indicator demonstration; public uploads of actual price files are paused.</p><span>EXPLORE →</span></a>
 <a class="feature" href="#/indices"><span class="feature-icon">▦</span><strong>Indices</strong><p>Separate index directory, with research prices only where provider mapping is known.</p><span>EXPLORE →</span></a>
 <a class="feature" href="#/derivatives"><span class="feature-icon">≋</span><strong>F&O Planner</strong><p>Illustrate options premium-at-risk and futures margin/stop budgeting.</p><span>EXPLORE →</span></a>
-<a class="feature" href="#/news"><span class="feature-icon">◷</span><strong>News Intelligence</strong><p>Source-linked financial headlines and possible sector exposure—never certainty.</p><span>EXPLORE →</span></a>
+<a class="feature" href="#/news"><span class="feature-icon">◷</span><strong>News Intelligence</strong><p>Links to original NSE, SEBI and RBI announcements; public headline republication is paused.</p><span>EXPLORE →</span></a>
 <a class="feature" href="#/paper"><span class="feature-icon">▤</span><strong>Paper Portfolio</strong><p>Keep a browser-only hypothetical trade journal, export it, and review the budget.</p><span>EXPLORE →</span></a></div>
 <div class="metrics-row">${metric('Paper account','₹50,000','Default, adjustable')}${metric('Planned risk','1%','₹500 per idea')}${metric('Trading execution','OFF','No brokerage login')}</div>
 <div class="notice">Prices and news may be delayed. Use this website to explore and practice, not to place real trades.</div>`}
