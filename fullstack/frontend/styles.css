@@ -125,3 +125,9 @@
   .trader-mode-icon.iml-small-pair img { width: 14px; height: 13px; }
   .sidebar .brand strong { font-size: 11px; }
 }
+
+/* Step 21.21: public price-data safety notice, visible without displacing navigation. */
+.global-data-safety,.market-data-paused{margin:14px 22px;padding:13px 16px;border:1px solid #ab4b45;background:#2b1a1b;color:#f9e5e2;border-radius:10px;line-height:1.55}
+.global-data-safety a,.market-data-paused a{color:#a8f3d4;text-decoration:underline;font-weight:700}
+.global-data-safety[hidden]{display:none!important}
+@media(max-width:700px){.global-data-safety,.market-data-paused{margin:12px 10px;padding:12px}}
