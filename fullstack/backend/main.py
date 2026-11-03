@@ -21,7 +21,7 @@ import time
 
 import pandas as pd
 from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -38,6 +38,10 @@ from fullstack.backend.beta_admin import admin_router
 from fullstack.backend.market_data_safety import (
     market_data_status, public_market_data_safety_mode,
     require_public_market_data,
+)
+from fullstack.backend.scanner_safety import (
+    SCANNER_PAUSED_NOTICE, public_scanner_upload_enabled,
+    public_scanner_status, synthetic_scanner_demonstration,
 )
 
 FRONTEND = Path(__file__).resolve().parents[1] / 'frontend'
@@ -80,7 +84,14 @@ _DOCS_CSP = (
 
 @app.middleware('http')
 async def browser_security_headers(request: Request, call_next):
-    response = await call_next(request)
+    # Refuse multipart uploads *before* parsing user price files in safe mode.
+    if (request.url.path == '/api/scanner/import' and request.method == 'POST'
+            and not public_scanner_upload_enabled()):
+        response = JSONResponse(
+            status_code=503, content={'detail': SCANNER_PAUSED_NOTICE}
+        )
+    else:
+        response = await call_next(request)
     # Browsers ignore HSTS over plain HTTP (e.g., during local development).
     # Do not includeSubDomains on the shared onrender.com domain.
     response.headers['Strict-Transport-Security'] = 'max-age=31536000'
@@ -93,7 +104,8 @@ async def browser_security_headers(request: Request, call_next):
     response.headers['Permissions-Policy'] = (
         'camera=(), microphone=(), geolocation=(), payment=()'
     )
-    if (request.url.path.startswith('/api/stock/') or
+    if (request.url.path.startswith('/api/scanner/') or
+        request.url.path.startswith('/api/stock/') or
         (request.url.path.startswith('/api/terminal/') and
          request.url.path not in ('/api/terminal/config', '/api/terminal/universe'))):
         response.headers['Cache-Control'] = 'no-store'
@@ -378,9 +390,22 @@ def derivatives(request: DerivativeRequest):
         raise HTTPException(422, str(exc)) from exc
 
 
+@app.get('/api/scanner/status')
+def scanner_public_status():
+    return public_scanner_status()
+
+
+@app.get('/api/scanner/demo')
+def scanner_synthetic_demo():
+    return synthetic_scanner_demonstration()
+
+
 @app.post('/api/scanner/import')
 async def scanner(files: list[UploadFile] = File(...), capital: float = Query(50000, gt=0, le=50000000),
                   risk_pct: float = Query(1, gt=0, le=5)):
+    # Defence in depth in addition to pre-body middleware.
+    if not public_scanner_upload_enabled():
+        raise HTTPException(503, SCANNER_PAUSED_NOTICE)
     if not 1 <= len(files) <= 160:
         raise HTTPException(422, 'Upload 1 to 160 daily CSV/ZIP files')
     decoded = []
