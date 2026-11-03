@@ -47,6 +47,6 @@ def market_data_status() -> dict:
         "public_price_data_available": not blocked,
         "note": _PUBLIC_PRICE_NOTICE if blocked else
                 "Historical price endpoints available only under operator-approved market-data rights.",
-        "safe_tools": ["upload-scanner", "manual-risk", "manual-derivatives", "paper-journal"],
+        "safe_tools": ["synthetic-scanner-demo", "manual-risk", "manual-derivatives", "paper-journal"],
         "real_orders": False,
     }

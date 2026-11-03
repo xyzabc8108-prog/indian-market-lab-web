@@ -29,9 +29,15 @@ resume unofficial public price delivery.
 - `/api/market-data/status`: public capability state, no secret values.
 - Stock search using offline example symbols.
 - `/api/indices`: directory/reference labels only (no live price data).
-- `POST /api/scanner/import`: educational analysis of price files selected and
-  uploaded by the user. Uploaders must have their own rights to those files;
-  data is not kept permanently by the backend.
+- `POST /api/scanner/import`: HTTP 503 in the public default safety mode,
+  blocked before uploaded CSV/ZIP bodies are parsed.
+- `GET /api/scanner/demo`: runs the existing indicator engine on two
+  completely fictional internally generated price sequences, omitting actual
+  symbols, real prices, trade recommendations and entry/stop/target outputs.
+- `GET /api/scanner/status`: reports server-side public-upload gate state,
+  without revealing configuration secrets. Private/offline scanning code is
+  retained for authorized research. Uploaded-file use is not automatically
+  licensed merely because the user supplies the file.
 - `POST /api/risk/plan`, `POST /api/derivatives/plan`: manual input
   hypothetical calculations without broker feeds.
 - News links, browser-local paper journal, legal pages, privacy inquiries.
@@ -74,8 +80,8 @@ On the deployed instance verify:
   `market_data_safety_mode:true, public_price_data_available:false`.
 - Historical stock analysis, history and terminal price routes return HTTP 503
   and do not include any OHLC data or scenario results.
-- Upload scanner, manual risk calculator, paper journal, news and legal pages
-  remain usable.
+- Synthetic scanner demonstration, manual risk calculator, paper journal,
+  news and legal pages remain usable. Public price-file import is blocked.
 - `GET /api/beta/status`: both `waitlist_open:false` and
   `feedback_open:false`.
 - `GET /api/health`: `real_orders:false`.
@@ -83,3 +89,23 @@ On the deployed instance verify:
 This safety feature is not a substitute for a provider licence or legal
 evaluation. Do not present the beta as fully release-compliant solely because
 the public price endpoints are blocked.
+
+## Public scanner safety (Step 21.21.9)
+
+Default: real-price CSV/ZIP imports are OFF, independent of the separate
+Yahoo/terminal price gate. The browser has no public upload form by default,
+and the API returns HTTP 503 **before parsing multipart bodies**.
+
+Public scanner uploads may only be unlocked after both server-only flags are
+true, and only after independent rights/SEBI legal review of the implementation:
+- `IML_PUBLIC_SCANNER_UPLOAD_ENABLED=true`
+- `IML_SCANNER_COMPLIANCE_APPROVED=true`
+
+Keep both unset. Neither flag proves permission, and uploading an NSE file
+does not by itself authorize public analytics or redistribution. Never turn
+these flags on just to restore the previous scanner UX.
+
+The new educational demo is deterministic, using fabricated DEMOA and DEMOB
+sequences. No live/real/securities market data, real issuer names, trade
+entries, share quantities, stops or targets are sent in its response.
+Test this with the repository safety tests and inspect the production UI.
