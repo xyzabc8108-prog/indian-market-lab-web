@@ -10,6 +10,14 @@ from fastapi.testclient import TestClient
 from fullstack.backend import main
 
 client = TestClient(main.app)
+
+
+@pytest.fixture(autouse=True)
+def mock_licensed_data_for_offline_legacy_fixtures(monkeypatch):
+    """Only offline mocked-provider tests opt in; deployed default stays closed."""
+    monkeypatch.setenv("IML_PUBLIC_PRICE_DATA_ENABLED", "true")
+    monkeypatch.setenv("IML_MARKET_DATA_LICENSE_APPROVED", "true")
+
 IST = ZoneInfo('Asia/Kolkata')
 
 
@@ -58,8 +66,8 @@ def test_mobile_layout_styles_are_served_with_cache_busting():
     terminal = client.get('/terminal')
     assert home.status_code == 200
     assert terminal.status_code == 200
-    assert '/styles.css?v=mobile21-17' in home.text
-    assert '/terminal.css?v=mobile21-17' in terminal.text
+    assert '/styles.css?v=safety21-21' in home.text
+    assert '/terminal.css?v=safety21-21' in terminal.text
     research_css = client.get('/styles.css').text
     trader_css = client.get('/terminal.css').text
     assert 'Step 21.17: responsive research dashboard' in research_css
