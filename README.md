@@ -1,6 +1,6 @@
 # PUBLIC DEPLOYMENT SAFETY STATUS — 3 NOVEMBER 2026
 
-**Streamlit prototype:** The `indian-market-lab-rohan.streamlit.app` entrypoint
+**Streamlit prototype (owner-only private access):** The `indian-market-lab-rohan.streamlit.app` entrypoint
 is now configured to show **only a synthetic educational sandbox** by default
 (Step 21.21.7). Public named-stock quotes, the original Auto Stock Assistant,
 trade-level suggestions, stock backtests and unofficial Yahoo data requests are
@@ -9,14 +9,18 @@ risk-budget arithmetic. [Technical controls](STREAMLIT_SAFETY.md).
 
 **Render full-stack site:** https://indian-market-lab-fullstack.onrender.com
 has Market Data Safety Mode active (Step 21.21.2). Public Yahoo-derived
-prices and stock-specific terminal scenarios are blocked; the upload-based
-scanner and manual budgeting remain available. The uploaded-file scanner's
-named-stock ranking and paper trade-level fields are **still awaiting
-additional SEBI/data-rights review**. Beta registrations, feedback, payments
-and brokerage orders remain disabled.
+prices and stock-specific terminal scenarios are blocked; public
+uploaded-price scanner inputs are also blocked by default (Step 21.21.9).
+The public scanner now demonstrates descriptive indicators exclusively on
+fictional internally generated sequences; manual budgeting remains available.
+The full-market scanner research engine is retained for future authorized
+private/reviewed use. Beta registrations, feedback, payments and brokerage
+orders remain disabled.
 
 **Important:** Older README sections below document historical code and
-features, **not current public functionality or legal approval**. Do not
+features, **not current public functionality or legal approval**. See
+[scanner restrictions](MARKET_DATA_SAFETY.md) and
+[Streamlit restrictions](STREAMLIT_SAFETY.md). Do not
 reactivate price feeds merely to restore the old interface. A valid provider
 agreement and professional regulatory review are required before deciding
 which functions may safely become public.
