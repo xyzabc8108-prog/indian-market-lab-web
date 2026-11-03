@@ -11,6 +11,13 @@ from fullstack.backend import main, terminal_engine as te
 IST=ZoneInfo("Asia/Kolkata")
 client=TestClient(main.app)
 
+@pytest.fixture(autouse=True)
+def mock_licensed_data_for_offline_legacy_fixtures(monkeypatch):
+    """Opt in only for mocked test provider; deployed default stays blocked."""
+    monkeypatch.setenv("IML_PUBLIC_PRICE_DATA_ENABLED", "true")
+    monkeypatch.setenv("IML_MARKET_DATA_LICENSE_APPROVED", "true")
+
+
 def history(n=140, trend=0.16):
     dt=pd.date_range(end=datetime.now(IST),periods=n,freq="B")
     x=np.arange(n,dtype=float)
