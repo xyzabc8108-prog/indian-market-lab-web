@@ -23,7 +23,44 @@ router = APIRouter(prefix="/api/beta", tags=["Beta"])
 _EMAIL = re.compile(r"^[^@\s]{1,64}@[A-Za-z0-9.-]{1,190}\.[A-Za-z]{2,24}$")
 _FEATURES = {"charts", "scanner", "backtesting", "paper-trading", "news", "other"}
 _rate_lock = threading.Lock()
+_rate_condition = threading.Condition(_rate_lock)
+_rate_cleaner_started = False
 _recent: dict[str, deque[float]] = defaultdict(deque)
+
+
+def _prune_rate_history(now: float) -> None:
+    """Called with _rate_lock held. Remove expired IP keys, including idle keys."""
+    for ident, history in list(_recent.items()):
+        while history and now - history[0] >= 3600:
+            history.popleft()
+        if not history:
+            _recent.pop(ident, None)
+
+
+def _rate_expiry_worker() -> None:
+    """One daemon per process; sleeps until the next rate-window expiry."""
+    while True:
+        with _rate_condition:
+            now = time.monotonic()
+            _prune_rate_history(now)
+            earliest = min((h[0] + 3600 for h in _recent.values() if h),
+                           default=None)
+            if earliest is None:
+                _rate_condition.wait()
+            else:
+                _rate_condition.wait(timeout=max(0.01, earliest - now))
+
+
+def _start_rate_expiry_worker() -> None:
+    """Called under _rate_condition to avoid spawning multiple cleanup threads."""
+    global _rate_cleaner_started
+    if not _rate_cleaner_started:
+        threading.Thread(
+            target=_rate_expiry_worker,
+            name="beta-ephemeral-rate-expiry",
+            daemon=True,
+        ).start()
+        _rate_cleaner_started = True
 
 
 class Interest(BaseModel):
@@ -153,18 +190,15 @@ def _accept(request: Request, kind: str) -> None:
             raise HTTPException(403, "Request origin not allowed.")
     ident = (request.client.host if request.client else "unknown") + ":" + kind
     now = time.monotonic()
-    with _rate_lock:
+    with _rate_condition:
+        _prune_rate_history(now)
         history = _recent[ident]
-        while history and now - history[0] > 3600:
-            history.popleft()
         # One server process: a basic abuse brake, not distributed spam protection.
         if len(history) >= (3 if kind == "waitlist" else 12):
             raise HTTPException(429, "Too many submissions. Please try later.")
         history.append(now)
-        if len(_recent) > 5000:
-            for key in list(_recent)[:1000]:
-                if not _recent[key] or now - _recent[key][-1] > 3600:
-                    _recent.pop(key, None)
+        _start_rate_expiry_worker()
+        _rate_condition.notify()
 
 
 _status_cache: tuple[float, bool, bool] | None = None

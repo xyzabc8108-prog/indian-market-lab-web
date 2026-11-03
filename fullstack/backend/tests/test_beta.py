@@ -172,3 +172,41 @@ def test_feedback_rejects_html_and_control_chars():
             "feature": "other", "rating": 4, "message": text,
         })
         assert r.status_code == 422
+
+
+def test_approved_privacy_retention_copy_and_migration():
+    """The public notice and migration must agree on policy and remain fail-closed."""
+    from pathlib import Path
+    root = Path(__file__).resolve().parents[1]
+    privacy = (root.parent / "frontend" / "privacy.html").read_text(encoding="utf-8")
+    sql = (root / "beta_retention.sql").read_text(encoding="utf-8")
+    assert "180 days" in privacy
+    assert "12 calendar months after the beta program is formally closed" in privacy
+    assert "14 business days" in privacy
+    assert "one-hour" in privacy
+    assert "CURRENT_TIMESTAMP - INTERVAL '180 days'" in sql
+    assert "beta_closed_at IS NOT NULL" in sql
+    assert "beta_closed_at + INTERVAL '12 months'" in sql
+    assert "SECURITY INVOKER" in sql
+    assert "REVOKE ALL ON FUNCTION" in sql
+    assert "cron.schedule(" in sql
+    assert "beta_withdrawal_requests" not in sql.split("CREATE OR REPLACE FUNCTION")[1].split("$cleanup$;")[0]
+
+
+def test_old_in_memory_rate_keys_are_deleted():
+    """Expiry applies to idle visitor keys, not just the key being requested."""
+    previous = beta._recent
+    try:
+        beta._recent = defaultdict(deque, {
+            "expired:waitlist": deque([9.0, 15.0]),
+            "active:feedback": deque([100.0, 3620.0]),
+        })
+        with beta._rate_lock:
+            beta._prune_rate_history(3630.0)
+        assert "expired:waitlist" not in beta._recent
+        assert list(beta._recent["active:feedback"]) == [100.0, 3620.0]
+        with beta._rate_lock:
+            beta._prune_rate_history(3710.0)
+        assert list(beta._recent["active:feedback"]) == [3620.0]
+    finally:
+        beta._recent = previous
