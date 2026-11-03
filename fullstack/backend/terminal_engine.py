@@ -97,6 +97,10 @@ def validate_candles(frame: pd.DataFrame) -> pd.DataFrame:
 
 
 def fetch_candles(ticker: str, interval: str, lookback: str) -> pd.DataFrame:
+    # Defence in depth: no provider fetch and no cached candles in safety mode.
+    from fullstack.backend.market_data_safety import public_market_data_safety_mode
+    if public_market_data_safety_mode():
+        raise ValueError("Public market-price provider access is disabled pending data-rights review.")
     if interval not in CANDLE_RANGES or lookback not in CANDLE_RANGES[interval]:
         raise ValueError("This candle interval and history range are not supported together.")
     ticker = normalize_ticker(ticker)

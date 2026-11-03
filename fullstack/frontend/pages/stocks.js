@@ -1,5 +1,5 @@
 import {api,h,money,pct,num,loading,error,metric,spark,infoSource,formatDateTime} from '../api.js';
-export function render(){const q=new URLSearchParams(location.hash.split('?')[1]||'').get('symbol')||'RELIANCE';return `<div class="page-head"><span class="eyebrow">EQUITY ANALYTICS / ONE STOCK AT A TIME</span><h1>Stock Research</h1><p>Select an NSE stock to explore historical indicators and a virtual risk budget.</p></div>
+export function render(){const q=new URLSearchParams(location.hash.split('?')[1]||'').get('symbol')||'RELIANCE';return `<div class="page-head"><span class="eyebrow">EQUITY ANALYTICS / ONE STOCK AT A TIME</span><h1>Stock Research</h1><p>Search an example NSE symbol and calculate a virtual risk budget. Stock-price indicators are paused while data permissions are reviewed.</p></div>
 <section class="panel"><div class="field-grid cols-4"><label class="grow">NSE symbol / company search<input id="stock-name" list="ticker-results" spellcheck="false" autocomplete="off" value="${h(q)}" placeholder="RELIANCE, INFY, HDFCBANK…"><datalist id="ticker-results"></datalist></label><label>Paper capital ₹<input type="number" id="capital" min="1000" max="50000000" value="50000"></label><label>Risk per idea %<input type="number" id="risk" min="0.1" max="5" step="0.1" value="1"></label><button class="button" id="run-stock" type="button">Refresh analysis</button></div><div id="search-hint" class="muted tiny">Choose a listed ticker or type its NSE symbol. Analysis starts automatically after a short pause.</div></section>
 <div id="stock-output">${loading('Preparing historical stock analysis…')}</div>`;}
 export async function mount(root){
@@ -38,6 +38,17 @@ export async function mount(root){
    }
    if(!Number.isFinite(capital)||capital<1000||capital>50000000||!Number.isFinite(risk)||risk<0.1||risk>5){
      out.innerHTML=error('Enter ₹1,000–₹5 crore capital and a 0.1–5% risk setting.');return;
+   }
+   // Fail closed when the capability check is unreachable. The server also
+   // refuses stock-specific prices and derived reports before provider access.
+   let capability={market_data_safety_mode:true,public_price_data_available:false};
+   try{capability=await api('/api/market-data/status',{timeoutMs:12000});}catch{}
+   if(capability.public_price_data_available!==true ||
+      capability.market_data_safety_mode!==false){
+     ++runId;lastKey='';out.removeAttribute('aria-busy');
+     const riskBudget=capital*risk/100;
+     out.innerHTML=`<div class="notice market-data-paused" role="status"><strong>Market Data Safety Mode</strong><p>Public stock-price charts, indicators and stock-specific scenarios are temporarily paused pending market-data rights review. The example directory and paper calculators remain available.</p><p>To research historical prices, use <a href="#/scanner">Market Scanner</a> with files you are authorized to use.</p></div><section class="panel"><div class="panel-title"><h2>Your virtual risk budget</h2><span class="data-label">USER INPUTS ONLY</span></div><div class="metrics-row">${metric('Virtual capital',money(capital))}${metric('Risk per idea',pct(risk))}${metric('Virtual risk amount',money(riskBudget))}</div><p class="muted">These figures are based only on your inputs. No market prices, targets, entry signals or orders are generated.</p></section>`;
+     return;
    }
    const key=sym.toUpperCase()+'|'+capital+'|'+risk;
    if(!force&&key===lastKey)return;

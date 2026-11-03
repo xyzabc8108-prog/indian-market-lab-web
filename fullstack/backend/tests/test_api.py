@@ -10,6 +10,14 @@ from fastapi.testclient import TestClient
 from fullstack.backend import main
 
 client = TestClient(main.app)
+
+
+@pytest.fixture(autouse=True)
+def mock_licensed_data_for_offline_legacy_fixtures(monkeypatch):
+    """Only offline mocked-provider tests opt in; deployed default stays closed."""
+    monkeypatch.setenv("IML_PUBLIC_PRICE_DATA_ENABLED", "true")
+    monkeypatch.setenv("IML_MARKET_DATA_LICENSE_APPROVED", "true")
+
 IST = ZoneInfo('Asia/Kolkata')
 
 
@@ -58,8 +66,8 @@ def test_mobile_layout_styles_are_served_with_cache_busting():
     terminal = client.get('/terminal')
     assert home.status_code == 200
     assert terminal.status_code == 200
-    assert '/styles.css?v=mobile21-17' in home.text
-    assert '/terminal.css?v=mobile21-17' in terminal.text
+    assert '/styles.css?v=safety21-21' in home.text
+    assert '/terminal.css?v=safety21-21' in terminal.text
     research_css = client.get('/styles.css').text
     trader_css = client.get('/terminal.css').text
     assert 'Step 21.17: responsive research dashboard' in research_css
@@ -159,3 +167,15 @@ def test_scanner_imports_actual_60_session_csv():
     assert report['summary']['Risk per idea ₹']==500
     assert report['quality']['Price rows']==65
     assert report['eligible_count'] <= 1
+
+
+# CI explicitly selects this module: collect the dedicated safety contract tests too.
+# Their own fixtures remove mocked licence flags before asserting the fail-closed mode.
+from fullstack.backend.tests.test_market_data_safety import (
+    test_double_operator_approval_required,
+    test_public_price_endpoints_blocked_before_provider_or_cache,
+    test_helpers_refuse_market_data_even_if_invoked_directly,
+    test_non_price_tools_stay_available_and_symbol_directory_is_offline,
+    test_upload_scanner_remains_usable_in_safety_mode,
+    test_public_interface_has_explicit_safe_mode_notice,
+)

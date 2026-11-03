@@ -294,3 +294,9 @@ input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px #00e6762
   .legal-gate { align-items: flex-start; }
   .legal-gate-card { max-height: calc(100dvh - 20px); }
 }
+
+/* Step 21.21: optional market-price safety mode; retain terminal black/red/green palette. */
+.terminal-safety-banner{background:#210c0e;color:#f5e8e8;border:1px solid #a93e42;padding:12px 18px;line-height:1.6;font-size:13px}
+.terminal-safety-banner strong{color:#fd7278;letter-spacing:.06em}
+.terminal-safety-banner a{color:#00e676;text-decoration:underline}
+.terminal-safety-banner[hidden]{display:none!important}

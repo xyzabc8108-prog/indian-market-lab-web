@@ -35,6 +35,10 @@ from news_radar import read_public_headlines, OFFICIAL_LINKS
 from fullstack.backend.terminal_engine import terminal_report, CANDLE_RANGES
 from fullstack.backend.beta import router as beta_router
 from fullstack.backend.beta_admin import admin_router
+from fullstack.backend.market_data_safety import (
+    market_data_status, public_market_data_safety_mode,
+    require_public_market_data,
+)
 
 FRONTEND = Path(__file__).resolve().parents[1] / 'frontend'
 IST = ZoneInfo('Asia/Kolkata')
@@ -89,8 +93,11 @@ async def browser_security_headers(request: Request, call_next):
     response.headers['Permissions-Policy'] = (
         'camera=(), microphone=(), geolocation=(), payment=()'
     )
+    if (request.url.path.startswith('/api/stock/') or
+        (request.url.path.startswith('/api/terminal/') and
+         request.url.path not in ('/api/terminal/config', '/api/terminal/universe'))):
+        response.headers['Cache-Control'] = 'no-store'
     return response
-
 
 
 def normalize_ticker(value: str) -> str:
@@ -107,6 +114,9 @@ def normalize_ticker(value: str) -> str:
 
 
 def yahoo_history(ticker: str, period: str = '1y') -> pd.DataFrame:
+    # Also block cache reuse or direct internal access when safety mode is active.
+    if public_market_data_safety_mode():
+        raise ValueError("Public market-price provider access is disabled pending data-rights review.")
     if period not in {'3mo', '6mo', '1y', '2y'}:
         raise ValueError('Unsupported price-history period')
     sym = normalize_ticker(ticker)
@@ -142,6 +152,9 @@ _UNIVERSE_CACHE: tuple[float, pd.DataFrame, str] | None = None
 
 
 def symbol_directory() -> tuple[pd.DataFrame, str]:
+    # Suppress third-party directory fetches as well in the safety default.
+    if public_market_data_safety_mode():
+        return fallback_symbols(), 'Offline example symbol directory; no quotes'
     global _UNIVERSE_CACHE
     if _UNIVERSE_CACHE and _UNIVERSE_CACHE[0] > time.monotonic():
         return _UNIVERSE_CACHE[1], _UNIVERSE_CACHE[2]
@@ -233,6 +246,7 @@ def terminal_config():
         'intervals': {key: list(ranges) for key, ranges in CANDLE_RANGES.items()},
         'future_horizons': [5, 10, 20, 40],
         'paper_only': True,
+        'market_data_safety_mode': public_market_data_safety_mode(),
         'data_note': 'Historical research data, not exchange-verified streaming.'
     }
 
@@ -262,6 +276,7 @@ def trader_terminal(ticker: str, interval: str = Query('1d'),
     # Provider calls may be mocked, cached or replaced; input validation must not rely on them.
     if interval not in CANDLE_RANGES or lookback not in CANDLE_RANGES[interval]:
         raise HTTPException(422, 'This candle interval and history range are not supported together.')
+    require_public_market_data()
     try:
         return terminal_report(ticker, interval, lookback, horizon)
     except ValueError as exc:
@@ -269,6 +284,11 @@ def trader_terminal(ticker: str, interval: str = Query('1d'),
         is_bad_input=('symbol' in problem.lower() or 'not supported' in problem.lower()
                       or 'horizon' in problem.lower())
         raise HTTPException(422 if is_bad_input else 503, problem) from exc
+
+
+@app.get('/api/market-data/status')
+def public_price_data_status():
+    return market_data_status()
 
 
 @app.get('/api/health')
@@ -298,6 +318,7 @@ def indices():
 @app.get('/api/stock/{ticker}/analysis')
 def analyze(ticker: str, capital: float = Query(50000, gt=0, le=50000000),
             risk_pct: float = Query(1, gt=0, le=5)):
+    require_public_market_data()
     try:
         return stock_report(ticker, capital, risk_pct)
     except ValueError as exc:
@@ -306,6 +327,7 @@ def analyze(ticker: str, capital: float = Query(50000, gt=0, le=50000000),
 
 @app.get('/api/stock/{ticker}/history')
 def candles(ticker: str, period: str = Query('6mo')):
+    require_public_market_data()
     try:
         series = yahoo_history(ticker, period)
         series = series.tail(270)

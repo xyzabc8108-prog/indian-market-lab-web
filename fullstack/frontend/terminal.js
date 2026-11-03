@@ -16,7 +16,8 @@ const $=id=>document.getElementById(id);
 const fmt=n=>money(n);
 const state={symbol:'RELIANCE',interval:'1d',lookback:'6mo',horizon:10,
             watchMode:'all',search:'',offset:0,watchSeq:0,seq:0,latest:null,
-            chart:null,resizeObserver:null,series:null,selectedFromList:false};
+            chart:null,resizeObserver:null,series:null,selectedFromList:false,
+             marketDataEnabled:false};
 let symbolTimer=null;
 let watchSlowTimer=null;
 const researchSnapshots=new Map(); // In-memory only; no fabricated historical quotes.
@@ -378,7 +379,41 @@ function showError(message){
  $('desk-trend').textContent='No data';
  examplePaperBudget();
 }
+function showMarketDataSafety(){
+ researchSnapshots.clear();
+ state.cachedSnapshot=false;
+ const banner=$('market-data-safety-banner');
+ if(banner)banner.hidden=false;
+ showError('Public stock-price charts and scenarios are paused while market-data permissions are reviewed.');
+ $('retry-terminal').hidden=true;
+ $('reload-terminal').disabled=true;
+ $('last-update').textContent='Market Data Safety Mode · No public price feed or scenarios';
+ $('terminal-direction').textContent='DATA PAUSED';
+ $('chart-timeframe').textContent='Public price data paused';
+ $('chart-candles').textContent='No public market candles';
+ $('export-result').textContent='Use the upload-based scanner for history you are authorized to use.';
+ $('desk-pattern').textContent='Price-pattern research requires licensed or user-provided history.';
+}
+async function checkMarketDataSafety(){
+ // Fail closed until the public capability endpoint confirms the licence gate.
+ try{
+  const status=await api('/api/market-data/status',{timeoutMs:12000});
+  if(status.public_price_data_available===true &&
+     status.market_data_safety_mode===false){
+   state.marketDataEnabled=true;
+   $('market-data-safety-banner').hidden=true;
+   loadTerminal();
+  }else{
+   state.marketDataEnabled=false;
+   showMarketDataSafety();
+  }
+ }catch{
+  state.marketDataEnabled=false;
+  showMarketDataSafety();
+ }
+}
 async function loadTerminal(){
+ if(!state.marketDataEnabled){showMarketDataSafety();return;}
  const seq=++state.seq;
  const symbol=state.symbol;
  const cacheKey=symbol+'|'+state.interval+'|'+state.lookback+'|'+state.horizon;
@@ -398,6 +433,11 @@ async function loadTerminal(){
   display(data);
  }catch(e){
    if(seq!==state.seq)return;
+   if(/market-data rights|stock-price charts|price-data permissions|market-price provider access/i.test(e.message)){
+     state.marketDataEnabled=false;
+     showMarketDataSafety();
+     return;
+   }
    const previous=researchSnapshots.get(cacheKey);
    if(previous){
      state.cachedSnapshot=true;
@@ -425,7 +465,7 @@ function startTerminal(){
  terminalApp.inert=false;
  resetHistory();
  loadWatch();
- loadTerminal();
+ checkMarketDataSafety();
 }
 function hasAcknowledged(){
  try{return sessionStorage.getItem(LEGAL_NOTICE_VERSION)==='yes';}catch{return false;}
