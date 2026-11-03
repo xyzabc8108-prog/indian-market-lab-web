@@ -327,8 +327,8 @@ function renderPatterns(patterns,library){
     const bullish=/bullish|upward|bottom|hammer|morning|soldiers|piercing/i.test(p.tendency+' '+p.name);
     const bearish=!bullish&&/bearish|downward|top|star|crows/i.test(p.tendency+' '+p.name);
     const tone=bullish?' bull':bearish?' bear':'';
-    const icon=bullish?'<img class="animal-icon bull-mark" src="/icons/bull.svg" alt="" aria-hidden="true" decoding="async">':
-               bearish?'<img class="animal-icon bear-mark" src="/icons/bear.svg" alt="" aria-hidden="true" decoding="async">':'◆';
+    const icon=bullish?'<img class="animal-icon bull-mark" src="/icons/bull.svg?v=iml-geom-20261103" alt="" aria-hidden="true" decoding="async">':
+               bearish?'<img class="animal-icon bear-mark" src="/icons/bear.svg?v=iml-geom-20261103" alt="" aria-hidden="true" decoding="async">':'◆';
     return '<div class="pattern-item'+tone+'"><span class="symbol">'+icon+'</span><div><strong>'+h(p.name)+'</strong><small>'+h(p.category)+' · '+h(p.tendency)+' · '+h(formatDateTime(p.time))+'</small><p>'+h(p.reason)+'</p></div></div>';
    }).join('')
   :'<div class="empty-radar">No supported pattern candidates spotted in the recent candles. That is a valid outcome.</div>';
@@ -344,19 +344,19 @@ function display(data){
  $('last-change').textContent=(data.change_pct>0?'▲ +':data.change_pct<0?'▼ ':'↔ ')+pct(data.change_pct)+' · previous candle';
  $('last-change').className=data.change_pct>0?'positive':data.change_pct<0?'negative':'flat';
  $('last-update').textContent='Last candle: '+formatDateTime(data.latest_time)+' IST · Age: '+(Number(data.bar_age_minutes)>=1440?Math.floor(data.bar_age_minutes/1440)+' days':Math.max(0,Math.floor(data.bar_age_minutes/60))+' hours')+' · Not an exchange live feed';
- const mood=$('terminal-direction');mood.innerHTML=(data.trend==='Bullish'?'<img class="animal-icon bull-mark" src="/icons/bull.svg" alt="" aria-hidden="true" decoding="async"> BULLISH':data.trend==='Bearish'?'<img class="animal-icon bear-mark" src="/icons/bear.svg" alt="" aria-hidden="true" decoding="async"> BEARISH':'↔ SIDEWAYS');
+ const mood=$('terminal-direction');mood.innerHTML=(data.trend==='Bullish'?'<img class="animal-icon bull-mark" src="/icons/bull.svg?v=iml-geom-20261103" alt="" aria-hidden="true" decoding="async"> BULLISH':data.trend==='Bearish'?'<img class="animal-icon bear-mark" src="/icons/bear.svg?v=iml-geom-20261103" alt="" aria-hidden="true" decoding="async"> BEARISH':'↔ SIDEWAYS');
  mood.className='trend-tag '+data.trend.toLowerCase();
  $('chart-candles').textContent=data.bars.length.toLocaleString('en-IN')+' historical candles · '+data.interval;
  $('chart-timeframe').textContent='NSE · '+data.interval+' interval · '+RANGE_LABELS[data.lookback];
  $('scenario-window').textContent=data.scenario.horizon+' simulated candles';
  $('scenario-metrics').innerHTML=
-  '<div class="scenario-card bear"><span><img class="animal-icon bear-mark" src="/icons/bear.svg" alt="" aria-hidden="true" decoding="async"> LOWER VOLATILITY RANGE (10th %)</span><strong>'+fmt(data.scenario.downside)+'</strong></div>'+
+  '<div class="scenario-card bear"><span><img class="animal-icon bear-mark" src="/icons/bear.svg?v=iml-geom-20261103" alt="" aria-hidden="true" decoding="async"> LOWER VOLATILITY RANGE (10th %)</span><strong>'+fmt(data.scenario.downside)+'</strong></div>'+
   '<div class="scenario-card"><span>MIDDLE VOLATILITY RANGE (50th %)</span><strong>'+fmt(data.scenario.middle)+'</strong></div>'+
-  '<div class="scenario-card bull"><span><img class="animal-icon bull-mark" src="/icons/bull.svg" alt="" aria-hidden="true" decoding="async"> UPPER VOLATILITY RANGE (90th %)</span><strong>'+fmt(data.scenario.upside)+'</strong></div>';
+  '<div class="scenario-card bull"><span><img class="animal-icon bull-mark" src="/icons/bull.svg?v=iml-geom-20261103" alt="" aria-hidden="true" decoding="async"> UPPER VOLATILITY RANGE (90th %)</span><strong>'+fmt(data.scenario.upside)+'</strong></div>';
  $('forecast-chart').innerHTML=scenarioChart(data.scenario);
  $('bull-price').textContent=fmt(data.scenario.upside);
  $('bear-price').textContent=fmt(data.scenario.downside);
- $('desk-trend').innerHTML=data.trend==='Bullish'?'<img class="animal-icon bull-mark" src="/icons/bull.svg" alt="" aria-hidden="true" decoding="async"> Bullish trend':data.trend==='Bearish'?'<img class="animal-icon bear-mark" src="/icons/bear.svg" alt="" aria-hidden="true" decoding="async"> Bearish trend':'↔ Sideways trend';
+ $('desk-trend').innerHTML=data.trend==='Bullish'?'<img class="animal-icon bull-mark" src="/icons/bull.svg?v=iml-geom-20261103" alt="" aria-hidden="true" decoding="async"> Bullish trend':data.trend==='Bearish'?'<img class="animal-icon bear-mark" src="/icons/bear.svg?v=iml-geom-20261103" alt="" aria-hidden="true" decoding="async"> Bearish trend':'↔ Sideways trend';
  $('desk-pattern').textContent=data.patterns.length?data.patterns.slice(0,2).map(x=>x.name).join(' · '):'No clear recent candle formation in the supported library.';
  $('model-share').textContent=data.scenario.modeled_above_reference_pct.toFixed(1)+'%';
  renderPatterns(data.patterns,data.pattern_library);

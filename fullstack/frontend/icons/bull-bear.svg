@@ -1,1 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 54"><g transform="translate(2 7) scale(.108)"><path fill="#00cc50" fill-rule="evenodd" d="M502 247L489 260 L479 267 L453 280 L476 295 L458 319 L437 322 L435 355 L436 360 L461 351 L489 338 L521 288 L523 281Z M155 265L149 289 L149 300 L188 345 L205 374 L263 375 L249 351 L245 347 L237 344 L232 344 L202 303 L202 297 L226 266 L229 260 L188 241Z M704 66L684 77 L656 84 L622 87 L629 92 L646 110 L667 106 L685 98 L694 92 L704 82Z M703 10L657 43 L597 53 L571 66 L559 92 L572 109 L557 103 L548 89 L551 72 L571 56 L486 17 L440 6 L390 15 L311 55 L178 63 L139 78 L77 87 L49 107 L31 136 L30 184 L7 215 L8 254 L44 221 L42 154 L51 130 L78 105 L115 97 L81 141 L74 225 L36 263 L11 350 L25 375 L78 375 L56 342 L72 296 L184 229 L218 192 L237 154 L231 186 L198 233 L273 271 L320 255 L358 259 L355 216 L384 177 L364 227 L379 315 L372 351 L386 375 L439 375 L414 341 L414 306 L432 246 L486 177 L486 146 L474 109 L495 144 L497 181 L451 238 L431 277 L485 252 L531 201 L555 186 L573 201 L607 204 L629 222 L660 211 L668 195 L648 154 L648 128 L616 92 L601 98 L600 91 L615 77 L652 68 L679 52Z M610 132L611 131 L620 136 L630 146 L625 149 L616 147 L612 142Z"/></g><g transform="translate(81 7) scale(.108)"><path fill="#f10f27" fill-rule="evenodd" d="M548 304L510 270 L496 277 L478 282 L440 282 L451 333 L452 344 L449 347 L437 350 L425 356 L412 372 L409 381 L503 381 L508 375Z M247 227L211 213 L191 209 L193 222 L193 240 L191 248 L179 264 L147 297 L127 344 L109 364 L104 381 L123 381 L162 377 L191 335 L196 330 L259 308 L274 294 L285 280 L285 278Z M11 176L15 189 L47 208 L91 196 L158 193 L239 210 L228 171 L231 140 L243 193 L298 280 L299 340 L294 347 L266 358 L250 381 L344 381 L378 329 L397 242 L388 213 L361 167 L384 190 L402 219 L408 266 L467 272 L501 263 L471 213 L468 186 L474 158 L482 213 L505 249 L557 298 L634 347 L619 356 L607 381 L687 381 L705 353 L703 326 L658 245 L641 184 L651 184 L653 175 L627 119 L579 64 L527 35 L488 31 L358 42 L295 8 L258 9 L137 61 L140 84 L119 57 L97 57 L91 65 L94 82 L49 121 L48 142Z M88 129L83 138 L73 145 L68 145 L62 141 L70 134 L87 128Z"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 64" role="img" aria-label="Geometric bull and bear emblems" data-design="iml-original-geometry-2026-11-03">
+  <title>Bull and bear — original geometric trading emblems</title>
+  <svg x="0" y="2" width="78" height="60" viewBox="0 0 160 96" aria-label="Bull"><g stroke-linejoin="round" stroke-linecap="round">
+    <path d="M48 39 C28 38 17 27 15 9 C7 30 20 51 42 55" fill="none" stroke="#00e676" stroke-width="9"/>
+    <path d="M112 39 C132 38 143 27 145 9 C153 30 140 51 118 55" fill="none" stroke="#00e676" stroke-width="9"/>
+    <path d="M47 45 L25 38 L34 64 L49 61 Z" fill="#008c4b"/>
+    <path d="M113 45 L135 38 L126 64 L111 61 Z" fill="#008c4b"/>
+    <path d="M53 30 L107 30 L121 53 L111 78 L97 90 L63 90 L49 78 L39 53 Z" fill="#00e676" stroke="#074b30" stroke-width="3"/>
+    <path d="M62 45 L80 36 L98 45" fill="none" stroke="#075437" stroke-width="5"/>
+    <ellipse cx="62" cy="61" rx="5" ry="3.5" fill="#072819"/>
+    <ellipse cx="98" cy="61" rx="5" ry="3.5" fill="#072819"/>
+    <path d="M64 71 Q80 65 96 71 L94 83 Q80 90 66 83 Z" fill="#057c48"/>
+    <circle cx="73" cy="77" r="2.6" fill="#073b26"/>
+    <circle cx="87" cy="77" r="2.6" fill="#073b26"/>
+  </g></svg>
+  <svg x="82" y="2" width="78" height="60" viewBox="0 0 160 96" aria-label="Bear"><g stroke-linejoin="round" stroke-linecap="round">
+    <circle cx="48" cy="33" r="17" fill="#ff3158" stroke="#772139" stroke-width="3"/>
+    <circle cx="112" cy="33" r="17" fill="#ff3158" stroke="#772139" stroke-width="3"/>
+    <circle cx="48" cy="33" r="7.5" fill="#7b253b"/>
+    <circle cx="112" cy="33" r="7.5" fill="#7b253b"/>
+    <path d="M47 36 Q80 19 113 36 Q127 50 122 74 L106 90 L54 90 L38 74 Q33 50 47 36 Z" fill="#ff3158" stroke="#842039" stroke-width="3"/>
+    <path d="M65 47 L80 57 L95 47" fill="none" stroke="#842039" stroke-width="5"/>
+    <ellipse cx="62" cy="61" rx="5.5" ry="4.5" fill="#300811"/>
+    <ellipse cx="98" cy="61" rx="5.5" ry="4.5" fill="#300811"/>
+    <ellipse cx="80" cy="77" rx="22" ry="13" fill="#ff768b"/>
+    <path d="M72 73 L88 73 L80 81 Z" fill="#421018"/>
+    <path d="M80 81 L80 85" stroke="#421018" stroke-width="3" fill="none"/>
+  </g></svg>
+</svg>
