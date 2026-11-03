@@ -1,3 +1,28 @@
+# PUBLIC DEPLOYMENT SAFETY STATUS — 3 NOVEMBER 2026
+
+**Streamlit prototype:** The `indian-market-lab-rohan.streamlit.app` entrypoint
+is now configured to show **only a synthetic educational sandbox** by default
+(Step 21.21.7). Public named-stock quotes, the original Auto Stock Assistant,
+trade-level suggestions, stock backtests and unofficial Yahoo data requests are
+**disabled**. It offers a synthetic line-chart example and manual virtual
+risk-budget arithmetic. [Technical controls](STREAMLIT_SAFETY.md).
+
+**Render full-stack site:** https://indian-market-lab-fullstack.onrender.com
+has Market Data Safety Mode active (Step 21.21.2). Public Yahoo-derived
+prices and stock-specific terminal scenarios are blocked; the upload-based
+scanner and manual budgeting remain available. The uploaded-file scanner's
+named-stock ranking and paper trade-level fields are **still awaiting
+additional SEBI/data-rights review**. Beta registrations, feedback, payments
+and brokerage orders remain disabled.
+
+**Important:** Older README sections below document historical code and
+features, **not current public functionality or legal approval**. Do not
+reactivate price feeds merely to restore the old interface. A valid provider
+agreement and professional regulatory review are required before deciding
+which functions may safely become public.
+
+---
+
 ## Trader Mode — full-screen chart workspace
 
 Open **https://indian-market-lab-fullstack.onrender.com/terminal** or use the
@@ -31,7 +56,7 @@ A separate division-based site is now available in [`fullstack/`](fullstack/). I
 
 **[Full-stack deployment instructions](FULLSTACK_DEPLOY.md)** · [Backend code](fullstack/backend/main.py) · [Frontend code](fullstack/frontend/app.js) · [Automated tests](fullstack/backend/tests/test_api.py)
 
-**Hosting status:** The full-stack source is committed, but the separate Render web service is not deployed yet. The existing [Streamlit prototype](https://indian-market-lab-rohan.streamlit.app/) remains unchanged. To publish the new site, deploy the root `render.yaml` Blueprint in your own Render account.
+**Hosting status:** The Render full-stack service is live with Market Data Safety Mode. The Streamlit prototype has a separate fail-closed synthetic-only safety guard. Refer to [market-data restrictions](MARKET_DATA_SAFETY.md) and [Streamlit safety](STREAMLIT_SAFETY.md) before interpreting the historical feature descriptions below.
 
 ---
 
