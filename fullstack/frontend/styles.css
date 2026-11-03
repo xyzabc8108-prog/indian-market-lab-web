@@ -29,7 +29,7 @@
 .global-disclosure a:focus-visible,.footer a:focus-visible{outline:2px solid #74e5c7;outline-offset:3px}
 @media(max-width:720px){.global-disclosure{padding:11px 15px}}
 
-/* Shared bull/bear identity — silhouettes traced from supplied artwork. */
+/* Shared bull/bear identity — independently constructed geometric SVG emblems, Step 21.21.11. */
 .iml-small-pair{display:inline-flex;align-items:center;justify-content:center;gap:3px;vertical-align:middle;flex:none}
 .iml-small-pair img{display:block;object-fit:contain;width:28px;height:22px;filter:drop-shadow(0 0 4px #0008)}
 .logo.iml-small-pair{width:67px;height:47px;border:1px solid #3b574d;background:linear-gradient(125deg,#081e15,#210b11)}
