@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#030303">
 <meta name="description" content="Indian Market Lab Trader Mode — explore NSE candles, patterns, and historical scenario analysis. Paper trading only.">
 <title>Trader Mode | Indian Market Lab</title>
-<link rel="stylesheet" href="/terminal.css?v=mobile21-17">
+<link rel="stylesheet" href="/terminal.css?v=safety21-21">
 <link rel="stylesheet" href="/feedback-widget.css?v=1">
 <link rel="icon" type="image/svg+xml" href="/icons/bull-bear.svg"></head>
 <body class="terminal-page terms-pending">
@@ -32,6 +32,7 @@
     <div class="terminal-header-end"><span id="ist-clock" aria-label="Indian Standard Time">IST</span><a class="terminal-exit" href="/#/home" title="Return to normal research mode"><span class="mode-slider" aria-hidden="true"></span> Exit Trader Mode</a></div>
   </header>
   <div class="terminal-disclosure" role="note"><strong>Important disclosure:</strong> Historical charts, candlestick patterns and statistical volatility ranges are not investment advice. No exchange-verified live prices or real orders. Trading can result in substantial losses. <a href="/terms">Terms &amp; Risk ↗</a></div>
+  <div id="market-data-safety-banner" class="terminal-safety-banner" role="status" aria-live="polite" hidden><strong>MARKET DATA SAFETY MODE</strong> · Public stock-price charts and statistical scenarios are temporarily paused pending data-provider permissions. You can still browse example symbols, use the virtual risk calculator, or <a href="/#/scanner">scan price files you are authorized to use</a>. No real orders.</div>
   <div class="terminal-layout">
     <aside class="terminal-watch">
       <div class="terminal-side-title"><h2>MARKET WATCH</h2><span>🇮🇳 NSE</span></div>
@@ -42,7 +43,7 @@
       <div class="watch-actions"><button id="watch-all" class="selected" type="button">All equities</button><button id="watch-favorites" type="button">Popular</button></div>
       <div id="terminal-watch-items" class="watch-items" aria-live="polite"><div class="terminal-skeleton">Loading stock list…</div></div>
       <button id="watch-more" class="watch-more" type="button" hidden>Load more stocks ↓</button>
-      <div class="watch-caption">Choose a stock to explore its historical chart and volatility ranges. Symbols depend on the available NSE directory.</div>
+      <div class="watch-caption">Browse example symbols. Public chart prices are paused during the data-rights review.</div>
     </aside>
     <main class="terminal-main">
       <div class="terminal-symbol-head">
@@ -96,6 +97,6 @@
   </div>
 </div>
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js" defer></script>
-<script type="module" src="/terminal.js?v=iml-icons1"></script>
+<script type="module" src="/terminal.js?v=safety21-21"></script>
 <script defer src="/feedback-widget.js?v=1"></script>
 </body></html>
