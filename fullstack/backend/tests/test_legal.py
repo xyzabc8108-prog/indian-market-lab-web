@@ -185,3 +185,61 @@ def test_research_note_is_downloaded_locally_without_exposing_private_data():
     assert 'Lower volatility range (10th percentile)' in script
     assert 'Upper volatility range (90th percentile)' in script
     assert "'export-research-note').disabled=true" in script
+
+
+
+def test_tradingview_upstream_notice_and_license_page():
+    page=client.get('/third-party-licenses')
+    terminal=client.get('/terminal')
+    terms=client.get('/terms')
+    dashboard_js=client.get('/app.js')
+    assert page.status_code == 200
+    assert page.headers['cache-control'] == 'no-store'
+    assert 'TradingView Lightweight Charts™' in page.text
+    assert 'Copyright (с) 2025 TradingView, Inc. https://www.tradingview.com/' in page.text
+    assert 'https://github.com/tradingview/lightweight-charts/blob/master/LICENSE' in page.text
+    assert 'https://github.com/tradingview/lightweight-charts/blob/master/NOTICE' in page.text
+    assert 'Copyright (с) 2025 TradingView, Inc. https://www.tradingview.com/' in terminal.text
+    assert 'href="/third-party-licenses"' in terminal.text
+    assert 'href="/third-party-licenses"' in terms.text
+    assert 'href="/third-party-licenses"' in dashboard_js.text
+    assert 'attributionLogo:true' in client.get('/terminal.js').text
+
+
+def test_public_news_links_only_by_default_without_rss_calls(monkeypatch):
+    from fullstack.backend import main
+    monkeypatch.delenv('IML_PUBLIC_NEWS_FEED_ENABLED', raising=False)
+    monkeypatch.delenv('IML_NEWS_REDISPLAY_RIGHTS_VERIFIED', raising=False)
+    monkeypatch.setattr(
+        main, 'read_public_headlines',
+        lambda *a, **kw: (_ for _ in ()).throw(
+            AssertionError('Google News RSS fetch must not run without public rights')
+        )
+    )
+    response=client.get('/api/news')
+    assert response.status_code == 200
+    data=response.json()
+    assert data['feed_paused'] is True
+    assert data['items'] == []
+    assert len(data['official_sources']) >= 3
+    assert all(url.startswith('https://') for url in data['official_sources'].values())
+    assert 'href' not in str(data['items'])
+    frontend=client.get('/pages/news.js')
+    assert 'source links' in frontend.text.lower()
+    assert 'news.google.com/rss' not in frontend.text
+
+
+def test_public_headline_republication_requires_both_approvals(monkeypatch):
+    from fullstack.backend.third_party_safety import public_headline_feed_enabled
+    for enable, rights, expected in (
+        (None, None, False), ('true', None, False),
+        (None, 'true', False), ('true', 'false', False),
+        ('false', 'true', False), ('true', 'true', True),
+    ):
+        for key, value in (
+            ('IML_PUBLIC_NEWS_FEED_ENABLED', enable),
+            ('IML_NEWS_REDISPLAY_RIGHTS_VERIFIED', rights),
+        ):
+            if value is None: monkeypatch.delenv(key, raising=False)
+            else: monkeypatch.setenv(key, value)
+        assert public_headline_feed_enabled() is expected
