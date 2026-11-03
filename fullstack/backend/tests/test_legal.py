@@ -51,8 +51,9 @@ def test_terminal_acknowledgement_is_explicit_and_blocks_interaction():
 def test_public_legal_copy_has_no_internal_implementation_notes():
     terms=client.get('/terms').text
     privacy=client.get('/privacy').text
+    assert 'November 2, 2026' in terms
+    assert 'November 3, 2026' in privacy
     for text in (terms,privacy):
-        assert 'November 2, 2026' in text
         for forbidden in (
             'No contact email is invented', 'Do not enable real-email collection',
             'secret access key', 'separate persistent database',
@@ -101,10 +102,11 @@ def test_watchlist_recovery_and_range_selection_contract():
 def test_operator_identity_and_legal_references_present():
     terms=client.get('/terms').text
     privacy=client.get('/privacy').text
+    assert 'November 2, 2026' in terms
+    assert 'November 3, 2026' in privacy
     for page in (terms, privacy):
         assert 'Rohan Chhaya' in page
         assert 'Rajkot, Gujarat, India' in page
-        assert 'November 2, 2026' in page
         assert '[your-email@domain.com]' not in page
     assert 'competent courts located in' in terms
     assert 'NSE Data Usage Policy' in terms
