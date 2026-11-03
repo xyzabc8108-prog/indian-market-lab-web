@@ -1,4 +1,23 @@
 import {api,h,loading,error,formatDateTime} from '../api.js';
-const topics=['Indian stock market','Company results','Economy & RBI','F&O / derivatives','Global & crude','Banking','Technology'];
-export function render(){return `<div class="page-head"><span class="eyebrow">LATEST NEWS / MARKET UPDATES</span><h1>News Intelligence</h1><p>Recent financial news and the industries that could be affected. News does not guarantee price movements.</p></div><section class="panel"><div class="field-grid cols-3"><label class="grow">News category<select id="topic">${topics.map(x=>`<option>${h(x)}</option>`).join('')}</select></label><button class="button" id="news-go">Refresh news feed</button></div></section><div id="news-out">${loading('Retrieving public headlines…')}</div>`;}
-export async function mount(root){const out=root.querySelector('#news-out');async function run(){out.innerHTML=loading('Finding the latest headlines…');try{const d=await api('/api/news?topic='+encodeURIComponent(root.querySelector('#topic').value));out.innerHTML=`<div class="news-list">${d.items.map(item=>`<article class="news-card"><div class="news-meta">${h(item.source)} · ${h(formatDateTime(item.published))}</div><h3><a href="${h(item.url)}" target="_blank" rel="noopener noreferrer">${h(item.title)} ↗</a></h3><p>${h(item.mapping.headline_tone.replace(' — effect unconfirmed',' — effect not certain').replace('Mixed or neutral wording — direction unknown','Market impact not confirmed'))}</p><small>Related sectors: ${h(item.mapping.themes.map(t=>t.theme).join(', ')||'Not clearly identified')}</small></article>`).join('')}</div><div class="notice">News can affect different stocks in different ways. Always read the full story and compare it with the actual market.</div>`;}catch(e){out.innerHTML=error(e.message)+'<div class="notice">Use official NSE, SEBI and RBI announcements to independently verify material events.</div>';}}root.querySelector('#news-go').addEventListener('click',run);await run();}
+
+export function render(){
+  return `<div class="page-head"><span class="eyebrow">VERIFIED SOURCE LINKS</span><h1>News Intelligence</h1>
+  <p>Read announcements directly from their source. Automated public headline republication is paused pending content-rights review.</p></div>
+  <section class="panel"><div class="panel-title"><h2>Official financial news and announcements</h2><span class="data-label">SOURCE LINKS ONLY</span></div>
+  <div class="notice">Third-party content belongs to its publishers. Indian Market Lab currently provides source links rather than copying or republishing Google News RSS headlines. News is not a forecast.</div>
+  <div id="news-out">${loading('Loading official source directory…')}</div></section>`;
+}
+
+export async function mount(root){
+  const out=root.querySelector('#news-out');
+  try {
+    const d=await api('/api/news');
+    const sources=Object.entries(d.official_sources||{});
+    const rows=sources.map(([name,url])=>`<article class="news-card"><h3><a href="${h(url)}" target="_blank" rel="noopener noreferrer">${h(name)}</a></h3><p>Read original announcements on the publisher's website.</p></article>`).join('');
+    const note=d.feed_paused===true?'<p class="muted">External RSS headline syndication is disabled while publisher and provider permissions are reviewed.</p>':'';
+    const feeds=d.feed_paused===false&&Array.isArray(d.items)?d.items.map(item=>`<article class="news-card"><div class="news-meta">${h(item.source)} · ${h(formatDateTime(item.published))}</div><h3><a href="${h(item.url)}" target="_blank" rel="noopener noreferrer">${h(item.title)}</a></h3></article>`).join(''):'';
+    out.innerHTML=note+'<div class="news-list">'+rows+feeds+'</div>';
+  }catch(e){
+    out.innerHTML=error(e.message)+'<p class="muted">You can visit the SEBI, NSE, and RBI official websites directly.</p>';
+  }
+}
