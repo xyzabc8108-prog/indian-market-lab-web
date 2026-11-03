@@ -250,3 +250,26 @@ def test_public_headline_republication_requires_both_approvals(monkeypatch):
             if value is None: monkeypatch.delenv(key, raising=False)
             else: monkeypatch.setenv(key, value)
         assert public_headline_feed_enabled() is expected
+
+
+def test_geometric_icon_assets():
+    from xml.etree import ElementTree as ET
+    for filename in ('bull.svg', 'bear.svg', 'bull-bear.svg'):
+        response = client.get('/icons/' + filename)
+        assert response.status_code == 200
+        root = ET.fromstring(response.content)
+        assert root.attrib.get('data-design') == 'iml-original-geometry-2026-11-03'
+        assert root.attrib.get('viewBox')
+        assert any(node.tag.endswith('path') for node in root.iter())
+        assert 'M502 247L489 260' not in response.text
+        assert 'M548 304L510 270' not in response.text
+
+    for path in ('/terminal', '/beta', '/privacy', '/terms', '/', '/app.js', '/terminal.js'):
+        response = client.get(path)
+        assert response.status_code == 200
+        for name in ('bull.svg', 'bear.svg', 'bull-bear.svg'):
+            if '/icons/' + name in response.text:
+                assert '/icons/' + name + '?v=iml-geom-20261103' in response.text
+
+    attribution = client.get('/third-party-licenses').text
+    assert 'ICON_PROVENANCE.md' in attribution
